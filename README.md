@@ -1,3 +1,3 @@
 mytiger
 =======
-program design exercise of <modern compiler implementation in c>
+program design exercise of < modern compiler implementation in c >
