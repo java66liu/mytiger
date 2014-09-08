@@ -24,6 +24,7 @@ void adjust(void)
 %Start COMMENT ISSTRING
 %%
 
+
 <INITIAL>while	{adjust(); return WHILE;}
 <INITIAL>for	{adjust(); return FOR;}
 <INITIAL>to	{adjust(); return TO;}
@@ -66,18 +67,17 @@ void adjust(void)
 <INITIAL>"|"	{adjust(); return OR;}
 <INITIAL>":="	{adjust(); return ASSIGN;}
 
+
 <INITIAL>"/*"	{adjust(); BEGIN COMMENT;}
 <INITIAL>" "	{adjust(); continue;}
 <INITIAL>\t	{adjust(); continue;}
 <INITIAL>[\n\r]	{adjust(); EM_newline(); continue;}
 <INITIAL>[0-9]+	{adjust(); yylval.ival=atoi(yytext); return INT;}
-
 <INITIAL>[a-zA-Z][a-zA-Z0-9]*	{adjust(); yylval.sval=yytext; return ID;}
 
 <INITIAL>\"	{adjust(); BEGIN ISSTRING;}
-<ISSTRING>\"	{adjust(); BEGIN INITIAL;}
-<ISSTRING>.	{adjust(); yylval.sval=yytext; return STRING;}
-
+<ISSTRING>(\\.|[^\\"])* {adjust(); yylval.sval=yytext; return STRING;}
+<ISSTRING>\"	{adjust(); BEGIN INITIAL;} 
 
 
 <INITIAL>.	{adjust(); EM_error(EM_tokPos,"illegal token");}
