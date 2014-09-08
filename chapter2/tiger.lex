@@ -73,7 +73,7 @@ void adjust(void)
 <INITIAL>\t	{adjust(); continue;}
 <INITIAL>[\n\r]	{adjust(); EM_newline(); continue;}
 <INITIAL>[0-9]+	{adjust(); yylval.ival=atoi(yytext); return INT;}
-<INITIAL>[a-zA-Z][a-zA-Z0-9]*	{adjust(); yylval.sval=yytext; return ID;}
+<INITIAL>[a-zA-Z][a-zA-Z0-9_]*	{adjust(); yylval.sval=yytext; return ID;}
 
 <INITIAL>\"	{adjust(); BEGIN ISSTRING;}
 <ISSTRING>(\\.|[^\\"])* {adjust(); yylval.sval=yytext; return STRING;}
