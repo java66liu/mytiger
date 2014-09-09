@@ -1,0 +1,681 @@
+Terminals which are not used
+
+   STRING
+   LPAREN
+   RPAREN
+   DOT
+   PLUS
+   MINUS
+   TIMES
+   DIVIDE
+   NEQ
+   LT
+   LE
+   GT
+   GE
+   AND
+   OR
+   IF
+   THEN
+   ELSE
+   WHILE
+   FOR
+   TO
+   DO
+   BREAK
+   FUNCTION
+
+
+State 10 conflicts: 2 shift/reduce
+
+
+Grammar
+
+    0 $accept: program $end
+
+    1 program: sentences
+
+    2 sentences: sentences sentence
+    3          | sentence
+
+    4 sentence: decs
+    5         | expseq
+
+    6 decs: decs dec
+    7     | dec
+
+    8 dec: tydec
+    9    | vardec
+
+   10 typeid: ID
+
+   11 tydec: TYPE typeid EQ ty
+
+   12 ty: typeid
+   13   | LBRACE tyfields RBRACE
+   14   | ARRAY OF typeid
+
+   15 tyfield: ID COLON typeid
+
+   16 tyfields: tyfields COMMA tyfield
+   17         | tyfield
+
+   18 vardec: VAR ID ASSIGN exp
+   19       | VAR ID COLON typeid ASSIGN exp
+
+   20 exp: INT
+   21    | typeid LBRACK exp RBRACK OF exp
+   22    | NIL
+   23    | LET decs IN expseq END
+   24    | lvalue
+
+   25 lvalue: ID
+
+   26 expseq: expseq SEMICOLON exp
+   27       | exp
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256)
+ID (258) 10 15 18 19 25
+STRING (259)
+INT (260) 20
+COMMA (261) 16
+COLON (262) 15 19
+SEMICOLON (263) 26
+LPAREN (264)
+RPAREN (265)
+LBRACK (266) 21
+RBRACK (267) 21
+LBRACE (268) 13
+RBRACE (269) 13
+DOT (270)
+PLUS (271)
+MINUS (272)
+TIMES (273)
+DIVIDE (274)
+EQ (275) 11
+NEQ (276)
+LT (277)
+LE (278)
+GT (279)
+GE (280)
+AND (281)
+OR (282)
+ASSIGN (283) 18 19
+ARRAY (284) 14
+IF (285)
+THEN (286)
+ELSE (287)
+WHILE (288)
+FOR (289)
+TO (290)
+DO (291)
+LET (292) 23
+IN (293) 23
+END (294) 23
+OF (295) 14 21
+BREAK (296)
+NIL (297) 22
+FUNCTION (298)
+VAR (299) 18 19
+TYPE (300) 11
+
+
+Nonterminals, with rules where they appear
+
+$accept (46)
+    on left: 0
+program (47)
+    on left: 1, on right: 0
+sentences (48)
+    on left: 2 3, on right: 1 2
+sentence (49)
+    on left: 4 5, on right: 2 3
+decs (50)
+    on left: 6 7, on right: 4 6 23
+dec (51)
+    on left: 8 9, on right: 6 7
+typeid (52)
+    on left: 10, on right: 11 12 14 15 19 21
+tydec (53)
+    on left: 11, on right: 8
+ty (54)
+    on left: 12 13 14, on right: 11
+tyfield (55)
+    on left: 15, on right: 16 17
+tyfields (56)
+    on left: 16 17, on right: 13 16
+vardec (57)
+    on left: 18 19, on right: 9
+exp (58)
+    on left: 20 21 22 23 24, on right: 18 19 21 26 27
+lvalue (59)
+    on left: 25, on right: 24
+expseq (60)
+    on left: 26 27, on right: 5 23 26
+
+
+state 0
+
+    0 $accept: . program $end
+
+    ID    shift, and go to state 1
+    INT   shift, and go to state 2
+    LET   shift, and go to state 3
+    NIL   shift, and go to state 4
+    VAR   shift, and go to state 5
+    TYPE  shift, and go to state 6
+
+    program    go to state 7
+    sentences  go to state 8
+    sentence   go to state 9
+    decs       go to state 10
+    dec        go to state 11
+    typeid     go to state 12
+    tydec      go to state 13
+    vardec     go to state 14
+    exp        go to state 15
+    lvalue     go to state 16
+    expseq     go to state 17
+
+
+state 1
+
+   10 typeid: ID .
+   25 lvalue: ID .
+
+    LBRACK    reduce using rule 10 (typeid)
+    $default  reduce using rule 25 (lvalue)
+
+
+state 2
+
+   20 exp: INT .
+
+    $default  reduce using rule 20 (exp)
+
+
+state 3
+
+   23 exp: LET . decs IN expseq END
+
+    VAR   shift, and go to state 5
+    TYPE  shift, and go to state 6
+
+    decs    go to state 18
+    dec     go to state 11
+    tydec   go to state 13
+    vardec  go to state 14
+
+
+state 4
+
+   22 exp: NIL .
+
+    $default  reduce using rule 22 (exp)
+
+
+state 5
+
+   18 vardec: VAR . ID ASSIGN exp
+   19       | VAR . ID COLON typeid ASSIGN exp
+
+    ID  shift, and go to state 19
+
+
+state 6
+
+   11 tydec: TYPE . typeid EQ ty
+
+    ID  shift, and go to state 20
+
+    typeid  go to state 21
+
+
+state 7
+
+    0 $accept: program . $end
+
+    $end  shift, and go to state 22
+
+
+state 8
+
+    1 program: sentences .
+    2 sentences: sentences . sentence
+
+    ID    shift, and go to state 1
+    INT   shift, and go to state 2
+    LET   shift, and go to state 3
+    NIL   shift, and go to state 4
+    VAR   shift, and go to state 5
+    TYPE  shift, and go to state 6
+
+    $default  reduce using rule 1 (program)
+
+    sentence  go to state 23
+    decs      go to state 10
+    dec       go to state 11
+    typeid    go to state 12
+    tydec     go to state 13
+    vardec    go to state 14
+    exp       go to state 15
+    lvalue    go to state 16
+    expseq    go to state 17
+
+
+state 9
+
+    3 sentences: sentence .
+
+    $default  reduce using rule 3 (sentences)
+
+
+state 10
+
+    4 sentence: decs .
+    6 decs: decs . dec
+
+    VAR   shift, and go to state 5
+    TYPE  shift, and go to state 6
+
+    VAR       [reduce using rule 4 (sentence)]
+    TYPE      [reduce using rule 4 (sentence)]
+    $default  reduce using rule 4 (sentence)
+
+    dec     go to state 24
+    tydec   go to state 13
+    vardec  go to state 14
+
+
+state 11
+
+    7 decs: dec .
+
+    $default  reduce using rule 7 (decs)
+
+
+state 12
+
+   21 exp: typeid . LBRACK exp RBRACK OF exp
+
+    LBRACK  shift, and go to state 25
+
+
+state 13
+
+    8 dec: tydec .
+
+    $default  reduce using rule 8 (dec)
+
+
+state 14
+
+    9 dec: vardec .
+
+    $default  reduce using rule 9 (dec)
+
+
+state 15
+
+   27 expseq: exp .
+
+    $default  reduce using rule 27 (expseq)
+
+
+state 16
+
+   24 exp: lvalue .
+
+    $default  reduce using rule 24 (exp)
+
+
+state 17
+
+    5 sentence: expseq .
+   26 expseq: expseq . SEMICOLON exp
+
+    SEMICOLON  shift, and go to state 26
+
+    $default  reduce using rule 5 (sentence)
+
+
+state 18
+
+    6 decs: decs . dec
+   23 exp: LET decs . IN expseq END
+
+    IN    shift, and go to state 27
+    VAR   shift, and go to state 5
+    TYPE  shift, and go to state 6
+
+    dec     go to state 24
+    tydec   go to state 13
+    vardec  go to state 14
+
+
+state 19
+
+   18 vardec: VAR ID . ASSIGN exp
+   19       | VAR ID . COLON typeid ASSIGN exp
+
+    COLON   shift, and go to state 28
+    ASSIGN  shift, and go to state 29
+
+
+state 20
+
+   10 typeid: ID .
+
+    $default  reduce using rule 10 (typeid)
+
+
+state 21
+
+   11 tydec: TYPE typeid . EQ ty
+
+    EQ  shift, and go to state 30
+
+
+state 22
+
+    0 $accept: program $end .
+
+    $default  accept
+
+
+state 23
+
+    2 sentences: sentences sentence .
+
+    $default  reduce using rule 2 (sentences)
+
+
+state 24
+
+    6 decs: decs dec .
+
+    $default  reduce using rule 6 (decs)
+
+
+state 25
+
+   21 exp: typeid LBRACK . exp RBRACK OF exp
+
+    ID   shift, and go to state 1
+    INT  shift, and go to state 2
+    LET  shift, and go to state 3
+    NIL  shift, and go to state 4
+
+    typeid  go to state 12
+    exp     go to state 31
+    lvalue  go to state 16
+
+
+state 26
+
+   26 expseq: expseq SEMICOLON . exp
+
+    ID   shift, and go to state 1
+    INT  shift, and go to state 2
+    LET  shift, and go to state 3
+    NIL  shift, and go to state 4
+
+    typeid  go to state 12
+    exp     go to state 32
+    lvalue  go to state 16
+
+
+state 27
+
+   23 exp: LET decs IN . expseq END
+
+    ID   shift, and go to state 1
+    INT  shift, and go to state 2
+    LET  shift, and go to state 3
+    NIL  shift, and go to state 4
+
+    typeid  go to state 12
+    exp     go to state 15
+    lvalue  go to state 16
+    expseq  go to state 33
+
+
+state 28
+
+   19 vardec: VAR ID COLON . typeid ASSIGN exp
+
+    ID  shift, and go to state 20
+
+    typeid  go to state 34
+
+
+state 29
+
+   18 vardec: VAR ID ASSIGN . exp
+
+    ID   shift, and go to state 1
+    INT  shift, and go to state 2
+    LET  shift, and go to state 3
+    NIL  shift, and go to state 4
+
+    typeid  go to state 12
+    exp     go to state 35
+    lvalue  go to state 16
+
+
+state 30
+
+   11 tydec: TYPE typeid EQ . ty
+
+    ID      shift, and go to state 20
+    LBRACE  shift, and go to state 36
+    ARRAY   shift, and go to state 37
+
+    typeid  go to state 38
+    ty      go to state 39
+
+
+state 31
+
+   21 exp: typeid LBRACK exp . RBRACK OF exp
+
+    RBRACK  shift, and go to state 40
+
+
+state 32
+
+   26 expseq: expseq SEMICOLON exp .
+
+    $default  reduce using rule 26 (expseq)
+
+
+state 33
+
+   23 exp: LET decs IN expseq . END
+   26 expseq: expseq . SEMICOLON exp
+
+    SEMICOLON  shift, and go to state 26
+    END        shift, and go to state 41
+
+
+state 34
+
+   19 vardec: VAR ID COLON typeid . ASSIGN exp
+
+    ASSIGN  shift, and go to state 42
+
+
+state 35
+
+   18 vardec: VAR ID ASSIGN exp .
+
+    $default  reduce using rule 18 (vardec)
+
+
+state 36
+
+   13 ty: LBRACE . tyfields RBRACE
+
+    ID  shift, and go to state 43
+
+    tyfield   go to state 44
+    tyfields  go to state 45
+
+
+state 37
+
+   14 ty: ARRAY . OF typeid
+
+    OF  shift, and go to state 46
+
+
+state 38
+
+   12 ty: typeid .
+
+    $default  reduce using rule 12 (ty)
+
+
+state 39
+
+   11 tydec: TYPE typeid EQ ty .
+
+    $default  reduce using rule 11 (tydec)
+
+
+state 40
+
+   21 exp: typeid LBRACK exp RBRACK . OF exp
+
+    OF  shift, and go to state 47
+
+
+state 41
+
+   23 exp: LET decs IN expseq END .
+
+    $default  reduce using rule 23 (exp)
+
+
+state 42
+
+   19 vardec: VAR ID COLON typeid ASSIGN . exp
+
+    ID   shift, and go to state 1
+    INT  shift, and go to state 2
+    LET  shift, and go to state 3
+    NIL  shift, and go to state 4
+
+    typeid  go to state 12
+    exp     go to state 48
+    lvalue  go to state 16
+
+
+state 43
+
+   15 tyfield: ID . COLON typeid
+
+    COLON  shift, and go to state 49
+
+
+state 44
+
+   17 tyfields: tyfield .
+
+    $default  reduce using rule 17 (tyfields)
+
+
+state 45
+
+   13 ty: LBRACE tyfields . RBRACE
+   16 tyfields: tyfields . COMMA tyfield
+
+    COMMA   shift, and go to state 50
+    RBRACE  shift, and go to state 51
+
+
+state 46
+
+   14 ty: ARRAY OF . typeid
+
+    ID  shift, and go to state 20
+
+    typeid  go to state 52
+
+
+state 47
+
+   21 exp: typeid LBRACK exp RBRACK OF . exp
+
+    ID   shift, and go to state 1
+    INT  shift, and go to state 2
+    LET  shift, and go to state 3
+    NIL  shift, and go to state 4
+
+    typeid  go to state 12
+    exp     go to state 53
+    lvalue  go to state 16
+
+
+state 48
+
+   19 vardec: VAR ID COLON typeid ASSIGN exp .
+
+    $default  reduce using rule 19 (vardec)
+
+
+state 49
+
+   15 tyfield: ID COLON . typeid
+
+    ID  shift, and go to state 20
+
+    typeid  go to state 54
+
+
+state 50
+
+   16 tyfields: tyfields COMMA . tyfield
+
+    ID  shift, and go to state 43
+
+    tyfield  go to state 55
+
+
+state 51
+
+   13 ty: LBRACE tyfields RBRACE .
+
+    $default  reduce using rule 13 (ty)
+
+
+state 52
+
+   14 ty: ARRAY OF typeid .
+
+    $default  reduce using rule 14 (ty)
+
+
+state 53
+
+   21 exp: typeid LBRACK exp RBRACK OF exp .
+
+    $default  reduce using rule 21 (exp)
+
+
+state 54
+
+   15 tyfield: ID COLON typeid .
+
+    $default  reduce using rule 15 (tyfield)
+
+
+state 55
+
+   16 tyfields: tyfields COMMA tyfield .
+
+    $default  reduce using rule 16 (tyfields)
