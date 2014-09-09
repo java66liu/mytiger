@@ -75,13 +75,9 @@ void adjust(void)
 <INITIAL>[0-9]+	{adjust(); yylval.ival=atoi(yytext); return INT;}
 <INITIAL>[a-zA-Z][a-zA-Z0-9_]*	{adjust(); yylval.sval=yytext; return ID;}
 
-<INITIAL>\"	{adjust(); BEGIN ISSTRING;}
-<ISSTRING>(\\.|[^\\"])* {adjust(); yylval.sval=yytext; return STRING;}
-<ISSTRING>\"	{adjust(); BEGIN INITIAL;} 
-
+<INITIAL>\"(\\.|[^\\"])*\" {adjust(); yylval.sval=yytext; return STRING;}
 
 <INITIAL>.	{adjust(); EM_error(EM_tokPos,"illegal token");}
-
 
 <COMMENT>"*/"	{adjust(); BEGIN INITIAL;}
 <COMMENT>.	{adjust();}

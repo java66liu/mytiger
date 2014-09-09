@@ -31,54 +31,81 @@ void yyerror(char *s)
   FUNCTION VAR TYPE 
 
 %start program
-
+%left PLUS MINUS
+%left TIMES DIVIDE
 %%
 
-program: sentences
-
-sentences: sentences sentence
-         | sentence
-
-sentence: decs
-        | expseq
+program: decs
+       | exp
 
 decs: decs dec
     | dec
 
 dec: tydec
     | vardec
-//    | fundec
+    | fundec
 
 typeid: ID
 
 tydec: TYPE typeid EQ ty
 
 ty: typeid
-  | LBRACE tyfields RBRACE
   | ARRAY OF typeid
+  | LBRACE tyfields RBRACE
 
 tyfield: ID COLON typeid
+       | /* empty */
 
 tyfields: tyfields COMMA tyfield
         | tyfield
 
-vardec: VAR ID ASSIGN exp
-      | VAR ID COLON typeid ASSIGN exp
+vardec: VAR ID ASSIGN exp2
+      | VAR ID COLON typeid ASSIGN exp2
 
-exp: INT
-   | typeid LBRACK exp RBRACK OF exp
+exp2: exp
+    | typeid LBRACK exp RBRACK OF exp
+
+exp: lvalue
    | NIL
+   | list
+   | LPAREN RPAREN | LBRACK RBRACK | LBRACE RBRACE
+   | INT | MINUS exp
+   | STRING
+   | ID LPAREN RPAREN | ID LPAREN exps RPAREN
+   | exp op exp
+   | ID ASSIGN exp
+   | IF exp THEN exp ELSE exp
+   | IF exp THEN exp
+   | WHILE exp DO exp
+   | FOR ID ASSIGN exp TO exp DO exp
+   | BREAK;
+   | typeid LBRACE ideqexp RBRACE
    | LET decs IN expseq END
-   | lvalue
+   | LPAREN exp RPAREN
+   | lvalue ASSIGN exp
 
-lvalue: ID
+ideqexp: ideqexp COMMA ID EQ exp
+       | ID EQ exp
+
+op: PLUS | MINUS 
+  | TIMES | DIVIDE
+  | EQ | NEQ | LT | LE | GT | GE
+  | AND | OR
+
+exps: exps COMMA exp
+    | exp
 
 expseq: expseq SEMICOLON exp
       | exp
+      | 
 
-/*
+lvalue: lvalue LBRACK exp RBRACK
+      | lvalue DOT ID
+      | ID
+
+list: LPAREN expseq RPAREN
+
+
 fundec: FUNCTION ID LPAREN tyfields RPAREN EQ exp
       | FUNCTION ID LPAREN tyfields RPAREN COLON typeid EQ exp
-*/
-
 
