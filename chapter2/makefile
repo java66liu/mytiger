@@ -1,5 +1,5 @@
-lextest: driver.o lex.yy.o errormsg.o util.o
-	cc -g -o lextest driver.o lex.yy.o errormsg.o util.o
+a.out: driver.o lex.yy.o errormsg.o util.o
+	cc -g driver.o lex.yy.o errormsg.o util.o
 
 driver.o: driver.c tokens.h errormsg.h util.h
 	cc -g -c driver.c

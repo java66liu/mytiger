@@ -1,19 +1,22 @@
-#/bin/sh
+#/bin/bash
 
-
+if [ -n "$1" ]; then 
+	prog=$1
+else
+	prog=a.out
+fi
 
 for i in {1..49};
 do
 	echo $i
-	./$1	../testcases/test$i.tig
+	./$prog	../testcases/test$i.tig
 	echo "----------------------"
 done
 
 echo "merge"
-./$1 ../testcases/merge.tig
+./$prog	../testcases/merge.tig
 echo "----------------------"
 
 echo "queen"
-./$1 ../testcases/queens.tig
+./$prog	../testcases/queens.tig
 echo "----------------------"
-

@@ -140,7 +140,7 @@ extern int yydebug;
 typedef union YYSTYPE YYSTYPE;
 union YYSTYPE
 {
-#line 14 "tiger.grm" /* yacc.c:1909  */
+#line 14 "tiger.y" /* yacc.c:1909  */
 
 	int pos;
 	int ival;

@@ -37,7 +37,6 @@ program
 | exp
 
 //----decs----
-
 decs
 : decs dec
 | dec
