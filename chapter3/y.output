@@ -1,45 +1,47 @@
 状态 0conflicts: 1 shift/reduce
-状态 1conflicts: 1 shift/reduce
 状态 2conflicts: 6 shift/reduce
 状态 4conflicts: 2 shift/reduce
 状态 5conflicts: 1 shift/reduce
 状态 9conflicts: 1 shift/reduce
 状态 10conflicts: 1 shift/reduce
-状态 11conflicts: 1 shift/reduce
 状态 25conflicts: 1 shift/reduce
-状态 50conflicts: 2 shift/reduce
-状态 51conflicts: 1 shift/reduce
+状态 47conflicts: 2 shift/reduce
+状态 83conflicts: 2 shift/reduce
+状态 84conflicts: 2 shift/reduce
+状态 85conflicts: 2 shift/reduce
+状态 86conflicts: 1 shift/reduce
 状态 88conflicts: 2 shift/reduce
-状态 89conflicts: 2 shift/reduce
-状态 90conflicts: 2 shift/reduce
-状态 91conflicts: 1 shift/reduce
-状态 93conflicts: 2 shift/reduce
-状态 101conflicts: 1 shift/reduce
+状态 93conflicts: 1 shift/reduce
+状态 95conflicts: 1 shift/reduce
+状态 101conflicts: 2 shift/reduce
+状态 102conflicts: 2 shift/reduce
 状态 103conflicts: 1 shift/reduce
-状态 109conflicts: 2 shift/reduce
-状态 110conflicts: 2 shift/reduce
-状态 111conflicts: 1 shift/reduce
-状态 112conflicts: 2 shift/reduce
-状态 115conflicts: 2 shift/reduce
-状态 117conflicts: 12 shift/reduce
-状态 118conflicts: 12 shift/reduce
-状态 119conflicts: 12 shift/reduce
+状态 104conflicts: 2 shift/reduce
+状态 109conflicts: 12 shift/reduce
+状态 110conflicts: 12 shift/reduce
+状态 111conflicts: 12 shift/reduce
+状态 114conflicts: 12 shift/reduce
+状态 115conflicts: 1 shift/reduce
+状态 121conflicts: 12 shift/reduce
 状态 122conflicts: 12 shift/reduce
-状态 123conflicts: 1 shift/reduce
-状态 126conflicts: 1 shift/reduce
-状态 133conflicts: 13 shift/reduce
-状态 134conflicts: 12 shift/reduce
-状态 148conflicts: 2 shift/reduce
-状态 151conflicts: 2 shift/reduce
-状态 152conflicts: 2 shift/reduce
-状态 153conflicts: 1 shift/reduce
-状态 156conflicts: 2 shift/reduce
-状态 159conflicts: 12 shift/reduce
-状态 160conflicts: 1 shift/reduce
-状态 161conflicts: 12 shift/reduce
-状态 162conflicts: 12 shift/reduce
-状态 165conflicts: 2 shift/reduce
-状态 172conflicts: 2 shift/reduce
+状态 131conflicts: 1 shift/reduce
+状态 145conflicts: 2 shift/reduce
+状态 146conflicts: 1 shift/reduce
+状态 147conflicts: 1 shift/reduce
+状态 151conflicts: 1 shift/reduce
+状态 156conflicts: 12 shift/reduce
+状态 160conflicts: 2 shift/reduce
+状态 167conflicts: 2 shift/reduce
+状态 171conflicts: 1 shift/reduce
+状态 174conflicts: 12 shift/reduce
+状态 175conflicts: 2 shift/reduce
+状态 176conflicts: 2 shift/reduce
+状态 180conflicts: 1 shift/reduce
+状态 182conflicts: 7 reduce/reduce
+状态 183conflicts: 7 reduce/reduce
+状态 184conflicts: 7 reduce/reduce
+状态 186conflicts: 7 reduce/reduce
+状态 187conflicts: 1 shift/reduce
 
 
 语法
@@ -70,8 +72,8 @@
    16 tyfield: ID COLON ID
    17        | empty
 
-   18 vardec: VAR ID ASSIGN exp
-   19       | VAR ID COLON ID ASSIGN exp
+   18 vardec: VAR ID ASSIGN new
+   19       | VAR ID COLON ID ASSIGN new
 
    20 fundec: FUNCTION ID LPAREN tyfields RPAREN EQ exp
    21       | FUNCTION ID LPAREN tyfields RPAREN COLON ID EQ exp
@@ -85,244 +87,249 @@
    28    | function
    29    | operation
    30    | compare
-   31    | new
-   32    | assign
-   33    | if_then
-   34    | if_then_else
-   35    | while_do
-   36    | for_to_do
-   37    | break
-   38    | let_in_end
-   39    | parentheses
+   31    | assign
+   32    | if_then
+   33    | if_then_else
+   34    | while_do
+   35    | for_to_do
+   36    | break
+   37    | let_in_end
+   38    | parentheses
 
-   40 lvalue: ID
-   41       | lvalue DOT ID
-   42       | lvalue LBRACK exp RBRACK
+   39 lvalue: ID
+   40       | lvalue DOT ID
+   41       | lvalue LBRACK exp RBRACK
 
-   43 no_value_exp: LPAREN RPAREN
-   44             | LBRACK RBRACK
-   45             | LBRACE RBRACE
-   46             | empty
+   42 no_value_exp: LPAREN RPAREN
+   43             | LBRACK RBRACK
+   44             | LBRACE RBRACE
+   45             | empty
 
-   47 nil: NIL
+   46 nil: NIL
 
-   48 list: LPAREN list_exps RPAREN
+   47 list: LPAREN list_exps RPAREN
 
-   49 list_exps: list_exps SEMICOLON exp
-   50          | exp SEMICOLON exp
+   48 list_exps: list_exps SEMICOLON exp
+   49          | exp SEMICOLON exp
 
-   51 int: INT
-   52    | MINUS int
+   50 int: INT
+   51    | MINUS int
 
-   53 string: STRING
+   52 string: STRING
 
-   54 function: ID LPAREN RPAREN
-   55         | ID LPAREN function_exps RPAREN
+   53 function: ID LPAREN RPAREN
+   54         | ID LPAREN function_exps RPAREN
 
-   56 function_exps: function_exps COMMA exp
-   57              | exp
+   55 function_exps: function_exps COMMA exp
+   56              | exp
 
-   58 operation: exp_operation
-   59          | bool_operation
+   57 operation: exp_operation
+   58          | bool_operation
 
-   60 exp_operation: exp exp_op exp
+   59 exp_operation: exp exp_op exp
 
-   61 exp_op: PLUS
-   62       | MINUS
-   63       | TIMES
-   64       | DIVIDE
+   60 exp_op: PLUS
+   61       | MINUS
+   62       | TIMES
+   63       | DIVIDE
 
-   65 bool_operation: exp bool_op exp
+   64 bool_operation: exp bool_op exp
 
-   66 bool_op: AND
-   67        | OR
+   65 bool_op: AND
+   66        | OR
 
-   68 compare: exp_compare
-   69        | string_compare
+   67 compare: exp_compare
+   68        | string_compare
 
-   70 exp_compare: exp compare_op exp
+   69 exp_compare: exp compare_op exp
 
-   71 string_compare: STRING compare_op STRING
+   70 string_compare: STRING compare_op STRING
 
-   72 compare_op: EQ
-   73           | NEQ
-   74           | LT
-   75           | LE
-   76           | GT
-   77           | GE
+   71 compare_op: EQ
+   72           | NEQ
+   73           | LT
+   74           | LE
+   75           | GT
+   76           | GE
 
-   78 new: type_new
-   79    | array_new
+   77 new: type_new
+   78    | array_new
+   79    | int
+   80    | string
+   81    | parentheses
+   82    | nil
 
-   80 type_new: ID LBRACE type_new_exps RBRACE
+   83 type_new: ID LBRACE type_new_exps RBRACE
 
-   81 type_new_exps: type_new_exps COMMA ID EQ exp
-   82              | ID EQ exp
+   84 type_new_exps: type_new_exps COMMA ID EQ exp
+   85              | ID EQ exp
 
-   83 array_new: ID LBRACK exp RBRACK OF exp
+   86 array_new: ID LBRACK exp RBRACK OF exp
+   87          | ID LBRACK exp RBRACK OF new
 
-   84 assign: lvalue ASSIGN exp
+   88 assign: lvalue ASSIGN exp
 
-   85 if_then: IF exp THEN exp
+   89 if_then: IF exp THEN exp
 
-   86 if_then_else: IF exp THEN exp ELSE exp
+   90 if_then_else: IF exp THEN exp ELSE exp
 
-   87 while_do: WHILE exp DO exp
+   91 while_do: WHILE exp DO exp
 
-   88 for_to_do: FOR exp TO exp DO exp
+   92 for_to_do: FOR ID ASSIGN exp TO exp DO exp
 
-   89 break: BREAK
+   93 break: BREAK
 
-   90 let_in_end: LET decs IN expseq END
-   91           | LET decs IN END
+   94 let_in_end: LET decs IN expseq END
+   95           | LET decs IN END
 
-   92 expseq: expseq SEMICOLON exp
-   93       | exp
+   96 expseq: expseq SEMICOLON exp
+   97       | exp
 
-   94 parentheses: LPAREN exp RPAREN
+   98 parentheses: LPAREN exp RPAREN
 
-   95 empty: %empty
+   99 empty: %empty
 
 
 Terminals, with rules where they appear
 
 $end (0) 0
 error (256)
-ID (258) 8 10 11 12 16 18 19 20 21 40 41 54 55 80 81 82 83
-STRING (259) 53 71
-INT (260) 51
-COMMA (261) 14 56 81
+ID (258) 8 10 11 12 16 18 19 20 21 39 40 53 54 83 84 85 86 87 92
+STRING (259) 52 70
+INT (260) 50
+COMMA (261) 14 55 84
 COLON (262) 16 19 21
-SEMICOLON (263) 49 50 92
-LPAREN (264) 20 21 43 48 54 55 94
-RPAREN (265) 20 21 43 48 54 55 94
-LBRACK (266) 9 42 44 83
-RBRACK (267) 9 42 44 83
-LBRACE (268) 13 45 80
-RBRACE (269) 13 45 80
-DOT (270) 41
-PLUS (271) 61
-MINUS (272) 52 62
-TIMES (273) 63
-DIVIDE (274) 64
-EQ (275) 8 20 21 72 81 82
-NEQ (276) 73
-LT (277) 74
-LE (278) 75
-GT (279) 76
-GE (280) 77
-AND (281) 66
-OR (282) 67
-ASSIGN (283) 18 19 84
+SEMICOLON (263) 48 49 96
+LPAREN (264) 20 21 42 47 53 54 98
+RPAREN (265) 20 21 42 47 53 54 98
+LBRACK (266) 9 41 43 86 87
+RBRACK (267) 9 41 43 86 87
+LBRACE (268) 13 44 83
+RBRACE (269) 13 44 83
+DOT (270) 40
+PLUS (271) 60
+MINUS (272) 51 61
+TIMES (273) 62
+DIVIDE (274) 63
+EQ (275) 8 20 21 71 84 85
+NEQ (276) 72
+LT (277) 73
+LE (278) 74
+GT (279) 75
+GE (280) 76
+AND (281) 65
+OR (282) 66
+ASSIGN (283) 18 19 88 92
 ARRAY (284) 10 12
-IF (285) 85 86
-THEN (286) 85 86
-ELSE (287) 86
-WHILE (288) 87
-FOR (289) 88
-TO (290) 88
-DO (291) 87 88
-LET (292) 90 91
-IN (293) 90 91
-END (294) 90 91
-OF (295) 10 12 83
-BREAK (296) 89
-NIL (297) 47
+IF (285) 89 90
+THEN (286) 89 90
+ELSE (287) 90
+WHILE (288) 91
+FOR (289) 92
+TO (290) 92
+DO (291) 91 92
+LET (292) 94 95
+IN (293) 94 95
+END (294) 94 95
+OF (295) 10 12 86 87
+BREAK (296) 93
+NIL (297) 46
 FUNCTION (298) 20 21
 VAR (299) 18 19
 TYPE (300) 8
+IFX (301)
 
 
 Nonterminals, with rules where they appear
 
-$accept (46)
+$accept (47)
     on left: 0
-program (47)
+program (48)
     on left: 1 2, on right: 0
-decs (48)
-    on left: 3 4, on right: 1 3 90 91
-dec (49)
+decs (49)
+    on left: 3 4, on right: 1 3 94 95
+dec (50)
     on left: 5 6 7, on right: 3 4
-tydec (50)
+tydec (51)
     on left: 8 9 10, on right: 5
-ty (51)
+ty (52)
     on left: 11 12 13, on right: 8
-tyfields (52)
+tyfields (53)
     on left: 14 15, on right: 9 13 14 20 21
-tyfield (53)
+tyfield (54)
     on left: 16 17, on right: 14 15
-vardec (54)
+vardec (55)
     on left: 18 19, on right: 6
-fundec (55)
+fundec (56)
     on left: 20 21, on right: 7
-exp (56)
-    on left: 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39,
-    on right: 2 18 19 20 21 42 49 50 56 57 60 65 70 81 82 83 84 85
-    86 87 88 92 93 94
-lvalue (57)
-    on left: 40 41 42, on right: 22 41 42 84
-no_value_exp (58)
-    on left: 43 44 45 46, on right: 23
-nil (59)
-    on left: 47, on right: 24
-list (60)
-    on left: 48, on right: 25
-list_exps (61)
-    on left: 49 50, on right: 48 49
-int (62)
-    on left: 51 52, on right: 26 52
-string (63)
-    on left: 53, on right: 27
-function (64)
-    on left: 54 55, on right: 28
-function_exps (65)
-    on left: 56 57, on right: 55 56
-operation (66)
-    on left: 58 59, on right: 29
-exp_operation (67)
-    on left: 60, on right: 58
-exp_op (68)
-    on left: 61 62 63 64, on right: 60
-bool_operation (69)
-    on left: 65, on right: 59
-bool_op (70)
-    on left: 66 67, on right: 65
-compare (71)
-    on left: 68 69, on right: 30
-exp_compare (72)
+exp (57)
+    on left: 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38, on right:
+    2 20 21 41 48 49 55 56 59 64 69 84 85 86 87 88 89 90 91 92 96 97
+    98
+lvalue (58)
+    on left: 39 40 41, on right: 22 40 41 88
+no_value_exp (59)
+    on left: 42 43 44 45, on right: 23
+nil (60)
+    on left: 46, on right: 24 82
+list (61)
+    on left: 47, on right: 25
+list_exps (62)
+    on left: 48 49, on right: 47 48
+int (63)
+    on left: 50 51, on right: 26 51 79
+string (64)
+    on left: 52, on right: 27 80
+function (65)
+    on left: 53 54, on right: 28
+function_exps (66)
+    on left: 55 56, on right: 54 55
+operation (67)
+    on left: 57 58, on right: 29
+exp_operation (68)
+    on left: 59, on right: 57
+exp_op (69)
+    on left: 60 61 62 63, on right: 59
+bool_operation (70)
+    on left: 64, on right: 58
+bool_op (71)
+    on left: 65 66, on right: 64
+compare (72)
+    on left: 67 68, on right: 30
+exp_compare (73)
+    on left: 69, on right: 67
+string_compare (74)
     on left: 70, on right: 68
-string_compare (73)
-    on left: 71, on right: 69
-compare_op (74)
-    on left: 72 73 74 75 76 77, on right: 70 71
-new (75)
-    on left: 78 79, on right: 31
-type_new (76)
-    on left: 80, on right: 78
-type_new_exps (77)
-    on left: 81 82, on right: 80 81
-array_new (78)
-    on left: 83, on right: 79
-assign (79)
-    on left: 84, on right: 32
-if_then (80)
-    on left: 85, on right: 33
-if_then_else (81)
-    on left: 86, on right: 34
-while_do (82)
-    on left: 87, on right: 35
-for_to_do (83)
-    on left: 88, on right: 36
-break (84)
-    on left: 89, on right: 37
-let_in_end (85)
-    on left: 90 91, on right: 38
-expseq (86)
-    on left: 92 93, on right: 90 92
-parentheses (87)
-    on left: 94, on right: 39
-empty (88)
-    on left: 95, on right: 17 46
+compare_op (75)
+    on left: 71 72 73 74 75 76, on right: 69 70
+new (76)
+    on left: 77 78 79 80 81 82, on right: 18 19 87
+type_new (77)
+    on left: 83, on right: 77
+type_new_exps (78)
+    on left: 84 85, on right: 83 84
+array_new (79)
+    on left: 86 87, on right: 78
+assign (80)
+    on left: 88, on right: 31
+if_then (81)
+    on left: 89, on right: 32
+if_then_else (82)
+    on left: 90, on right: 33
+while_do (83)
+    on left: 91, on right: 34
+for_to_do (84)
+    on left: 92, on right: 35
+break (85)
+    on left: 93, on right: 36
+let_in_end (86)
+    on left: 94 95, on right: 37
+expseq (87)
+    on left: 96 97, on right: 94 96
+parentheses (88)
+    on left: 98, on right: 38 81
+empty (89)
+    on left: 99, on right: 17 45
 
 
 State 0
@@ -347,8 +354,8 @@ State 0
     VAR       shift, and go to state 16
     TYPE      shift, and go to state 17
 
-    MINUS     [reduce using rule 95 (empty)]
-    $default  reduce using rule 95 (empty)
+    MINUS     [reduce using rule 99 (empty)]
+    $default  reduce using rule 99 (empty)
 
     program         转到状态 18
     decs            转到状态 19
@@ -370,78 +377,70 @@ State 0
     compare         转到状态 35
     exp_compare     转到状态 36
     string_compare  转到状态 37
-    new             转到状态 38
-    type_new        转到状态 39
-    array_new       转到状态 40
-    assign          转到状态 41
-    if_then         转到状态 42
-    if_then_else    转到状态 43
-    while_do        转到状态 44
-    for_to_do       转到状态 45
-    break           转到状态 46
-    let_in_end      转到状态 47
-    parentheses     转到状态 48
-    empty           转到状态 49
+    assign          转到状态 38
+    if_then         转到状态 39
+    if_then_else    转到状态 40
+    while_do        转到状态 41
+    for_to_do       转到状态 42
+    break           转到状态 43
+    let_in_end      转到状态 44
+    parentheses     转到状态 45
+    empty           转到状态 46
 
 
 State 1
 
-   40 lvalue: ID .
-   54 function: ID . LPAREN RPAREN
-   55         | ID . LPAREN function_exps RPAREN
-   80 type_new: ID . LBRACE type_new_exps RBRACE
-   83 array_new: ID . LBRACK exp RBRACK OF exp
+   39 lvalue: ID .
+   53 function: ID . LPAREN RPAREN
+   54         | ID . LPAREN function_exps RPAREN
 
-    LPAREN  shift, and go to state 50
-    LBRACK  shift, and go to state 51
-    LBRACE  shift, and go to state 52
+    LPAREN  shift, and go to state 47
 
-    LBRACK    [reduce using rule 40 (lvalue)]
-    $default  reduce using rule 40 (lvalue)
+    $default  reduce using rule 39 (lvalue)
 
 
 State 2
 
-   53 string: STRING .
-   71 string_compare: STRING . compare_op STRING
+   52 string: STRING .
+   70 string_compare: STRING . compare_op STRING
 
-    EQ   shift, and go to state 53
-    NEQ  shift, and go to state 54
-    LT   shift, and go to state 55
-    LE   shift, and go to state 56
-    GT   shift, and go to state 57
-    GE   shift, and go to state 58
+    EQ   shift, and go to state 48
+    NEQ  shift, and go to state 49
+    LT   shift, and go to state 50
+    LE   shift, and go to state 51
+    GT   shift, and go to state 52
+    GE   shift, and go to state 53
 
-    EQ        [reduce using rule 53 (string)]
-    NEQ       [reduce using rule 53 (string)]
-    LT        [reduce using rule 53 (string)]
-    LE        [reduce using rule 53 (string)]
-    GT        [reduce using rule 53 (string)]
-    GE        [reduce using rule 53 (string)]
-    $default  reduce using rule 53 (string)
+    EQ        [reduce using rule 52 (string)]
+    NEQ       [reduce using rule 52 (string)]
+    LT        [reduce using rule 52 (string)]
+    LE        [reduce using rule 52 (string)]
+    GT        [reduce using rule 52 (string)]
+    GE        [reduce using rule 52 (string)]
+    $default  reduce using rule 52 (string)
 
-    compare_op  转到状态 59
+    compare_op  转到状态 54
 
 
 State 3
 
-   51 int: INT .
+   50 int: INT .
 
-    $default  reduce using rule 51 (int)
+    $default  reduce using rule 50 (int)
 
 
 State 4
 
-   43 no_value_exp: LPAREN . RPAREN
-   48 list: LPAREN . list_exps RPAREN
-   94 parentheses: LPAREN . exp RPAREN
+   42 no_value_exp: LPAREN . RPAREN
+   47 list: LPAREN . list_exps RPAREN
+   98 parentheses: LPAREN . exp RPAREN
 
     ID      shift, and go to state 1
     STRING  shift, and go to state 2
     INT     shift, and go to state 3
     LPAREN  shift, and go to state 4
-    RPAREN  shift, and go to state 60
-    LBRACK  shift, and go to state 61
+    RPAREN  shift, and go to state 55
+    LBRACK  shift, and go to state 56
     LBRACE  shift, and go to state 6
     MINUS   shift, and go to state 7
     IF      shift, and go to state 9
@@ -451,16 +450,16 @@ State 4
     BREAK   shift, and go to state 13
     NIL     shift, and go to state 14
 
-    RPAREN    [reduce using rule 95 (empty)]
-    MINUS     [reduce using rule 95 (empty)]
-    $default  reduce using rule 95 (empty)
+    RPAREN    [reduce using rule 99 (empty)]
+    MINUS     [reduce using rule 99 (empty)]
+    $default  reduce using rule 99 (empty)
 
-    exp             转到状态 62
+    exp             转到状态 57
     lvalue          转到状态 25
     no_value_exp    转到状态 26
     nil             转到状态 27
     list            转到状态 28
-    list_exps       转到状态 63
+    list_exps       转到状态 58
     int             转到状态 29
     string          转到状态 30
     function        转到状态 31
@@ -470,70 +469,67 @@ State 4
     compare         转到状态 35
     exp_compare     转到状态 36
     string_compare  转到状态 37
-    new             转到状态 38
-    type_new        转到状态 39
-    array_new       转到状态 40
-    assign          转到状态 41
-    if_then         转到状态 42
-    if_then_else    转到状态 43
-    while_do        转到状态 44
-    for_to_do       转到状态 45
-    break           转到状态 46
-    let_in_end      转到状态 47
-    parentheses     转到状态 48
-    empty           转到状态 49
+    assign          转到状态 38
+    if_then         转到状态 39
+    if_then_else    转到状态 40
+    while_do        转到状态 41
+    for_to_do       转到状态 42
+    break           转到状态 43
+    let_in_end      转到状态 44
+    parentheses     转到状态 45
+    empty           转到状态 46
 
 
 State 5
 
     9 tydec: LBRACK . tyfields RBRACK
-   44 no_value_exp: LBRACK . RBRACK
+   43 no_value_exp: LBRACK . RBRACK
 
-    ID      shift, and go to state 64
-    RBRACK  shift, and go to state 65
+    ID      shift, and go to state 59
+    RBRACK  shift, and go to state 60
 
-    RBRACK    [reduce using rule 95 (empty)]
-    $default  reduce using rule 95 (empty)
+    RBRACK    [reduce using rule 99 (empty)]
+    $default  reduce using rule 99 (empty)
 
-    tyfields  转到状态 66
-    tyfield   转到状态 67
-    empty     转到状态 68
+    tyfields  转到状态 61
+    tyfield   转到状态 62
+    empty     转到状态 63
 
 
 State 6
 
-   45 no_value_exp: LBRACE . RBRACE
+   44 no_value_exp: LBRACE . RBRACE
 
-    RBRACE  shift, and go to state 69
+    RBRACE  shift, and go to state 64
 
 
 State 7
 
-   52 int: MINUS . int
+   51 int: MINUS . int
 
     INT    shift, and go to state 3
     MINUS  shift, and go to state 7
 
-    int  转到状态 70
+    int  转到状态 65
 
 
 State 8
 
    10 tydec: ARRAY . OF ID
 
-    OF  shift, and go to state 71
+    OF  shift, and go to state 66
 
 
 State 9
 
-   85 if_then: IF . exp THEN exp
-   86 if_then_else: IF . exp THEN exp ELSE exp
+   89 if_then: IF . exp THEN exp
+   90 if_then_else: IF . exp THEN exp ELSE exp
 
     ID      shift, and go to state 1
     STRING  shift, and go to state 2
     INT     shift, and go to state 3
     LPAREN  shift, and go to state 4
-    LBRACK  shift, and go to state 61
+    LBRACK  shift, and go to state 56
     LBRACE  shift, and go to state 6
     MINUS   shift, and go to state 7
     IF      shift, and go to state 9
@@ -543,10 +539,10 @@ State 9
     BREAK   shift, and go to state 13
     NIL     shift, and go to state 14
 
-    MINUS     [reduce using rule 95 (empty)]
-    $default  reduce using rule 95 (empty)
+    MINUS     [reduce using rule 99 (empty)]
+    $default  reduce using rule 99 (empty)
 
-    exp             转到状态 72
+    exp             转到状态 67
     lvalue          转到状态 25
     no_value_exp    转到状态 26
     nil             转到状态 27
@@ -560,29 +556,26 @@ State 9
     compare         转到状态 35
     exp_compare     转到状态 36
     string_compare  转到状态 37
-    new             转到状态 38
-    type_new        转到状态 39
-    array_new       转到状态 40
-    assign          转到状态 41
-    if_then         转到状态 42
-    if_then_else    转到状态 43
-    while_do        转到状态 44
-    for_to_do       转到状态 45
-    break           转到状态 46
-    let_in_end      转到状态 47
-    parentheses     转到状态 48
-    empty           转到状态 49
+    assign          转到状态 38
+    if_then         转到状态 39
+    if_then_else    转到状态 40
+    while_do        转到状态 41
+    for_to_do       转到状态 42
+    break           转到状态 43
+    let_in_end      转到状态 44
+    parentheses     转到状态 45
+    empty           转到状态 46
 
 
 State 10
 
-   87 while_do: WHILE . exp DO exp
+   91 while_do: WHILE . exp DO exp
 
     ID      shift, and go to state 1
     STRING  shift, and go to state 2
     INT     shift, and go to state 3
     LPAREN  shift, and go to state 4
-    LBRACK  shift, and go to state 61
+    LBRACK  shift, and go to state 56
     LBRACE  shift, and go to state 6
     MINUS   shift, and go to state 7
     IF      shift, and go to state 9
@@ -592,10 +585,10 @@ State 10
     BREAK   shift, and go to state 13
     NIL     shift, and go to state 14
 
-    MINUS     [reduce using rule 95 (empty)]
-    $default  reduce using rule 95 (empty)
+    MINUS     [reduce using rule 99 (empty)]
+    $default  reduce using rule 99 (empty)
 
-    exp             转到状态 73
+    exp             转到状态 68
     lvalue          转到状态 25
     no_value_exp    转到状态 26
     nil             转到状态 27
@@ -609,81 +602,36 @@ State 10
     compare         转到状态 35
     exp_compare     转到状态 36
     string_compare  转到状态 37
-    new             转到状态 38
-    type_new        转到状态 39
-    array_new       转到状态 40
-    assign          转到状态 41
-    if_then         转到状态 42
-    if_then_else    转到状态 43
-    while_do        转到状态 44
-    for_to_do       转到状态 45
-    break           转到状态 46
-    let_in_end      转到状态 47
-    parentheses     转到状态 48
-    empty           转到状态 49
+    assign          转到状态 38
+    if_then         转到状态 39
+    if_then_else    转到状态 40
+    while_do        转到状态 41
+    for_to_do       转到状态 42
+    break           转到状态 43
+    let_in_end      转到状态 44
+    parentheses     转到状态 45
+    empty           转到状态 46
 
 
 State 11
 
-   88 for_to_do: FOR . exp TO exp DO exp
+   92 for_to_do: FOR . ID ASSIGN exp TO exp DO exp
 
-    ID      shift, and go to state 1
-    STRING  shift, and go to state 2
-    INT     shift, and go to state 3
-    LPAREN  shift, and go to state 4
-    LBRACK  shift, and go to state 61
-    LBRACE  shift, and go to state 6
-    MINUS   shift, and go to state 7
-    IF      shift, and go to state 9
-    WHILE   shift, and go to state 10
-    FOR     shift, and go to state 11
-    LET     shift, and go to state 12
-    BREAK   shift, and go to state 13
-    NIL     shift, and go to state 14
-
-    MINUS     [reduce using rule 95 (empty)]
-    $default  reduce using rule 95 (empty)
-
-    exp             转到状态 74
-    lvalue          转到状态 25
-    no_value_exp    转到状态 26
-    nil             转到状态 27
-    list            转到状态 28
-    int             转到状态 29
-    string          转到状态 30
-    function        转到状态 31
-    operation       转到状态 32
-    exp_operation   转到状态 33
-    bool_operation  转到状态 34
-    compare         转到状态 35
-    exp_compare     转到状态 36
-    string_compare  转到状态 37
-    new             转到状态 38
-    type_new        转到状态 39
-    array_new       转到状态 40
-    assign          转到状态 41
-    if_then         转到状态 42
-    if_then_else    转到状态 43
-    while_do        转到状态 44
-    for_to_do       转到状态 45
-    break           转到状态 46
-    let_in_end      转到状态 47
-    parentheses     转到状态 48
-    empty           转到状态 49
+    ID  shift, and go to state 69
 
 
 State 12
 
-   90 let_in_end: LET . decs IN expseq END
-   91           | LET . decs IN END
+   94 let_in_end: LET . decs IN expseq END
+   95           | LET . decs IN END
 
-    LBRACK    shift, and go to state 75
+    LBRACK    shift, and go to state 70
     ARRAY     shift, and go to state 8
     FUNCTION  shift, and go to state 15
     VAR       shift, and go to state 16
     TYPE      shift, and go to state 17
 
-    decs    转到状态 76
+    decs    转到状态 71
     dec     转到状态 20
     tydec   转到状态 21
     vardec  转到状态 22
@@ -692,16 +640,16 @@ State 12
 
 State 13
 
-   89 break: BREAK .
+   93 break: BREAK .
 
-    $default  reduce using rule 89 (break)
+    $default  reduce using rule 93 (break)
 
 
 State 14
 
-   47 nil: NIL .
+   46 nil: NIL .
 
-    $default  reduce using rule 47 (nil)
+    $default  reduce using rule 46 (nil)
 
 
 State 15
@@ -709,29 +657,29 @@ State 15
    20 fundec: FUNCTION . ID LPAREN tyfields RPAREN EQ exp
    21       | FUNCTION . ID LPAREN tyfields RPAREN COLON ID EQ exp
 
-    ID  shift, and go to state 77
+    ID  shift, and go to state 72
 
 
 State 16
 
-   18 vardec: VAR . ID ASSIGN exp
-   19       | VAR . ID COLON ID ASSIGN exp
+   18 vardec: VAR . ID ASSIGN new
+   19       | VAR . ID COLON ID ASSIGN new
 
-    ID  shift, and go to state 78
+    ID  shift, and go to state 73
 
 
 State 17
 
     8 tydec: TYPE . ID EQ ty
 
-    ID  shift, and go to state 79
+    ID  shift, and go to state 74
 
 
 State 18
 
     0 $accept: program . $end
 
-    $end  shift, and go to state 80
+    $end  shift, and go to state 75
 
 
 State 19
@@ -739,7 +687,7 @@ State 19
     1 program: decs .
     3 decs: decs . dec
 
-    LBRACK    shift, and go to state 75
+    LBRACK    shift, and go to state 70
     ARRAY     shift, and go to state 8
     FUNCTION  shift, and go to state 15
     VAR       shift, and go to state 16
@@ -747,7 +695,7 @@ State 19
 
     $default  reduce using rule 1 (program)
 
-    dec     转到状态 81
+    dec     转到状态 76
     tydec   转到状态 21
     vardec  转到状态 22
     fundec  转到状态 23
@@ -784,40 +732,40 @@ State 23
 State 24
 
     2 program: exp .
-   60 exp_operation: exp . exp_op exp
-   65 bool_operation: exp . bool_op exp
-   70 exp_compare: exp . compare_op exp
+   59 exp_operation: exp . exp_op exp
+   64 bool_operation: exp . bool_op exp
+   69 exp_compare: exp . compare_op exp
 
-    PLUS    shift, and go to state 82
-    MINUS   shift, and go to state 83
-    TIMES   shift, and go to state 84
-    DIVIDE  shift, and go to state 85
-    EQ      shift, and go to state 53
-    NEQ     shift, and go to state 54
-    LT      shift, and go to state 55
-    LE      shift, and go to state 56
-    GT      shift, and go to state 57
-    GE      shift, and go to state 58
-    AND     shift, and go to state 86
-    OR      shift, and go to state 87
+    PLUS    shift, and go to state 77
+    MINUS   shift, and go to state 78
+    TIMES   shift, and go to state 79
+    DIVIDE  shift, and go to state 80
+    EQ      shift, and go to state 48
+    NEQ     shift, and go to state 49
+    LT      shift, and go to state 50
+    LE      shift, and go to state 51
+    GT      shift, and go to state 52
+    GE      shift, and go to state 53
+    AND     shift, and go to state 81
+    OR      shift, and go to state 82
 
     $default  reduce using rule 2 (program)
 
-    exp_op      转到状态 88
-    bool_op     转到状态 89
-    compare_op  转到状态 90
+    exp_op      转到状态 83
+    bool_op     转到状态 84
+    compare_op  转到状态 85
 
 
 State 25
 
    22 exp: lvalue .
-   41 lvalue: lvalue . DOT ID
-   42       | lvalue . LBRACK exp RBRACK
-   84 assign: lvalue . ASSIGN exp
+   40 lvalue: lvalue . DOT ID
+   41       | lvalue . LBRACK exp RBRACK
+   88 assign: lvalue . ASSIGN exp
 
-    LBRACK  shift, and go to state 91
-    DOT     shift, and go to state 92
-    ASSIGN  shift, and go to state 93
+    LBRACK  shift, and go to state 86
+    DOT     shift, and go to state 87
+    ASSIGN  shift, and go to state 88
 
     LBRACK    [reduce using rule 22 (exp)]
     $default  reduce using rule 22 (exp)
@@ -874,16 +822,16 @@ State 32
 
 State 33
 
-   58 operation: exp_operation .
+   57 operation: exp_operation .
 
-    $default  reduce using rule 58 (operation)
+    $default  reduce using rule 57 (operation)
 
 
 State 34
 
-   59 operation: bool_operation .
+   58 operation: bool_operation .
 
-    $default  reduce using rule 59 (operation)
+    $default  reduce using rule 58 (operation)
 
 
 State 35
@@ -895,571 +843,470 @@ State 35
 
 State 36
 
-   68 compare: exp_compare .
+   67 compare: exp_compare .
 
-    $default  reduce using rule 68 (compare)
+    $default  reduce using rule 67 (compare)
 
 
 State 37
 
-   69 compare: string_compare .
+   68 compare: string_compare .
 
-    $default  reduce using rule 69 (compare)
+    $default  reduce using rule 68 (compare)
 
 
 State 38
 
-   31 exp: new .
+   31 exp: assign .
 
     $default  reduce using rule 31 (exp)
 
 
 State 39
 
-   78 new: type_new .
-
-    $default  reduce using rule 78 (new)
-
-
-State 40
-
-   79 new: array_new .
-
-    $default  reduce using rule 79 (new)
-
-
-State 41
-
-   32 exp: assign .
+   32 exp: if_then .
 
     $default  reduce using rule 32 (exp)
 
 
-State 42
+State 40
 
-   33 exp: if_then .
+   33 exp: if_then_else .
 
     $default  reduce using rule 33 (exp)
 
 
-State 43
+State 41
 
-   34 exp: if_then_else .
+   34 exp: while_do .
 
     $default  reduce using rule 34 (exp)
 
 
-State 44
+State 42
 
-   35 exp: while_do .
+   35 exp: for_to_do .
 
     $default  reduce using rule 35 (exp)
 
 
-State 45
+State 43
 
-   36 exp: for_to_do .
+   36 exp: break .
 
     $default  reduce using rule 36 (exp)
 
 
-State 46
+State 44
 
-   37 exp: break .
+   37 exp: let_in_end .
 
     $default  reduce using rule 37 (exp)
 
 
-State 47
+State 45
 
-   38 exp: let_in_end .
+   38 exp: parentheses .
 
     $default  reduce using rule 38 (exp)
 
 
+State 46
+
+   45 no_value_exp: empty .
+
+    $default  reduce using rule 45 (no_value_exp)
+
+
+State 47
+
+   53 function: ID LPAREN . RPAREN
+   54         | ID LPAREN . function_exps RPAREN
+
+    ID      shift, and go to state 1
+    STRING  shift, and go to state 2
+    INT     shift, and go to state 3
+    LPAREN  shift, and go to state 4
+    RPAREN  shift, and go to state 89
+    LBRACK  shift, and go to state 56
+    LBRACE  shift, and go to state 6
+    MINUS   shift, and go to state 7
+    IF      shift, and go to state 9
+    WHILE   shift, and go to state 10
+    FOR     shift, and go to state 11
+    LET     shift, and go to state 12
+    BREAK   shift, and go to state 13
+    NIL     shift, and go to state 14
+
+    RPAREN    [reduce using rule 99 (empty)]
+    MINUS     [reduce using rule 99 (empty)]
+    $default  reduce using rule 99 (empty)
+
+    exp             转到状态 90
+    lvalue          转到状态 25
+    no_value_exp    转到状态 26
+    nil             转到状态 27
+    list            转到状态 28
+    int             转到状态 29
+    string          转到状态 30
+    function        转到状态 31
+    function_exps   转到状态 91
+    operation       转到状态 32
+    exp_operation   转到状态 33
+    bool_operation  转到状态 34
+    compare         转到状态 35
+    exp_compare     转到状态 36
+    string_compare  转到状态 37
+    assign          转到状态 38
+    if_then         转到状态 39
+    if_then_else    转到状态 40
+    while_do        转到状态 41
+    for_to_do       转到状态 42
+    break           转到状态 43
+    let_in_end      转到状态 44
+    parentheses     转到状态 45
+    empty           转到状态 46
+
+
 State 48
 
-   39 exp: parentheses .
+   71 compare_op: EQ .
 
-    $default  reduce using rule 39 (exp)
+    $default  reduce using rule 71 (compare_op)
 
 
 State 49
 
-   46 no_value_exp: empty .
-
-    $default  reduce using rule 46 (no_value_exp)
-
-
-State 50
-
-   54 function: ID LPAREN . RPAREN
-   55         | ID LPAREN . function_exps RPAREN
-
-    ID      shift, and go to state 1
-    STRING  shift, and go to state 2
-    INT     shift, and go to state 3
-    LPAREN  shift, and go to state 4
-    RPAREN  shift, and go to state 94
-    LBRACK  shift, and go to state 61
-    LBRACE  shift, and go to state 6
-    MINUS   shift, and go to state 7
-    IF      shift, and go to state 9
-    WHILE   shift, and go to state 10
-    FOR     shift, and go to state 11
-    LET     shift, and go to state 12
-    BREAK   shift, and go to state 13
-    NIL     shift, and go to state 14
-
-    RPAREN    [reduce using rule 95 (empty)]
-    MINUS     [reduce using rule 95 (empty)]
-    $default  reduce using rule 95 (empty)
-
-    exp             转到状态 95
-    lvalue          转到状态 25
-    no_value_exp    转到状态 26
-    nil             转到状态 27
-    list            转到状态 28
-    int             转到状态 29
-    string          转到状态 30
-    function        转到状态 31
-    function_exps   转到状态 96
-    operation       转到状态 32
-    exp_operation   转到状态 33
-    bool_operation  转到状态 34
-    compare         转到状态 35
-    exp_compare     转到状态 36
-    string_compare  转到状态 37
-    new             转到状态 38
-    type_new        转到状态 39
-    array_new       转到状态 40
-    assign          转到状态 41
-    if_then         转到状态 42
-    if_then_else    转到状态 43
-    while_do        转到状态 44
-    for_to_do       转到状态 45
-    break           转到状态 46
-    let_in_end      转到状态 47
-    parentheses     转到状态 48
-    empty           转到状态 49
-
-
-State 51
-
-   83 array_new: ID LBRACK . exp RBRACK OF exp
-
-    ID      shift, and go to state 1
-    STRING  shift, and go to state 2
-    INT     shift, and go to state 3
-    LPAREN  shift, and go to state 4
-    LBRACK  shift, and go to state 61
-    LBRACE  shift, and go to state 6
-    MINUS   shift, and go to state 7
-    IF      shift, and go to state 9
-    WHILE   shift, and go to state 10
-    FOR     shift, and go to state 11
-    LET     shift, and go to state 12
-    BREAK   shift, and go to state 13
-    NIL     shift, and go to state 14
-
-    MINUS     [reduce using rule 95 (empty)]
-    $default  reduce using rule 95 (empty)
-
-    exp             转到状态 97
-    lvalue          转到状态 25
-    no_value_exp    转到状态 26
-    nil             转到状态 27
-    list            转到状态 28
-    int             转到状态 29
-    string          转到状态 30
-    function        转到状态 31
-    operation       转到状态 32
-    exp_operation   转到状态 33
-    bool_operation  转到状态 34
-    compare         转到状态 35
-    exp_compare     转到状态 36
-    string_compare  转到状态 37
-    new             转到状态 38
-    type_new        转到状态 39
-    array_new       转到状态 40
-    assign          转到状态 41
-    if_then         转到状态 42
-    if_then_else    转到状态 43
-    while_do        转到状态 44
-    for_to_do       转到状态 45
-    break           转到状态 46
-    let_in_end      转到状态 47
-    parentheses     转到状态 48
-    empty           转到状态 49
-
-
-State 52
-
-   80 type_new: ID LBRACE . type_new_exps RBRACE
-
-    ID  shift, and go to state 98
-
-    type_new_exps  转到状态 99
-
-
-State 53
-
-   72 compare_op: EQ .
+   72 compare_op: NEQ .
 
     $default  reduce using rule 72 (compare_op)
 
 
-State 54
+State 50
 
-   73 compare_op: NEQ .
+   73 compare_op: LT .
 
     $default  reduce using rule 73 (compare_op)
 
 
-State 55
+State 51
 
-   74 compare_op: LT .
+   74 compare_op: LE .
 
     $default  reduce using rule 74 (compare_op)
 
 
-State 56
+State 52
 
-   75 compare_op: LE .
+   75 compare_op: GT .
 
     $default  reduce using rule 75 (compare_op)
 
 
-State 57
+State 53
 
-   76 compare_op: GT .
+   76 compare_op: GE .
 
     $default  reduce using rule 76 (compare_op)
 
 
+State 54
+
+   70 string_compare: STRING compare_op . STRING
+
+    STRING  shift, and go to state 92
+
+
+State 55
+
+   42 no_value_exp: LPAREN RPAREN .
+
+    $default  reduce using rule 42 (no_value_exp)
+
+
+State 56
+
+   43 no_value_exp: LBRACK . RBRACK
+
+    RBRACK  shift, and go to state 60
+
+
+State 57
+
+   49 list_exps: exp . SEMICOLON exp
+   59 exp_operation: exp . exp_op exp
+   64 bool_operation: exp . bool_op exp
+   69 exp_compare: exp . compare_op exp
+   98 parentheses: LPAREN exp . RPAREN
+
+    SEMICOLON  shift, and go to state 93
+    RPAREN     shift, and go to state 94
+    PLUS       shift, and go to state 77
+    MINUS      shift, and go to state 78
+    TIMES      shift, and go to state 79
+    DIVIDE     shift, and go to state 80
+    EQ         shift, and go to state 48
+    NEQ        shift, and go to state 49
+    LT         shift, and go to state 50
+    LE         shift, and go to state 51
+    GT         shift, and go to state 52
+    GE         shift, and go to state 53
+    AND        shift, and go to state 81
+    OR         shift, and go to state 82
+
+    exp_op      转到状态 83
+    bool_op     转到状态 84
+    compare_op  转到状态 85
+
+
 State 58
 
-   77 compare_op: GE .
+   47 list: LPAREN list_exps . RPAREN
+   48 list_exps: list_exps . SEMICOLON exp
 
-    $default  reduce using rule 77 (compare_op)
+    SEMICOLON  shift, and go to state 95
+    RPAREN     shift, and go to state 96
 
 
 State 59
 
-   71 string_compare: STRING compare_op . STRING
+   16 tyfield: ID . COLON ID
 
-    STRING  shift, and go to state 100
+    COLON  shift, and go to state 97
 
 
 State 60
 
-   43 no_value_exp: LPAREN RPAREN .
+   43 no_value_exp: LBRACK RBRACK .
 
     $default  reduce using rule 43 (no_value_exp)
 
 
 State 61
 
-   44 no_value_exp: LBRACK . RBRACK
-
-    RBRACK  shift, and go to state 65
-
-
-State 62
-
-   50 list_exps: exp . SEMICOLON exp
-   60 exp_operation: exp . exp_op exp
-   65 bool_operation: exp . bool_op exp
-   70 exp_compare: exp . compare_op exp
-   94 parentheses: LPAREN exp . RPAREN
-
-    SEMICOLON  shift, and go to state 101
-    RPAREN     shift, and go to state 102
-    PLUS       shift, and go to state 82
-    MINUS      shift, and go to state 83
-    TIMES      shift, and go to state 84
-    DIVIDE     shift, and go to state 85
-    EQ         shift, and go to state 53
-    NEQ        shift, and go to state 54
-    LT         shift, and go to state 55
-    LE         shift, and go to state 56
-    GT         shift, and go to state 57
-    GE         shift, and go to state 58
-    AND        shift, and go to state 86
-    OR         shift, and go to state 87
-
-    exp_op      转到状态 88
-    bool_op     转到状态 89
-    compare_op  转到状态 90
-
-
-State 63
-
-   48 list: LPAREN list_exps . RPAREN
-   49 list_exps: list_exps . SEMICOLON exp
-
-    SEMICOLON  shift, and go to state 103
-    RPAREN     shift, and go to state 104
-
-
-State 64
-
-   16 tyfield: ID . COLON ID
-
-    COLON  shift, and go to state 105
-
-
-State 65
-
-   44 no_value_exp: LBRACK RBRACK .
-
-    $default  reduce using rule 44 (no_value_exp)
-
-
-State 66
-
     9 tydec: LBRACK tyfields . RBRACK
    14 tyfields: tyfields . COMMA tyfield
 
-    COMMA   shift, and go to state 106
-    RBRACK  shift, and go to state 107
+    COMMA   shift, and go to state 98
+    RBRACK  shift, and go to state 99
 
 
-State 67
+State 62
 
    15 tyfields: tyfield .
 
     $default  reduce using rule 15 (tyfields)
 
 
-State 68
+State 63
 
    17 tyfield: empty .
 
     $default  reduce using rule 17 (tyfield)
 
 
+State 64
+
+   44 no_value_exp: LBRACE RBRACE .
+
+    $default  reduce using rule 44 (no_value_exp)
+
+
+State 65
+
+   51 int: MINUS int .
+
+    $default  reduce using rule 51 (int)
+
+
+State 66
+
+   10 tydec: ARRAY OF . ID
+
+    ID  shift, and go to state 100
+
+
+State 67
+
+   59 exp_operation: exp . exp_op exp
+   64 bool_operation: exp . bool_op exp
+   69 exp_compare: exp . compare_op exp
+   89 if_then: IF exp . THEN exp
+   90 if_then_else: IF exp . THEN exp ELSE exp
+
+    PLUS    shift, and go to state 77
+    MINUS   shift, and go to state 78
+    TIMES   shift, and go to state 79
+    DIVIDE  shift, and go to state 80
+    EQ      shift, and go to state 48
+    NEQ     shift, and go to state 49
+    LT      shift, and go to state 50
+    LE      shift, and go to state 51
+    GT      shift, and go to state 52
+    GE      shift, and go to state 53
+    AND     shift, and go to state 81
+    OR      shift, and go to state 82
+    THEN    shift, and go to state 101
+
+    exp_op      转到状态 83
+    bool_op     转到状态 84
+    compare_op  转到状态 85
+
+
+State 68
+
+   59 exp_operation: exp . exp_op exp
+   64 bool_operation: exp . bool_op exp
+   69 exp_compare: exp . compare_op exp
+   91 while_do: WHILE exp . DO exp
+
+    PLUS    shift, and go to state 77
+    MINUS   shift, and go to state 78
+    TIMES   shift, and go to state 79
+    DIVIDE  shift, and go to state 80
+    EQ      shift, and go to state 48
+    NEQ     shift, and go to state 49
+    LT      shift, and go to state 50
+    LE      shift, and go to state 51
+    GT      shift, and go to state 52
+    GE      shift, and go to state 53
+    AND     shift, and go to state 81
+    OR      shift, and go to state 82
+    DO      shift, and go to state 102
+
+    exp_op      转到状态 83
+    bool_op     转到状态 84
+    compare_op  转到状态 85
+
+
 State 69
 
-   45 no_value_exp: LBRACE RBRACE .
+   92 for_to_do: FOR ID . ASSIGN exp TO exp DO exp
 
-    $default  reduce using rule 45 (no_value_exp)
+    ASSIGN  shift, and go to state 103
 
 
 State 70
 
-   52 int: MINUS int .
+    9 tydec: LBRACK . tyfields RBRACK
 
-    $default  reduce using rule 52 (int)
+    ID  shift, and go to state 59
+
+    $default  reduce using rule 99 (empty)
+
+    tyfields  转到状态 61
+    tyfield   转到状态 62
+    empty     转到状态 63
 
 
 State 71
 
-   10 tydec: ARRAY OF . ID
-
-    ID  shift, and go to state 108
-
-
-State 72
-
-   60 exp_operation: exp . exp_op exp
-   65 bool_operation: exp . bool_op exp
-   70 exp_compare: exp . compare_op exp
-   85 if_then: IF exp . THEN exp
-   86 if_then_else: IF exp . THEN exp ELSE exp
-
-    PLUS    shift, and go to state 82
-    MINUS   shift, and go to state 83
-    TIMES   shift, and go to state 84
-    DIVIDE  shift, and go to state 85
-    EQ      shift, and go to state 53
-    NEQ     shift, and go to state 54
-    LT      shift, and go to state 55
-    LE      shift, and go to state 56
-    GT      shift, and go to state 57
-    GE      shift, and go to state 58
-    AND     shift, and go to state 86
-    OR      shift, and go to state 87
-    THEN    shift, and go to state 109
-
-    exp_op      转到状态 88
-    bool_op     转到状态 89
-    compare_op  转到状态 90
-
-
-State 73
-
-   60 exp_operation: exp . exp_op exp
-   65 bool_operation: exp . bool_op exp
-   70 exp_compare: exp . compare_op exp
-   87 while_do: WHILE exp . DO exp
-
-    PLUS    shift, and go to state 82
-    MINUS   shift, and go to state 83
-    TIMES   shift, and go to state 84
-    DIVIDE  shift, and go to state 85
-    EQ      shift, and go to state 53
-    NEQ     shift, and go to state 54
-    LT      shift, and go to state 55
-    LE      shift, and go to state 56
-    GT      shift, and go to state 57
-    GE      shift, and go to state 58
-    AND     shift, and go to state 86
-    OR      shift, and go to state 87
-    DO      shift, and go to state 110
-
-    exp_op      转到状态 88
-    bool_op     转到状态 89
-    compare_op  转到状态 90
-
-
-State 74
-
-   60 exp_operation: exp . exp_op exp
-   65 bool_operation: exp . bool_op exp
-   70 exp_compare: exp . compare_op exp
-   88 for_to_do: FOR exp . TO exp DO exp
-
-    PLUS    shift, and go to state 82
-    MINUS   shift, and go to state 83
-    TIMES   shift, and go to state 84
-    DIVIDE  shift, and go to state 85
-    EQ      shift, and go to state 53
-    NEQ     shift, and go to state 54
-    LT      shift, and go to state 55
-    LE      shift, and go to state 56
-    GT      shift, and go to state 57
-    GE      shift, and go to state 58
-    AND     shift, and go to state 86
-    OR      shift, and go to state 87
-    TO      shift, and go to state 111
-
-    exp_op      转到状态 88
-    bool_op     转到状态 89
-    compare_op  转到状态 90
-
-
-State 75
-
-    9 tydec: LBRACK . tyfields RBRACK
-
-    ID  shift, and go to state 64
-
-    $default  reduce using rule 95 (empty)
-
-    tyfields  转到状态 66
-    tyfield   转到状态 67
-    empty     转到状态 68
-
-
-State 76
-
     3 decs: decs . dec
-   90 let_in_end: LET decs . IN expseq END
-   91           | LET decs . IN END
+   94 let_in_end: LET decs . IN expseq END
+   95           | LET decs . IN END
 
-    LBRACK    shift, and go to state 75
+    LBRACK    shift, and go to state 70
     ARRAY     shift, and go to state 8
-    IN        shift, and go to state 112
+    IN        shift, and go to state 104
     FUNCTION  shift, and go to state 15
     VAR       shift, and go to state 16
     TYPE      shift, and go to state 17
 
-    dec     转到状态 81
+    dec     转到状态 76
     tydec   转到状态 21
     vardec  转到状态 22
     fundec  转到状态 23
 
 
-State 77
+State 72
 
    20 fundec: FUNCTION ID . LPAREN tyfields RPAREN EQ exp
    21       | FUNCTION ID . LPAREN tyfields RPAREN COLON ID EQ exp
 
-    LPAREN  shift, and go to state 113
+    LPAREN  shift, and go to state 105
 
 
-State 78
+State 73
 
-   18 vardec: VAR ID . ASSIGN exp
-   19       | VAR ID . COLON ID ASSIGN exp
+   18 vardec: VAR ID . ASSIGN new
+   19       | VAR ID . COLON ID ASSIGN new
 
-    COLON   shift, and go to state 114
-    ASSIGN  shift, and go to state 115
+    COLON   shift, and go to state 106
+    ASSIGN  shift, and go to state 107
 
 
-State 79
+State 74
 
     8 tydec: TYPE ID . EQ ty
 
-    EQ  shift, and go to state 116
+    EQ  shift, and go to state 108
 
 
-State 80
+State 75
 
     0 $accept: program $end .
 
     $default  接受
 
 
-State 81
+State 76
 
     3 decs: decs dec .
 
     $default  reduce using rule 3 (decs)
 
 
-State 82
+State 77
 
-   61 exp_op: PLUS .
+   60 exp_op: PLUS .
+
+    $default  reduce using rule 60 (exp_op)
+
+
+State 78
+
+   61 exp_op: MINUS .
 
     $default  reduce using rule 61 (exp_op)
 
 
-State 83
+State 79
 
-   62 exp_op: MINUS .
+   62 exp_op: TIMES .
 
     $default  reduce using rule 62 (exp_op)
 
 
-State 84
+State 80
 
-   63 exp_op: TIMES .
+   63 exp_op: DIVIDE .
 
     $default  reduce using rule 63 (exp_op)
 
 
-State 85
+State 81
 
-   64 exp_op: DIVIDE .
+   65 bool_op: AND .
 
-    $default  reduce using rule 64 (exp_op)
+    $default  reduce using rule 65 (bool_op)
 
 
-State 86
+State 82
 
-   66 bool_op: AND .
+   66 bool_op: OR .
 
     $default  reduce using rule 66 (bool_op)
 
 
-State 87
+State 83
 
-   67 bool_op: OR .
-
-    $default  reduce using rule 67 (bool_op)
-
-
-State 88
-
-   60 exp_operation: exp exp_op . exp
+   59 exp_operation: exp exp_op . exp
 
     ID      shift, and go to state 1
     STRING  shift, and go to state 2
     INT     shift, and go to state 3
     LPAREN  shift, and go to state 4
-    LBRACK  shift, and go to state 61
+    LBRACK  shift, and go to state 56
     LBRACE  shift, and go to state 6
     MINUS   shift, and go to state 7
     IF      shift, and go to state 9
@@ -1469,9 +1316,299 @@ State 88
     BREAK   shift, and go to state 13
     NIL     shift, and go to state 14
 
-    LBRACK    [reduce using rule 95 (empty)]
-    MINUS     [reduce using rule 95 (empty)]
-    $default  reduce using rule 95 (empty)
+    LBRACK    [reduce using rule 99 (empty)]
+    MINUS     [reduce using rule 99 (empty)]
+    $default  reduce using rule 99 (empty)
+
+    exp             转到状态 109
+    lvalue          转到状态 25
+    no_value_exp    转到状态 26
+    nil             转到状态 27
+    list            转到状态 28
+    int             转到状态 29
+    string          转到状态 30
+    function        转到状态 31
+    operation       转到状态 32
+    exp_operation   转到状态 33
+    bool_operation  转到状态 34
+    compare         转到状态 35
+    exp_compare     转到状态 36
+    string_compare  转到状态 37
+    assign          转到状态 38
+    if_then         转到状态 39
+    if_then_else    转到状态 40
+    while_do        转到状态 41
+    for_to_do       转到状态 42
+    break           转到状态 43
+    let_in_end      转到状态 44
+    parentheses     转到状态 45
+    empty           转到状态 46
+
+
+State 84
+
+   64 bool_operation: exp bool_op . exp
+
+    ID      shift, and go to state 1
+    STRING  shift, and go to state 2
+    INT     shift, and go to state 3
+    LPAREN  shift, and go to state 4
+    LBRACK  shift, and go to state 56
+    LBRACE  shift, and go to state 6
+    MINUS   shift, and go to state 7
+    IF      shift, and go to state 9
+    WHILE   shift, and go to state 10
+    FOR     shift, and go to state 11
+    LET     shift, and go to state 12
+    BREAK   shift, and go to state 13
+    NIL     shift, and go to state 14
+
+    LBRACK    [reduce using rule 99 (empty)]
+    MINUS     [reduce using rule 99 (empty)]
+    $default  reduce using rule 99 (empty)
+
+    exp             转到状态 110
+    lvalue          转到状态 25
+    no_value_exp    转到状态 26
+    nil             转到状态 27
+    list            转到状态 28
+    int             转到状态 29
+    string          转到状态 30
+    function        转到状态 31
+    operation       转到状态 32
+    exp_operation   转到状态 33
+    bool_operation  转到状态 34
+    compare         转到状态 35
+    exp_compare     转到状态 36
+    string_compare  转到状态 37
+    assign          转到状态 38
+    if_then         转到状态 39
+    if_then_else    转到状态 40
+    while_do        转到状态 41
+    for_to_do       转到状态 42
+    break           转到状态 43
+    let_in_end      转到状态 44
+    parentheses     转到状态 45
+    empty           转到状态 46
+
+
+State 85
+
+   69 exp_compare: exp compare_op . exp
+
+    ID      shift, and go to state 1
+    STRING  shift, and go to state 2
+    INT     shift, and go to state 3
+    LPAREN  shift, and go to state 4
+    LBRACK  shift, and go to state 56
+    LBRACE  shift, and go to state 6
+    MINUS   shift, and go to state 7
+    IF      shift, and go to state 9
+    WHILE   shift, and go to state 10
+    FOR     shift, and go to state 11
+    LET     shift, and go to state 12
+    BREAK   shift, and go to state 13
+    NIL     shift, and go to state 14
+
+    LBRACK    [reduce using rule 99 (empty)]
+    MINUS     [reduce using rule 99 (empty)]
+    $default  reduce using rule 99 (empty)
+
+    exp             转到状态 111
+    lvalue          转到状态 25
+    no_value_exp    转到状态 26
+    nil             转到状态 27
+    list            转到状态 28
+    int             转到状态 29
+    string          转到状态 30
+    function        转到状态 31
+    operation       转到状态 32
+    exp_operation   转到状态 33
+    bool_operation  转到状态 34
+    compare         转到状态 35
+    exp_compare     转到状态 36
+    string_compare  转到状态 37
+    assign          转到状态 38
+    if_then         转到状态 39
+    if_then_else    转到状态 40
+    while_do        转到状态 41
+    for_to_do       转到状态 42
+    break           转到状态 43
+    let_in_end      转到状态 44
+    parentheses     转到状态 45
+    empty           转到状态 46
+
+
+State 86
+
+   41 lvalue: lvalue LBRACK . exp RBRACK
+
+    ID      shift, and go to state 1
+    STRING  shift, and go to state 2
+    INT     shift, and go to state 3
+    LPAREN  shift, and go to state 4
+    LBRACK  shift, and go to state 56
+    LBRACE  shift, and go to state 6
+    MINUS   shift, and go to state 7
+    IF      shift, and go to state 9
+    WHILE   shift, and go to state 10
+    FOR     shift, and go to state 11
+    LET     shift, and go to state 12
+    BREAK   shift, and go to state 13
+    NIL     shift, and go to state 14
+
+    MINUS     [reduce using rule 99 (empty)]
+    $default  reduce using rule 99 (empty)
+
+    exp             转到状态 112
+    lvalue          转到状态 25
+    no_value_exp    转到状态 26
+    nil             转到状态 27
+    list            转到状态 28
+    int             转到状态 29
+    string          转到状态 30
+    function        转到状态 31
+    operation       转到状态 32
+    exp_operation   转到状态 33
+    bool_operation  转到状态 34
+    compare         转到状态 35
+    exp_compare     转到状态 36
+    string_compare  转到状态 37
+    assign          转到状态 38
+    if_then         转到状态 39
+    if_then_else    转到状态 40
+    while_do        转到状态 41
+    for_to_do       转到状态 42
+    break           转到状态 43
+    let_in_end      转到状态 44
+    parentheses     转到状态 45
+    empty           转到状态 46
+
+
+State 87
+
+   40 lvalue: lvalue DOT . ID
+
+    ID  shift, and go to state 113
+
+
+State 88
+
+   88 assign: lvalue ASSIGN . exp
+
+    ID      shift, and go to state 1
+    STRING  shift, and go to state 2
+    INT     shift, and go to state 3
+    LPAREN  shift, and go to state 4
+    LBRACK  shift, and go to state 56
+    LBRACE  shift, and go to state 6
+    MINUS   shift, and go to state 7
+    IF      shift, and go to state 9
+    WHILE   shift, and go to state 10
+    FOR     shift, and go to state 11
+    LET     shift, and go to state 12
+    BREAK   shift, and go to state 13
+    NIL     shift, and go to state 14
+
+    LBRACK    [reduce using rule 99 (empty)]
+    MINUS     [reduce using rule 99 (empty)]
+    $default  reduce using rule 99 (empty)
+
+    exp             转到状态 114
+    lvalue          转到状态 25
+    no_value_exp    转到状态 26
+    nil             转到状态 27
+    list            转到状态 28
+    int             转到状态 29
+    string          转到状态 30
+    function        转到状态 31
+    operation       转到状态 32
+    exp_operation   转到状态 33
+    bool_operation  转到状态 34
+    compare         转到状态 35
+    exp_compare     转到状态 36
+    string_compare  转到状态 37
+    assign          转到状态 38
+    if_then         转到状态 39
+    if_then_else    转到状态 40
+    while_do        转到状态 41
+    for_to_do       转到状态 42
+    break           转到状态 43
+    let_in_end      转到状态 44
+    parentheses     转到状态 45
+    empty           转到状态 46
+
+
+State 89
+
+   53 function: ID LPAREN RPAREN .
+
+    $default  reduce using rule 53 (function)
+
+
+State 90
+
+   56 function_exps: exp .
+   59 exp_operation: exp . exp_op exp
+   64 bool_operation: exp . bool_op exp
+   69 exp_compare: exp . compare_op exp
+
+    PLUS    shift, and go to state 77
+    MINUS   shift, and go to state 78
+    TIMES   shift, and go to state 79
+    DIVIDE  shift, and go to state 80
+    EQ      shift, and go to state 48
+    NEQ     shift, and go to state 49
+    LT      shift, and go to state 50
+    LE      shift, and go to state 51
+    GT      shift, and go to state 52
+    GE      shift, and go to state 53
+    AND     shift, and go to state 81
+    OR      shift, and go to state 82
+
+    $default  reduce using rule 56 (function_exps)
+
+    exp_op      转到状态 83
+    bool_op     转到状态 84
+    compare_op  转到状态 85
+
+
+State 91
+
+   54 function: ID LPAREN function_exps . RPAREN
+   55 function_exps: function_exps . COMMA exp
+
+    COMMA   shift, and go to state 115
+    RPAREN  shift, and go to state 116
+
+
+State 92
+
+   70 string_compare: STRING compare_op STRING .
+
+    $default  reduce using rule 70 (string_compare)
+
+
+State 93
+
+   49 list_exps: exp SEMICOLON . exp
+
+    ID      shift, and go to state 1
+    STRING  shift, and go to state 2
+    INT     shift, and go to state 3
+    LPAREN  shift, and go to state 4
+    LBRACK  shift, and go to state 56
+    LBRACE  shift, and go to state 6
+    MINUS   shift, and go to state 7
+    IF      shift, and go to state 9
+    WHILE   shift, and go to state 10
+    FOR     shift, and go to state 11
+    LET     shift, and go to state 12
+    BREAK   shift, and go to state 13
+    NIL     shift, and go to state 14
+
+    MINUS     [reduce using rule 99 (empty)]
+    $default  reduce using rule 99 (empty)
 
     exp             转到状态 117
     lvalue          转到状态 25
@@ -1487,29 +1624,33 @@ State 88
     compare         转到状态 35
     exp_compare     转到状态 36
     string_compare  转到状态 37
-    new             转到状态 38
-    type_new        转到状态 39
-    array_new       转到状态 40
-    assign          转到状态 41
-    if_then         转到状态 42
-    if_then_else    转到状态 43
-    while_do        转到状态 44
-    for_to_do       转到状态 45
-    break           转到状态 46
-    let_in_end      转到状态 47
-    parentheses     转到状态 48
-    empty           转到状态 49
+    assign          转到状态 38
+    if_then         转到状态 39
+    if_then_else    转到状态 40
+    while_do        转到状态 41
+    for_to_do       转到状态 42
+    break           转到状态 43
+    let_in_end      转到状态 44
+    parentheses     转到状态 45
+    empty           转到状态 46
 
 
-State 89
+State 94
 
-   65 bool_operation: exp bool_op . exp
+   98 parentheses: LPAREN exp RPAREN .
+
+    $default  reduce using rule 98 (parentheses)
+
+
+State 95
+
+   48 list_exps: list_exps SEMICOLON . exp
 
     ID      shift, and go to state 1
     STRING  shift, and go to state 2
     INT     shift, and go to state 3
     LPAREN  shift, and go to state 4
-    LBRACK  shift, and go to state 61
+    LBRACK  shift, and go to state 56
     LBRACE  shift, and go to state 6
     MINUS   shift, and go to state 7
     IF      shift, and go to state 9
@@ -1519,9 +1660,8 @@ State 89
     BREAK   shift, and go to state 13
     NIL     shift, and go to state 14
 
-    LBRACK    [reduce using rule 95 (empty)]
-    MINUS     [reduce using rule 95 (empty)]
-    $default  reduce using rule 95 (empty)
+    MINUS     [reduce using rule 99 (empty)]
+    $default  reduce using rule 99 (empty)
 
     exp             转到状态 118
     lvalue          转到状态 25
@@ -1537,29 +1677,67 @@ State 89
     compare         转到状态 35
     exp_compare     转到状态 36
     string_compare  转到状态 37
-    new             转到状态 38
-    type_new        转到状态 39
-    array_new       转到状态 40
-    assign          转到状态 41
-    if_then         转到状态 42
-    if_then_else    转到状态 43
-    while_do        转到状态 44
-    for_to_do       转到状态 45
-    break           转到状态 46
-    let_in_end      转到状态 47
-    parentheses     转到状态 48
-    empty           转到状态 49
+    assign          转到状态 38
+    if_then         转到状态 39
+    if_then_else    转到状态 40
+    while_do        转到状态 41
+    for_to_do       转到状态 42
+    break           转到状态 43
+    let_in_end      转到状态 44
+    parentheses     转到状态 45
+    empty           转到状态 46
 
 
-State 90
+State 96
 
-   70 exp_compare: exp compare_op . exp
+   47 list: LPAREN list_exps RPAREN .
+
+    $default  reduce using rule 47 (list)
+
+
+State 97
+
+   16 tyfield: ID COLON . ID
+
+    ID  shift, and go to state 119
+
+
+State 98
+
+   14 tyfields: tyfields COMMA . tyfield
+
+    ID  shift, and go to state 59
+
+    $default  reduce using rule 99 (empty)
+
+    tyfield  转到状态 120
+    empty    转到状态 63
+
+
+State 99
+
+    9 tydec: LBRACK tyfields RBRACK .
+
+    $default  reduce using rule 9 (tydec)
+
+
+State 100
+
+   10 tydec: ARRAY OF ID .
+
+    $default  reduce using rule 10 (tydec)
+
+
+State 101
+
+   89 if_then: IF exp THEN . exp
+   90 if_then_else: IF exp THEN . exp ELSE exp
 
     ID      shift, and go to state 1
     STRING  shift, and go to state 2
     INT     shift, and go to state 3
     LPAREN  shift, and go to state 4
-    LBRACK  shift, and go to state 61
+    LBRACK  shift, and go to state 56
     LBRACE  shift, and go to state 6
     MINUS   shift, and go to state 7
     IF      shift, and go to state 9
@@ -1569,11 +1747,11 @@ State 90
     BREAK   shift, and go to state 13
     NIL     shift, and go to state 14
 
-    LBRACK    [reduce using rule 95 (empty)]
-    MINUS     [reduce using rule 95 (empty)]
-    $default  reduce using rule 95 (empty)
+    LBRACK    [reduce using rule 99 (empty)]
+    MINUS     [reduce using rule 99 (empty)]
+    $default  reduce using rule 99 (empty)
 
-    exp             转到状态 119
+    exp             转到状态 121
     lvalue          转到状态 25
     no_value_exp    转到状态 26
     nil             转到状态 27
@@ -1587,29 +1765,26 @@ State 90
     compare         转到状态 35
     exp_compare     转到状态 36
     string_compare  转到状态 37
-    new             转到状态 38
-    type_new        转到状态 39
-    array_new       转到状态 40
-    assign          转到状态 41
-    if_then         转到状态 42
-    if_then_else    转到状态 43
-    while_do        转到状态 44
-    for_to_do       转到状态 45
-    break           转到状态 46
-    let_in_end      转到状态 47
-    parentheses     转到状态 48
-    empty           转到状态 49
+    assign          转到状态 38
+    if_then         转到状态 39
+    if_then_else    转到状态 40
+    while_do        转到状态 41
+    for_to_do       转到状态 42
+    break           转到状态 43
+    let_in_end      转到状态 44
+    parentheses     转到状态 45
+    empty           转到状态 46
 
 
-State 91
+State 102
 
-   42 lvalue: lvalue LBRACK . exp RBRACK
+   91 while_do: WHILE exp DO . exp
 
     ID      shift, and go to state 1
     STRING  shift, and go to state 2
     INT     shift, and go to state 3
     LPAREN  shift, and go to state 4
-    LBRACK  shift, and go to state 61
+    LBRACK  shift, and go to state 56
     LBRACE  shift, and go to state 6
     MINUS   shift, and go to state 7
     IF      shift, and go to state 9
@@ -1619,65 +1794,9 @@ State 91
     BREAK   shift, and go to state 13
     NIL     shift, and go to state 14
 
-    MINUS     [reduce using rule 95 (empty)]
-    $default  reduce using rule 95 (empty)
-
-    exp             转到状态 120
-    lvalue          转到状态 25
-    no_value_exp    转到状态 26
-    nil             转到状态 27
-    list            转到状态 28
-    int             转到状态 29
-    string          转到状态 30
-    function        转到状态 31
-    operation       转到状态 32
-    exp_operation   转到状态 33
-    bool_operation  转到状态 34
-    compare         转到状态 35
-    exp_compare     转到状态 36
-    string_compare  转到状态 37
-    new             转到状态 38
-    type_new        转到状态 39
-    array_new       转到状态 40
-    assign          转到状态 41
-    if_then         转到状态 42
-    if_then_else    转到状态 43
-    while_do        转到状态 44
-    for_to_do       转到状态 45
-    break           转到状态 46
-    let_in_end      转到状态 47
-    parentheses     转到状态 48
-    empty           转到状态 49
-
-
-State 92
-
-   41 lvalue: lvalue DOT . ID
-
-    ID  shift, and go to state 121
-
-
-State 93
-
-   84 assign: lvalue ASSIGN . exp
-
-    ID      shift, and go to state 1
-    STRING  shift, and go to state 2
-    INT     shift, and go to state 3
-    LPAREN  shift, and go to state 4
-    LBRACK  shift, and go to state 61
-    LBRACE  shift, and go to state 6
-    MINUS   shift, and go to state 7
-    IF      shift, and go to state 9
-    WHILE   shift, and go to state 10
-    FOR     shift, and go to state 11
-    LET     shift, and go to state 12
-    BREAK   shift, and go to state 13
-    NIL     shift, and go to state 14
-
-    LBRACK    [reduce using rule 95 (empty)]
-    MINUS     [reduce using rule 95 (empty)]
-    $default  reduce using rule 95 (empty)
+    LBRACK    [reduce using rule 99 (empty)]
+    MINUS     [reduce using rule 99 (empty)]
+    $default  reduce using rule 99 (empty)
 
     exp             转到状态 122
     lvalue          转到状态 25
@@ -1693,177 +1812,26 @@ State 93
     compare         转到状态 35
     exp_compare     转到状态 36
     string_compare  转到状态 37
-    new             转到状态 38
-    type_new        转到状态 39
-    array_new       转到状态 40
-    assign          转到状态 41
-    if_then         转到状态 42
-    if_then_else    转到状态 43
-    while_do        转到状态 44
-    for_to_do       转到状态 45
-    break           转到状态 46
-    let_in_end      转到状态 47
-    parentheses     转到状态 48
-    empty           转到状态 49
-
-
-State 94
-
-   54 function: ID LPAREN RPAREN .
-
-    $default  reduce using rule 54 (function)
-
-
-State 95
-
-   57 function_exps: exp .
-   60 exp_operation: exp . exp_op exp
-   65 bool_operation: exp . bool_op exp
-   70 exp_compare: exp . compare_op exp
-
-    PLUS    shift, and go to state 82
-    MINUS   shift, and go to state 83
-    TIMES   shift, and go to state 84
-    DIVIDE  shift, and go to state 85
-    EQ      shift, and go to state 53
-    NEQ     shift, and go to state 54
-    LT      shift, and go to state 55
-    LE      shift, and go to state 56
-    GT      shift, and go to state 57
-    GE      shift, and go to state 58
-    AND     shift, and go to state 86
-    OR      shift, and go to state 87
-
-    $default  reduce using rule 57 (function_exps)
-
-    exp_op      转到状态 88
-    bool_op     转到状态 89
-    compare_op  转到状态 90
-
-
-State 96
-
-   55 function: ID LPAREN function_exps . RPAREN
-   56 function_exps: function_exps . COMMA exp
-
-    COMMA   shift, and go to state 123
-    RPAREN  shift, and go to state 124
-
-
-State 97
-
-   60 exp_operation: exp . exp_op exp
-   65 bool_operation: exp . bool_op exp
-   70 exp_compare: exp . compare_op exp
-   83 array_new: ID LBRACK exp . RBRACK OF exp
-
-    RBRACK  shift, and go to state 125
-    PLUS    shift, and go to state 82
-    MINUS   shift, and go to state 83
-    TIMES   shift, and go to state 84
-    DIVIDE  shift, and go to state 85
-    EQ      shift, and go to state 53
-    NEQ     shift, and go to state 54
-    LT      shift, and go to state 55
-    LE      shift, and go to state 56
-    GT      shift, and go to state 57
-    GE      shift, and go to state 58
-    AND     shift, and go to state 86
-    OR      shift, and go to state 87
-
-    exp_op      转到状态 88
-    bool_op     转到状态 89
-    compare_op  转到状态 90
-
-
-State 98
-
-   82 type_new_exps: ID . EQ exp
-
-    EQ  shift, and go to state 126
-
-
-State 99
-
-   80 type_new: ID LBRACE type_new_exps . RBRACE
-   81 type_new_exps: type_new_exps . COMMA ID EQ exp
-
-    COMMA   shift, and go to state 127
-    RBRACE  shift, and go to state 128
-
-
-State 100
-
-   71 string_compare: STRING compare_op STRING .
-
-    $default  reduce using rule 71 (string_compare)
-
-
-State 101
-
-   50 list_exps: exp SEMICOLON . exp
-
-    ID      shift, and go to state 1
-    STRING  shift, and go to state 2
-    INT     shift, and go to state 3
-    LPAREN  shift, and go to state 4
-    LBRACK  shift, and go to state 61
-    LBRACE  shift, and go to state 6
-    MINUS   shift, and go to state 7
-    IF      shift, and go to state 9
-    WHILE   shift, and go to state 10
-    FOR     shift, and go to state 11
-    LET     shift, and go to state 12
-    BREAK   shift, and go to state 13
-    NIL     shift, and go to state 14
-
-    MINUS     [reduce using rule 95 (empty)]
-    $default  reduce using rule 95 (empty)
-
-    exp             转到状态 129
-    lvalue          转到状态 25
-    no_value_exp    转到状态 26
-    nil             转到状态 27
-    list            转到状态 28
-    int             转到状态 29
-    string          转到状态 30
-    function        转到状态 31
-    operation       转到状态 32
-    exp_operation   转到状态 33
-    bool_operation  转到状态 34
-    compare         转到状态 35
-    exp_compare     转到状态 36
-    string_compare  转到状态 37
-    new             转到状态 38
-    type_new        转到状态 39
-    array_new       转到状态 40
-    assign          转到状态 41
-    if_then         转到状态 42
-    if_then_else    转到状态 43
-    while_do        转到状态 44
-    for_to_do       转到状态 45
-    break           转到状态 46
-    let_in_end      转到状态 47
-    parentheses     转到状态 48
-    empty           转到状态 49
-
-
-State 102
-
-   94 parentheses: LPAREN exp RPAREN .
-
-    $default  reduce using rule 94 (parentheses)
+    assign          转到状态 38
+    if_then         转到状态 39
+    if_then_else    转到状态 40
+    while_do        转到状态 41
+    for_to_do       转到状态 42
+    break           转到状态 43
+    let_in_end      转到状态 44
+    parentheses     转到状态 45
+    empty           转到状态 46
 
 
 State 103
 
-   49 list_exps: list_exps SEMICOLON . exp
+   92 for_to_do: FOR ID ASSIGN . exp TO exp DO exp
 
     ID      shift, and go to state 1
     STRING  shift, and go to state 2
     INT     shift, and go to state 3
     LPAREN  shift, and go to state 4
-    LBRACK  shift, and go to state 61
+    LBRACK  shift, and go to state 56
     LBRACE  shift, and go to state 6
     MINUS   shift, and go to state 7
     IF      shift, and go to state 9
@@ -1873,10 +1841,10 @@ State 103
     BREAK   shift, and go to state 13
     NIL     shift, and go to state 14
 
-    MINUS     [reduce using rule 95 (empty)]
-    $default  reduce using rule 95 (empty)
+    MINUS     [reduce using rule 99 (empty)]
+    $default  reduce using rule 99 (empty)
 
-    exp             转到状态 130
+    exp             转到状态 123
     lvalue          转到状态 25
     no_value_exp    转到状态 26
     nil             转到状态 27
@@ -1890,293 +1858,317 @@ State 103
     compare         转到状态 35
     exp_compare     转到状态 36
     string_compare  转到状态 37
-    new             转到状态 38
-    type_new        转到状态 39
-    array_new       转到状态 40
-    assign          转到状态 41
-    if_then         转到状态 42
-    if_then_else    转到状态 43
-    while_do        转到状态 44
-    for_to_do       转到状态 45
-    break           转到状态 46
-    let_in_end      转到状态 47
-    parentheses     转到状态 48
-    empty           转到状态 49
+    assign          转到状态 38
+    if_then         转到状态 39
+    if_then_else    转到状态 40
+    while_do        转到状态 41
+    for_to_do       转到状态 42
+    break           转到状态 43
+    let_in_end      转到状态 44
+    parentheses     转到状态 45
+    empty           转到状态 46
 
 
 State 104
 
-   48 list: LPAREN list_exps RPAREN .
+   94 let_in_end: LET decs IN . expseq END
+   95           | LET decs IN . END
 
-    $default  reduce using rule 48 (list)
+    ID      shift, and go to state 1
+    STRING  shift, and go to state 2
+    INT     shift, and go to state 3
+    LPAREN  shift, and go to state 4
+    LBRACK  shift, and go to state 56
+    LBRACE  shift, and go to state 6
+    MINUS   shift, and go to state 7
+    IF      shift, and go to state 9
+    WHILE   shift, and go to state 10
+    FOR     shift, and go to state 11
+    LET     shift, and go to state 12
+    END     shift, and go to state 124
+    BREAK   shift, and go to state 13
+    NIL     shift, and go to state 14
+
+    MINUS     [reduce using rule 99 (empty)]
+    END       [reduce using rule 99 (empty)]
+    $default  reduce using rule 99 (empty)
+
+    exp             转到状态 125
+    lvalue          转到状态 25
+    no_value_exp    转到状态 26
+    nil             转到状态 27
+    list            转到状态 28
+    int             转到状态 29
+    string          转到状态 30
+    function        转到状态 31
+    operation       转到状态 32
+    exp_operation   转到状态 33
+    bool_operation  转到状态 34
+    compare         转到状态 35
+    exp_compare     转到状态 36
+    string_compare  转到状态 37
+    assign          转到状态 38
+    if_then         转到状态 39
+    if_then_else    转到状态 40
+    while_do        转到状态 41
+    for_to_do       转到状态 42
+    break           转到状态 43
+    let_in_end      转到状态 44
+    expseq          转到状态 126
+    parentheses     转到状态 45
+    empty           转到状态 46
 
 
 State 105
 
-   16 tyfield: ID COLON . ID
+   20 fundec: FUNCTION ID LPAREN . tyfields RPAREN EQ exp
+   21       | FUNCTION ID LPAREN . tyfields RPAREN COLON ID EQ exp
 
-    ID  shift, and go to state 131
+    ID  shift, and go to state 59
+
+    $default  reduce using rule 99 (empty)
+
+    tyfields  转到状态 127
+    tyfield   转到状态 62
+    empty     转到状态 63
 
 
 State 106
 
-   14 tyfields: tyfields COMMA . tyfield
+   19 vardec: VAR ID COLON . ID ASSIGN new
 
-    ID  shift, and go to state 64
-
-    $default  reduce using rule 95 (empty)
-
-    tyfield  转到状态 132
-    empty    转到状态 68
+    ID  shift, and go to state 128
 
 
 State 107
 
-    9 tydec: LBRACK tyfields RBRACK .
+   18 vardec: VAR ID ASSIGN . new
 
-    $default  reduce using rule 9 (tydec)
+    ID      shift, and go to state 129
+    STRING  shift, and go to state 130
+    INT     shift, and go to state 3
+    LPAREN  shift, and go to state 131
+    MINUS   shift, and go to state 7
+    NIL     shift, and go to state 14
+
+    nil          转到状态 132
+    int          转到状态 133
+    string       转到状态 134
+    new          转到状态 135
+    type_new     转到状态 136
+    array_new    转到状态 137
+    parentheses  转到状态 138
 
 
 State 108
 
-   10 tydec: ARRAY OF ID .
+    8 tydec: TYPE ID EQ . ty
 
-    $default  reduce using rule 10 (tydec)
+    ID      shift, and go to state 139
+    LBRACE  shift, and go to state 140
+    ARRAY   shift, and go to state 141
+
+    ty  转到状态 142
 
 
 State 109
 
-   85 if_then: IF exp THEN . exp
-   86 if_then_else: IF exp THEN . exp ELSE exp
+   59 exp_operation: exp . exp_op exp
+   59              | exp exp_op exp .
+   64 bool_operation: exp . bool_op exp
+   69 exp_compare: exp . compare_op exp
 
-    ID      shift, and go to state 1
-    STRING  shift, and go to state 2
-    INT     shift, and go to state 3
-    LPAREN  shift, and go to state 4
-    LBRACK  shift, and go to state 61
-    LBRACE  shift, and go to state 6
-    MINUS   shift, and go to state 7
-    IF      shift, and go to state 9
-    WHILE   shift, and go to state 10
-    FOR     shift, and go to state 11
-    LET     shift, and go to state 12
-    BREAK   shift, and go to state 13
-    NIL     shift, and go to state 14
+    PLUS    shift, and go to state 77
+    MINUS   shift, and go to state 78
+    TIMES   shift, and go to state 79
+    DIVIDE  shift, and go to state 80
+    EQ      shift, and go to state 48
+    NEQ     shift, and go to state 49
+    LT      shift, and go to state 50
+    LE      shift, and go to state 51
+    GT      shift, and go to state 52
+    GE      shift, and go to state 53
+    AND     shift, and go to state 81
+    OR      shift, and go to state 82
 
-    LBRACK    [reduce using rule 95 (empty)]
-    MINUS     [reduce using rule 95 (empty)]
-    $default  reduce using rule 95 (empty)
+    PLUS      [reduce using rule 59 (exp_operation)]
+    MINUS     [reduce using rule 59 (exp_operation)]
+    TIMES     [reduce using rule 59 (exp_operation)]
+    DIVIDE    [reduce using rule 59 (exp_operation)]
+    EQ        [reduce using rule 59 (exp_operation)]
+    NEQ       [reduce using rule 59 (exp_operation)]
+    LT        [reduce using rule 59 (exp_operation)]
+    LE        [reduce using rule 59 (exp_operation)]
+    GT        [reduce using rule 59 (exp_operation)]
+    GE        [reduce using rule 59 (exp_operation)]
+    AND       [reduce using rule 59 (exp_operation)]
+    OR        [reduce using rule 59 (exp_operation)]
+    $default  reduce using rule 59 (exp_operation)
 
-    exp             转到状态 133
-    lvalue          转到状态 25
-    no_value_exp    转到状态 26
-    nil             转到状态 27
-    list            转到状态 28
-    int             转到状态 29
-    string          转到状态 30
-    function        转到状态 31
-    operation       转到状态 32
-    exp_operation   转到状态 33
-    bool_operation  转到状态 34
-    compare         转到状态 35
-    exp_compare     转到状态 36
-    string_compare  转到状态 37
-    new             转到状态 38
-    type_new        转到状态 39
-    array_new       转到状态 40
-    assign          转到状态 41
-    if_then         转到状态 42
-    if_then_else    转到状态 43
-    while_do        转到状态 44
-    for_to_do       转到状态 45
-    break           转到状态 46
-    let_in_end      转到状态 47
-    parentheses     转到状态 48
-    empty           转到状态 49
+    exp_op      转到状态 83
+    bool_op     转到状态 84
+    compare_op  转到状态 85
 
 
 State 110
 
-   87 while_do: WHILE exp DO . exp
+   59 exp_operation: exp . exp_op exp
+   64 bool_operation: exp . bool_op exp
+   64               | exp bool_op exp .
+   69 exp_compare: exp . compare_op exp
 
-    ID      shift, and go to state 1
-    STRING  shift, and go to state 2
-    INT     shift, and go to state 3
-    LPAREN  shift, and go to state 4
-    LBRACK  shift, and go to state 61
-    LBRACE  shift, and go to state 6
-    MINUS   shift, and go to state 7
-    IF      shift, and go to state 9
-    WHILE   shift, and go to state 10
-    FOR     shift, and go to state 11
-    LET     shift, and go to state 12
-    BREAK   shift, and go to state 13
-    NIL     shift, and go to state 14
+    PLUS    shift, and go to state 77
+    MINUS   shift, and go to state 78
+    TIMES   shift, and go to state 79
+    DIVIDE  shift, and go to state 80
+    EQ      shift, and go to state 48
+    NEQ     shift, and go to state 49
+    LT      shift, and go to state 50
+    LE      shift, and go to state 51
+    GT      shift, and go to state 52
+    GE      shift, and go to state 53
+    AND     shift, and go to state 81
+    OR      shift, and go to state 82
 
-    LBRACK    [reduce using rule 95 (empty)]
-    MINUS     [reduce using rule 95 (empty)]
-    $default  reduce using rule 95 (empty)
+    PLUS      [reduce using rule 64 (bool_operation)]
+    MINUS     [reduce using rule 64 (bool_operation)]
+    TIMES     [reduce using rule 64 (bool_operation)]
+    DIVIDE    [reduce using rule 64 (bool_operation)]
+    EQ        [reduce using rule 64 (bool_operation)]
+    NEQ       [reduce using rule 64 (bool_operation)]
+    LT        [reduce using rule 64 (bool_operation)]
+    LE        [reduce using rule 64 (bool_operation)]
+    GT        [reduce using rule 64 (bool_operation)]
+    GE        [reduce using rule 64 (bool_operation)]
+    AND       [reduce using rule 64 (bool_operation)]
+    OR        [reduce using rule 64 (bool_operation)]
+    $default  reduce using rule 64 (bool_operation)
 
-    exp             转到状态 134
-    lvalue          转到状态 25
-    no_value_exp    转到状态 26
-    nil             转到状态 27
-    list            转到状态 28
-    int             转到状态 29
-    string          转到状态 30
-    function        转到状态 31
-    operation       转到状态 32
-    exp_operation   转到状态 33
-    bool_operation  转到状态 34
-    compare         转到状态 35
-    exp_compare     转到状态 36
-    string_compare  转到状态 37
-    new             转到状态 38
-    type_new        转到状态 39
-    array_new       转到状态 40
-    assign          转到状态 41
-    if_then         转到状态 42
-    if_then_else    转到状态 43
-    while_do        转到状态 44
-    for_to_do       转到状态 45
-    break           转到状态 46
-    let_in_end      转到状态 47
-    parentheses     转到状态 48
-    empty           转到状态 49
+    exp_op      转到状态 83
+    bool_op     转到状态 84
+    compare_op  转到状态 85
 
 
 State 111
 
-   88 for_to_do: FOR exp TO . exp DO exp
+   59 exp_operation: exp . exp_op exp
+   64 bool_operation: exp . bool_op exp
+   69 exp_compare: exp . compare_op exp
+   69            | exp compare_op exp .
 
-    ID      shift, and go to state 1
-    STRING  shift, and go to state 2
-    INT     shift, and go to state 3
-    LPAREN  shift, and go to state 4
-    LBRACK  shift, and go to state 61
-    LBRACE  shift, and go to state 6
-    MINUS   shift, and go to state 7
-    IF      shift, and go to state 9
-    WHILE   shift, and go to state 10
-    FOR     shift, and go to state 11
-    LET     shift, and go to state 12
-    BREAK   shift, and go to state 13
-    NIL     shift, and go to state 14
+    PLUS    shift, and go to state 77
+    MINUS   shift, and go to state 78
+    TIMES   shift, and go to state 79
+    DIVIDE  shift, and go to state 80
+    EQ      shift, and go to state 48
+    NEQ     shift, and go to state 49
+    LT      shift, and go to state 50
+    LE      shift, and go to state 51
+    GT      shift, and go to state 52
+    GE      shift, and go to state 53
+    AND     shift, and go to state 81
+    OR      shift, and go to state 82
 
-    MINUS     [reduce using rule 95 (empty)]
-    $default  reduce using rule 95 (empty)
+    PLUS      [reduce using rule 69 (exp_compare)]
+    MINUS     [reduce using rule 69 (exp_compare)]
+    TIMES     [reduce using rule 69 (exp_compare)]
+    DIVIDE    [reduce using rule 69 (exp_compare)]
+    EQ        [reduce using rule 69 (exp_compare)]
+    NEQ       [reduce using rule 69 (exp_compare)]
+    LT        [reduce using rule 69 (exp_compare)]
+    LE        [reduce using rule 69 (exp_compare)]
+    GT        [reduce using rule 69 (exp_compare)]
+    GE        [reduce using rule 69 (exp_compare)]
+    AND       [reduce using rule 69 (exp_compare)]
+    OR        [reduce using rule 69 (exp_compare)]
+    $default  reduce using rule 69 (exp_compare)
 
-    exp             转到状态 135
-    lvalue          转到状态 25
-    no_value_exp    转到状态 26
-    nil             转到状态 27
-    list            转到状态 28
-    int             转到状态 29
-    string          转到状态 30
-    function        转到状态 31
-    operation       转到状态 32
-    exp_operation   转到状态 33
-    bool_operation  转到状态 34
-    compare         转到状态 35
-    exp_compare     转到状态 36
-    string_compare  转到状态 37
-    new             转到状态 38
-    type_new        转到状态 39
-    array_new       转到状态 40
-    assign          转到状态 41
-    if_then         转到状态 42
-    if_then_else    转到状态 43
-    while_do        转到状态 44
-    for_to_do       转到状态 45
-    break           转到状态 46
-    let_in_end      转到状态 47
-    parentheses     转到状态 48
-    empty           转到状态 49
+    exp_op      转到状态 83
+    bool_op     转到状态 84
+    compare_op  转到状态 85
 
 
 State 112
 
-   90 let_in_end: LET decs IN . expseq END
-   91           | LET decs IN . END
+   41 lvalue: lvalue LBRACK exp . RBRACK
+   59 exp_operation: exp . exp_op exp
+   64 bool_operation: exp . bool_op exp
+   69 exp_compare: exp . compare_op exp
 
-    ID      shift, and go to state 1
-    STRING  shift, and go to state 2
-    INT     shift, and go to state 3
-    LPAREN  shift, and go to state 4
-    LBRACK  shift, and go to state 61
-    LBRACE  shift, and go to state 6
-    MINUS   shift, and go to state 7
-    IF      shift, and go to state 9
-    WHILE   shift, and go to state 10
-    FOR     shift, and go to state 11
-    LET     shift, and go to state 12
-    END     shift, and go to state 136
-    BREAK   shift, and go to state 13
-    NIL     shift, and go to state 14
+    RBRACK  shift, and go to state 143
+    PLUS    shift, and go to state 77
+    MINUS   shift, and go to state 78
+    TIMES   shift, and go to state 79
+    DIVIDE  shift, and go to state 80
+    EQ      shift, and go to state 48
+    NEQ     shift, and go to state 49
+    LT      shift, and go to state 50
+    LE      shift, and go to state 51
+    GT      shift, and go to state 52
+    GE      shift, and go to state 53
+    AND     shift, and go to state 81
+    OR      shift, and go to state 82
 
-    MINUS     [reduce using rule 95 (empty)]
-    END       [reduce using rule 95 (empty)]
-    $default  reduce using rule 95 (empty)
-
-    exp             转到状态 137
-    lvalue          转到状态 25
-    no_value_exp    转到状态 26
-    nil             转到状态 27
-    list            转到状态 28
-    int             转到状态 29
-    string          转到状态 30
-    function        转到状态 31
-    operation       转到状态 32
-    exp_operation   转到状态 33
-    bool_operation  转到状态 34
-    compare         转到状态 35
-    exp_compare     转到状态 36
-    string_compare  转到状态 37
-    new             转到状态 38
-    type_new        转到状态 39
-    array_new       转到状态 40
-    assign          转到状态 41
-    if_then         转到状态 42
-    if_then_else    转到状态 43
-    while_do        转到状态 44
-    for_to_do       转到状态 45
-    break           转到状态 46
-    let_in_end      转到状态 47
-    expseq          转到状态 138
-    parentheses     转到状态 48
-    empty           转到状态 49
+    exp_op      转到状态 83
+    bool_op     转到状态 84
+    compare_op  转到状态 85
 
 
 State 113
 
-   20 fundec: FUNCTION ID LPAREN . tyfields RPAREN EQ exp
-   21       | FUNCTION ID LPAREN . tyfields RPAREN COLON ID EQ exp
+   40 lvalue: lvalue DOT ID .
 
-    ID  shift, and go to state 64
-
-    $default  reduce using rule 95 (empty)
-
-    tyfields  转到状态 139
-    tyfield   转到状态 67
-    empty     转到状态 68
+    $default  reduce using rule 40 (lvalue)
 
 
 State 114
 
-   19 vardec: VAR ID COLON . ID ASSIGN exp
+   59 exp_operation: exp . exp_op exp
+   64 bool_operation: exp . bool_op exp
+   69 exp_compare: exp . compare_op exp
+   88 assign: lvalue ASSIGN exp .
 
-    ID  shift, and go to state 140
+    PLUS    shift, and go to state 77
+    MINUS   shift, and go to state 78
+    TIMES   shift, and go to state 79
+    DIVIDE  shift, and go to state 80
+    EQ      shift, and go to state 48
+    NEQ     shift, and go to state 49
+    LT      shift, and go to state 50
+    LE      shift, and go to state 51
+    GT      shift, and go to state 52
+    GE      shift, and go to state 53
+    AND     shift, and go to state 81
+    OR      shift, and go to state 82
+
+    PLUS      [reduce using rule 88 (assign)]
+    MINUS     [reduce using rule 88 (assign)]
+    TIMES     [reduce using rule 88 (assign)]
+    DIVIDE    [reduce using rule 88 (assign)]
+    EQ        [reduce using rule 88 (assign)]
+    NEQ       [reduce using rule 88 (assign)]
+    LT        [reduce using rule 88 (assign)]
+    LE        [reduce using rule 88 (assign)]
+    GT        [reduce using rule 88 (assign)]
+    GE        [reduce using rule 88 (assign)]
+    AND       [reduce using rule 88 (assign)]
+    OR        [reduce using rule 88 (assign)]
+    $default  reduce using rule 88 (assign)
+
+    exp_op      转到状态 83
+    bool_op     转到状态 84
+    compare_op  转到状态 85
 
 
 State 115
 
-   18 vardec: VAR ID ASSIGN . exp
+   55 function_exps: function_exps COMMA . exp
 
     ID      shift, and go to state 1
     STRING  shift, and go to state 2
     INT     shift, and go to state 3
     LPAREN  shift, and go to state 4
-    LBRACK  shift, and go to state 61
+    LBRACK  shift, and go to state 56
     LBRACE  shift, and go to state 6
     MINUS   shift, and go to state 7
     IF      shift, and go to state 9
@@ -2186,11 +2178,10 @@ State 115
     BREAK   shift, and go to state 13
     NIL     shift, and go to state 14
 
-    LBRACK    [reduce using rule 95 (empty)]
-    MINUS     [reduce using rule 95 (empty)]
-    $default  reduce using rule 95 (empty)
+    MINUS     [reduce using rule 99 (empty)]
+    $default  reduce using rule 99 (empty)
 
-    exp             转到状态 141
+    exp             转到状态 144
     lvalue          转到状态 25
     no_value_exp    转到状态 26
     nil             转到状态 27
@@ -2204,769 +2195,623 @@ State 115
     compare         转到状态 35
     exp_compare     转到状态 36
     string_compare  转到状态 37
-    new             转到状态 38
-    type_new        转到状态 39
-    array_new       转到状态 40
-    assign          转到状态 41
-    if_then         转到状态 42
-    if_then_else    转到状态 43
-    while_do        转到状态 44
-    for_to_do       转到状态 45
-    break           转到状态 46
-    let_in_end      转到状态 47
-    parentheses     转到状态 48
-    empty           转到状态 49
+    assign          转到状态 38
+    if_then         转到状态 39
+    if_then_else    转到状态 40
+    while_do        转到状态 41
+    for_to_do       转到状态 42
+    break           转到状态 43
+    let_in_end      转到状态 44
+    parentheses     转到状态 45
+    empty           转到状态 46
 
 
 State 116
 
-    8 tydec: TYPE ID EQ . ty
+   54 function: ID LPAREN function_exps RPAREN .
 
-    ID      shift, and go to state 142
-    LBRACE  shift, and go to state 143
-    ARRAY   shift, and go to state 144
-
-    ty  转到状态 145
+    $default  reduce using rule 54 (function)
 
 
 State 117
 
-   60 exp_operation: exp . exp_op exp
-   60              | exp exp_op exp .
-   65 bool_operation: exp . bool_op exp
-   70 exp_compare: exp . compare_op exp
+   49 list_exps: exp SEMICOLON exp .
+   59 exp_operation: exp . exp_op exp
+   64 bool_operation: exp . bool_op exp
+   69 exp_compare: exp . compare_op exp
 
-    PLUS    shift, and go to state 82
-    MINUS   shift, and go to state 83
-    TIMES   shift, and go to state 84
-    DIVIDE  shift, and go to state 85
-    EQ      shift, and go to state 53
-    NEQ     shift, and go to state 54
-    LT      shift, and go to state 55
-    LE      shift, and go to state 56
-    GT      shift, and go to state 57
-    GE      shift, and go to state 58
-    AND     shift, and go to state 86
-    OR      shift, and go to state 87
+    PLUS    shift, and go to state 77
+    MINUS   shift, and go to state 78
+    TIMES   shift, and go to state 79
+    DIVIDE  shift, and go to state 80
+    EQ      shift, and go to state 48
+    NEQ     shift, and go to state 49
+    LT      shift, and go to state 50
+    LE      shift, and go to state 51
+    GT      shift, and go to state 52
+    GE      shift, and go to state 53
+    AND     shift, and go to state 81
+    OR      shift, and go to state 82
 
-    PLUS      [reduce using rule 60 (exp_operation)]
-    MINUS     [reduce using rule 60 (exp_operation)]
-    TIMES     [reduce using rule 60 (exp_operation)]
-    DIVIDE    [reduce using rule 60 (exp_operation)]
-    EQ        [reduce using rule 60 (exp_operation)]
-    NEQ       [reduce using rule 60 (exp_operation)]
-    LT        [reduce using rule 60 (exp_operation)]
-    LE        [reduce using rule 60 (exp_operation)]
-    GT        [reduce using rule 60 (exp_operation)]
-    GE        [reduce using rule 60 (exp_operation)]
-    AND       [reduce using rule 60 (exp_operation)]
-    OR        [reduce using rule 60 (exp_operation)]
-    $default  reduce using rule 60 (exp_operation)
+    $default  reduce using rule 49 (list_exps)
 
-    exp_op      转到状态 88
-    bool_op     转到状态 89
-    compare_op  转到状态 90
+    exp_op      转到状态 83
+    bool_op     转到状态 84
+    compare_op  转到状态 85
 
 
 State 118
 
-   60 exp_operation: exp . exp_op exp
-   65 bool_operation: exp . bool_op exp
-   65               | exp bool_op exp .
-   70 exp_compare: exp . compare_op exp
+   48 list_exps: list_exps SEMICOLON exp .
+   59 exp_operation: exp . exp_op exp
+   64 bool_operation: exp . bool_op exp
+   69 exp_compare: exp . compare_op exp
 
-    PLUS    shift, and go to state 82
-    MINUS   shift, and go to state 83
-    TIMES   shift, and go to state 84
-    DIVIDE  shift, and go to state 85
-    EQ      shift, and go to state 53
-    NEQ     shift, and go to state 54
-    LT      shift, and go to state 55
-    LE      shift, and go to state 56
-    GT      shift, and go to state 57
-    GE      shift, and go to state 58
-    AND     shift, and go to state 86
-    OR      shift, and go to state 87
+    PLUS    shift, and go to state 77
+    MINUS   shift, and go to state 78
+    TIMES   shift, and go to state 79
+    DIVIDE  shift, and go to state 80
+    EQ      shift, and go to state 48
+    NEQ     shift, and go to state 49
+    LT      shift, and go to state 50
+    LE      shift, and go to state 51
+    GT      shift, and go to state 52
+    GE      shift, and go to state 53
+    AND     shift, and go to state 81
+    OR      shift, and go to state 82
 
-    PLUS      [reduce using rule 65 (bool_operation)]
-    MINUS     [reduce using rule 65 (bool_operation)]
-    TIMES     [reduce using rule 65 (bool_operation)]
-    DIVIDE    [reduce using rule 65 (bool_operation)]
-    EQ        [reduce using rule 65 (bool_operation)]
-    NEQ       [reduce using rule 65 (bool_operation)]
-    LT        [reduce using rule 65 (bool_operation)]
-    LE        [reduce using rule 65 (bool_operation)]
-    GT        [reduce using rule 65 (bool_operation)]
-    GE        [reduce using rule 65 (bool_operation)]
-    AND       [reduce using rule 65 (bool_operation)]
-    OR        [reduce using rule 65 (bool_operation)]
-    $default  reduce using rule 65 (bool_operation)
+    $default  reduce using rule 48 (list_exps)
 
-    exp_op      转到状态 88
-    bool_op     转到状态 89
-    compare_op  转到状态 90
+    exp_op      转到状态 83
+    bool_op     转到状态 84
+    compare_op  转到状态 85
 
 
 State 119
-
-   60 exp_operation: exp . exp_op exp
-   65 bool_operation: exp . bool_op exp
-   70 exp_compare: exp . compare_op exp
-   70            | exp compare_op exp .
-
-    PLUS    shift, and go to state 82
-    MINUS   shift, and go to state 83
-    TIMES   shift, and go to state 84
-    DIVIDE  shift, and go to state 85
-    EQ      shift, and go to state 53
-    NEQ     shift, and go to state 54
-    LT      shift, and go to state 55
-    LE      shift, and go to state 56
-    GT      shift, and go to state 57
-    GE      shift, and go to state 58
-    AND     shift, and go to state 86
-    OR      shift, and go to state 87
-
-    PLUS      [reduce using rule 70 (exp_compare)]
-    MINUS     [reduce using rule 70 (exp_compare)]
-    TIMES     [reduce using rule 70 (exp_compare)]
-    DIVIDE    [reduce using rule 70 (exp_compare)]
-    EQ        [reduce using rule 70 (exp_compare)]
-    NEQ       [reduce using rule 70 (exp_compare)]
-    LT        [reduce using rule 70 (exp_compare)]
-    LE        [reduce using rule 70 (exp_compare)]
-    GT        [reduce using rule 70 (exp_compare)]
-    GE        [reduce using rule 70 (exp_compare)]
-    AND       [reduce using rule 70 (exp_compare)]
-    OR        [reduce using rule 70 (exp_compare)]
-    $default  reduce using rule 70 (exp_compare)
-
-    exp_op      转到状态 88
-    bool_op     转到状态 89
-    compare_op  转到状态 90
-
-
-State 120
-
-   42 lvalue: lvalue LBRACK exp . RBRACK
-   60 exp_operation: exp . exp_op exp
-   65 bool_operation: exp . bool_op exp
-   70 exp_compare: exp . compare_op exp
-
-    RBRACK  shift, and go to state 146
-    PLUS    shift, and go to state 82
-    MINUS   shift, and go to state 83
-    TIMES   shift, and go to state 84
-    DIVIDE  shift, and go to state 85
-    EQ      shift, and go to state 53
-    NEQ     shift, and go to state 54
-    LT      shift, and go to state 55
-    LE      shift, and go to state 56
-    GT      shift, and go to state 57
-    GE      shift, and go to state 58
-    AND     shift, and go to state 86
-    OR      shift, and go to state 87
-
-    exp_op      转到状态 88
-    bool_op     转到状态 89
-    compare_op  转到状态 90
-
-
-State 121
-
-   41 lvalue: lvalue DOT ID .
-
-    $default  reduce using rule 41 (lvalue)
-
-
-State 122
-
-   60 exp_operation: exp . exp_op exp
-   65 bool_operation: exp . bool_op exp
-   70 exp_compare: exp . compare_op exp
-   84 assign: lvalue ASSIGN exp .
-
-    PLUS    shift, and go to state 82
-    MINUS   shift, and go to state 83
-    TIMES   shift, and go to state 84
-    DIVIDE  shift, and go to state 85
-    EQ      shift, and go to state 53
-    NEQ     shift, and go to state 54
-    LT      shift, and go to state 55
-    LE      shift, and go to state 56
-    GT      shift, and go to state 57
-    GE      shift, and go to state 58
-    AND     shift, and go to state 86
-    OR      shift, and go to state 87
-
-    PLUS      [reduce using rule 84 (assign)]
-    MINUS     [reduce using rule 84 (assign)]
-    TIMES     [reduce using rule 84 (assign)]
-    DIVIDE    [reduce using rule 84 (assign)]
-    EQ        [reduce using rule 84 (assign)]
-    NEQ       [reduce using rule 84 (assign)]
-    LT        [reduce using rule 84 (assign)]
-    LE        [reduce using rule 84 (assign)]
-    GT        [reduce using rule 84 (assign)]
-    GE        [reduce using rule 84 (assign)]
-    AND       [reduce using rule 84 (assign)]
-    OR        [reduce using rule 84 (assign)]
-    $default  reduce using rule 84 (assign)
-
-    exp_op      转到状态 88
-    bool_op     转到状态 89
-    compare_op  转到状态 90
-
-
-State 123
-
-   56 function_exps: function_exps COMMA . exp
-
-    ID      shift, and go to state 1
-    STRING  shift, and go to state 2
-    INT     shift, and go to state 3
-    LPAREN  shift, and go to state 4
-    LBRACK  shift, and go to state 61
-    LBRACE  shift, and go to state 6
-    MINUS   shift, and go to state 7
-    IF      shift, and go to state 9
-    WHILE   shift, and go to state 10
-    FOR     shift, and go to state 11
-    LET     shift, and go to state 12
-    BREAK   shift, and go to state 13
-    NIL     shift, and go to state 14
-
-    MINUS     [reduce using rule 95 (empty)]
-    $default  reduce using rule 95 (empty)
-
-    exp             转到状态 147
-    lvalue          转到状态 25
-    no_value_exp    转到状态 26
-    nil             转到状态 27
-    list            转到状态 28
-    int             转到状态 29
-    string          转到状态 30
-    function        转到状态 31
-    operation       转到状态 32
-    exp_operation   转到状态 33
-    bool_operation  转到状态 34
-    compare         转到状态 35
-    exp_compare     转到状态 36
-    string_compare  转到状态 37
-    new             转到状态 38
-    type_new        转到状态 39
-    array_new       转到状态 40
-    assign          转到状态 41
-    if_then         转到状态 42
-    if_then_else    转到状态 43
-    while_do        转到状态 44
-    for_to_do       转到状态 45
-    break           转到状态 46
-    let_in_end      转到状态 47
-    parentheses     转到状态 48
-    empty           转到状态 49
-
-
-State 124
-
-   55 function: ID LPAREN function_exps RPAREN .
-
-    $default  reduce using rule 55 (function)
-
-
-State 125
-
-   83 array_new: ID LBRACK exp RBRACK . OF exp
-
-    OF  shift, and go to state 148
-
-
-State 126
-
-   82 type_new_exps: ID EQ . exp
-
-    ID      shift, and go to state 1
-    STRING  shift, and go to state 2
-    INT     shift, and go to state 3
-    LPAREN  shift, and go to state 4
-    LBRACK  shift, and go to state 61
-    LBRACE  shift, and go to state 6
-    MINUS   shift, and go to state 7
-    IF      shift, and go to state 9
-    WHILE   shift, and go to state 10
-    FOR     shift, and go to state 11
-    LET     shift, and go to state 12
-    BREAK   shift, and go to state 13
-    NIL     shift, and go to state 14
-
-    MINUS     [reduce using rule 95 (empty)]
-    $default  reduce using rule 95 (empty)
-
-    exp             转到状态 149
-    lvalue          转到状态 25
-    no_value_exp    转到状态 26
-    nil             转到状态 27
-    list            转到状态 28
-    int             转到状态 29
-    string          转到状态 30
-    function        转到状态 31
-    operation       转到状态 32
-    exp_operation   转到状态 33
-    bool_operation  转到状态 34
-    compare         转到状态 35
-    exp_compare     转到状态 36
-    string_compare  转到状态 37
-    new             转到状态 38
-    type_new        转到状态 39
-    array_new       转到状态 40
-    assign          转到状态 41
-    if_then         转到状态 42
-    if_then_else    转到状态 43
-    while_do        转到状态 44
-    for_to_do       转到状态 45
-    break           转到状态 46
-    let_in_end      转到状态 47
-    parentheses     转到状态 48
-    empty           转到状态 49
-
-
-State 127
-
-   81 type_new_exps: type_new_exps COMMA . ID EQ exp
-
-    ID  shift, and go to state 150
-
-
-State 128
-
-   80 type_new: ID LBRACE type_new_exps RBRACE .
-
-    $default  reduce using rule 80 (type_new)
-
-
-State 129
-
-   50 list_exps: exp SEMICOLON exp .
-   60 exp_operation: exp . exp_op exp
-   65 bool_operation: exp . bool_op exp
-   70 exp_compare: exp . compare_op exp
-
-    PLUS    shift, and go to state 82
-    MINUS   shift, and go to state 83
-    TIMES   shift, and go to state 84
-    DIVIDE  shift, and go to state 85
-    EQ      shift, and go to state 53
-    NEQ     shift, and go to state 54
-    LT      shift, and go to state 55
-    LE      shift, and go to state 56
-    GT      shift, and go to state 57
-    GE      shift, and go to state 58
-    AND     shift, and go to state 86
-    OR      shift, and go to state 87
-
-    $default  reduce using rule 50 (list_exps)
-
-    exp_op      转到状态 88
-    bool_op     转到状态 89
-    compare_op  转到状态 90
-
-
-State 130
-
-   49 list_exps: list_exps SEMICOLON exp .
-   60 exp_operation: exp . exp_op exp
-   65 bool_operation: exp . bool_op exp
-   70 exp_compare: exp . compare_op exp
-
-    PLUS    shift, and go to state 82
-    MINUS   shift, and go to state 83
-    TIMES   shift, and go to state 84
-    DIVIDE  shift, and go to state 85
-    EQ      shift, and go to state 53
-    NEQ     shift, and go to state 54
-    LT      shift, and go to state 55
-    LE      shift, and go to state 56
-    GT      shift, and go to state 57
-    GE      shift, and go to state 58
-    AND     shift, and go to state 86
-    OR      shift, and go to state 87
-
-    $default  reduce using rule 49 (list_exps)
-
-    exp_op      转到状态 88
-    bool_op     转到状态 89
-    compare_op  转到状态 90
-
-
-State 131
 
    16 tyfield: ID COLON ID .
 
     $default  reduce using rule 16 (tyfield)
 
 
-State 132
+State 120
 
    14 tyfields: tyfields COMMA tyfield .
 
     $default  reduce using rule 14 (tyfields)
 
 
-State 133
+State 121
 
-   60 exp_operation: exp . exp_op exp
-   65 bool_operation: exp . bool_op exp
-   70 exp_compare: exp . compare_op exp
-   85 if_then: IF exp THEN exp .
-   86 if_then_else: IF exp THEN exp . ELSE exp
+   59 exp_operation: exp . exp_op exp
+   64 bool_operation: exp . bool_op exp
+   69 exp_compare: exp . compare_op exp
+   89 if_then: IF exp THEN exp .
+   90 if_then_else: IF exp THEN exp . ELSE exp
 
-    PLUS    shift, and go to state 82
-    MINUS   shift, and go to state 83
-    TIMES   shift, and go to state 84
-    DIVIDE  shift, and go to state 85
-    EQ      shift, and go to state 53
-    NEQ     shift, and go to state 54
-    LT      shift, and go to state 55
-    LE      shift, and go to state 56
-    GT      shift, and go to state 57
-    GE      shift, and go to state 58
-    AND     shift, and go to state 86
-    OR      shift, and go to state 87
-    ELSE    shift, and go to state 151
+    PLUS    shift, and go to state 77
+    MINUS   shift, and go to state 78
+    TIMES   shift, and go to state 79
+    DIVIDE  shift, and go to state 80
+    EQ      shift, and go to state 48
+    NEQ     shift, and go to state 49
+    LT      shift, and go to state 50
+    LE      shift, and go to state 51
+    GT      shift, and go to state 52
+    GE      shift, and go to state 53
+    AND     shift, and go to state 81
+    OR      shift, and go to state 82
+    ELSE    shift, and go to state 145
 
-    PLUS      [reduce using rule 85 (if_then)]
-    MINUS     [reduce using rule 85 (if_then)]
-    TIMES     [reduce using rule 85 (if_then)]
-    DIVIDE    [reduce using rule 85 (if_then)]
-    EQ        [reduce using rule 85 (if_then)]
-    NEQ       [reduce using rule 85 (if_then)]
-    LT        [reduce using rule 85 (if_then)]
-    LE        [reduce using rule 85 (if_then)]
-    GT        [reduce using rule 85 (if_then)]
-    GE        [reduce using rule 85 (if_then)]
-    AND       [reduce using rule 85 (if_then)]
-    OR        [reduce using rule 85 (if_then)]
-    ELSE      [reduce using rule 85 (if_then)]
-    $default  reduce using rule 85 (if_then)
+    PLUS      [reduce using rule 89 (if_then)]
+    MINUS     [reduce using rule 89 (if_then)]
+    TIMES     [reduce using rule 89 (if_then)]
+    DIVIDE    [reduce using rule 89 (if_then)]
+    EQ        [reduce using rule 89 (if_then)]
+    NEQ       [reduce using rule 89 (if_then)]
+    LT        [reduce using rule 89 (if_then)]
+    LE        [reduce using rule 89 (if_then)]
+    GT        [reduce using rule 89 (if_then)]
+    GE        [reduce using rule 89 (if_then)]
+    AND       [reduce using rule 89 (if_then)]
+    OR        [reduce using rule 89 (if_then)]
+    $default  reduce using rule 89 (if_then)
 
-    exp_op      转到状态 88
-    bool_op     转到状态 89
-    compare_op  转到状态 90
-
-
-State 134
-
-   60 exp_operation: exp . exp_op exp
-   65 bool_operation: exp . bool_op exp
-   70 exp_compare: exp . compare_op exp
-   87 while_do: WHILE exp DO exp .
-
-    PLUS    shift, and go to state 82
-    MINUS   shift, and go to state 83
-    TIMES   shift, and go to state 84
-    DIVIDE  shift, and go to state 85
-    EQ      shift, and go to state 53
-    NEQ     shift, and go to state 54
-    LT      shift, and go to state 55
-    LE      shift, and go to state 56
-    GT      shift, and go to state 57
-    GE      shift, and go to state 58
-    AND     shift, and go to state 86
-    OR      shift, and go to state 87
-
-    PLUS      [reduce using rule 87 (while_do)]
-    MINUS     [reduce using rule 87 (while_do)]
-    TIMES     [reduce using rule 87 (while_do)]
-    DIVIDE    [reduce using rule 87 (while_do)]
-    EQ        [reduce using rule 87 (while_do)]
-    NEQ       [reduce using rule 87 (while_do)]
-    LT        [reduce using rule 87 (while_do)]
-    LE        [reduce using rule 87 (while_do)]
-    GT        [reduce using rule 87 (while_do)]
-    GE        [reduce using rule 87 (while_do)]
-    AND       [reduce using rule 87 (while_do)]
-    OR        [reduce using rule 87 (while_do)]
-    $default  reduce using rule 87 (while_do)
-
-    exp_op      转到状态 88
-    bool_op     转到状态 89
-    compare_op  转到状态 90
+    exp_op      转到状态 83
+    bool_op     转到状态 84
+    compare_op  转到状态 85
 
 
-State 135
+State 122
 
-   60 exp_operation: exp . exp_op exp
-   65 bool_operation: exp . bool_op exp
-   70 exp_compare: exp . compare_op exp
-   88 for_to_do: FOR exp TO exp . DO exp
+   59 exp_operation: exp . exp_op exp
+   64 bool_operation: exp . bool_op exp
+   69 exp_compare: exp . compare_op exp
+   91 while_do: WHILE exp DO exp .
 
-    PLUS    shift, and go to state 82
-    MINUS   shift, and go to state 83
-    TIMES   shift, and go to state 84
-    DIVIDE  shift, and go to state 85
-    EQ      shift, and go to state 53
-    NEQ     shift, and go to state 54
-    LT      shift, and go to state 55
-    LE      shift, and go to state 56
-    GT      shift, and go to state 57
-    GE      shift, and go to state 58
-    AND     shift, and go to state 86
-    OR      shift, and go to state 87
-    DO      shift, and go to state 152
+    PLUS    shift, and go to state 77
+    MINUS   shift, and go to state 78
+    TIMES   shift, and go to state 79
+    DIVIDE  shift, and go to state 80
+    EQ      shift, and go to state 48
+    NEQ     shift, and go to state 49
+    LT      shift, and go to state 50
+    LE      shift, and go to state 51
+    GT      shift, and go to state 52
+    GE      shift, and go to state 53
+    AND     shift, and go to state 81
+    OR      shift, and go to state 82
 
-    exp_op      转到状态 88
-    bool_op     转到状态 89
-    compare_op  转到状态 90
+    PLUS      [reduce using rule 91 (while_do)]
+    MINUS     [reduce using rule 91 (while_do)]
+    TIMES     [reduce using rule 91 (while_do)]
+    DIVIDE    [reduce using rule 91 (while_do)]
+    EQ        [reduce using rule 91 (while_do)]
+    NEQ       [reduce using rule 91 (while_do)]
+    LT        [reduce using rule 91 (while_do)]
+    LE        [reduce using rule 91 (while_do)]
+    GT        [reduce using rule 91 (while_do)]
+    GE        [reduce using rule 91 (while_do)]
+    AND       [reduce using rule 91 (while_do)]
+    OR        [reduce using rule 91 (while_do)]
+    $default  reduce using rule 91 (while_do)
 
-
-State 136
-
-   91 let_in_end: LET decs IN END .
-
-    $default  reduce using rule 91 (let_in_end)
-
-
-State 137
-
-   60 exp_operation: exp . exp_op exp
-   65 bool_operation: exp . bool_op exp
-   70 exp_compare: exp . compare_op exp
-   93 expseq: exp .
-
-    PLUS    shift, and go to state 82
-    MINUS   shift, and go to state 83
-    TIMES   shift, and go to state 84
-    DIVIDE  shift, and go to state 85
-    EQ      shift, and go to state 53
-    NEQ     shift, and go to state 54
-    LT      shift, and go to state 55
-    LE      shift, and go to state 56
-    GT      shift, and go to state 57
-    GE      shift, and go to state 58
-    AND     shift, and go to state 86
-    OR      shift, and go to state 87
-
-    $default  reduce using rule 93 (expseq)
-
-    exp_op      转到状态 88
-    bool_op     转到状态 89
-    compare_op  转到状态 90
+    exp_op      转到状态 83
+    bool_op     转到状态 84
+    compare_op  转到状态 85
 
 
-State 138
+State 123
 
-   90 let_in_end: LET decs IN expseq . END
-   92 expseq: expseq . SEMICOLON exp
+   59 exp_operation: exp . exp_op exp
+   64 bool_operation: exp . bool_op exp
+   69 exp_compare: exp . compare_op exp
+   92 for_to_do: FOR ID ASSIGN exp . TO exp DO exp
 
-    SEMICOLON  shift, and go to state 153
-    END        shift, and go to state 154
+    PLUS    shift, and go to state 77
+    MINUS   shift, and go to state 78
+    TIMES   shift, and go to state 79
+    DIVIDE  shift, and go to state 80
+    EQ      shift, and go to state 48
+    NEQ     shift, and go to state 49
+    LT      shift, and go to state 50
+    LE      shift, and go to state 51
+    GT      shift, and go to state 52
+    GE      shift, and go to state 53
+    AND     shift, and go to state 81
+    OR      shift, and go to state 82
+    TO      shift, and go to state 146
+
+    exp_op      转到状态 83
+    bool_op     转到状态 84
+    compare_op  转到状态 85
 
 
-State 139
+State 124
+
+   95 let_in_end: LET decs IN END .
+
+    $default  reduce using rule 95 (let_in_end)
+
+
+State 125
+
+   59 exp_operation: exp . exp_op exp
+   64 bool_operation: exp . bool_op exp
+   69 exp_compare: exp . compare_op exp
+   97 expseq: exp .
+
+    PLUS    shift, and go to state 77
+    MINUS   shift, and go to state 78
+    TIMES   shift, and go to state 79
+    DIVIDE  shift, and go to state 80
+    EQ      shift, and go to state 48
+    NEQ     shift, and go to state 49
+    LT      shift, and go to state 50
+    LE      shift, and go to state 51
+    GT      shift, and go to state 52
+    GE      shift, and go to state 53
+    AND     shift, and go to state 81
+    OR      shift, and go to state 82
+
+    $default  reduce using rule 97 (expseq)
+
+    exp_op      转到状态 83
+    bool_op     转到状态 84
+    compare_op  转到状态 85
+
+
+State 126
+
+   94 let_in_end: LET decs IN expseq . END
+   96 expseq: expseq . SEMICOLON exp
+
+    SEMICOLON  shift, and go to state 147
+    END        shift, and go to state 148
+
+
+State 127
 
    14 tyfields: tyfields . COMMA tyfield
    20 fundec: FUNCTION ID LPAREN tyfields . RPAREN EQ exp
    21       | FUNCTION ID LPAREN tyfields . RPAREN COLON ID EQ exp
 
-    COMMA   shift, and go to state 106
-    RPAREN  shift, and go to state 155
+    COMMA   shift, and go to state 98
+    RPAREN  shift, and go to state 149
 
 
-State 140
+State 128
 
-   19 vardec: VAR ID COLON ID . ASSIGN exp
+   19 vardec: VAR ID COLON ID . ASSIGN new
 
-    ASSIGN  shift, and go to state 156
+    ASSIGN  shift, and go to state 150
 
 
-State 141
+State 129
 
-   18 vardec: VAR ID ASSIGN exp .
-   60 exp_operation: exp . exp_op exp
-   65 bool_operation: exp . bool_op exp
-   70 exp_compare: exp . compare_op exp
+   83 type_new: ID . LBRACE type_new_exps RBRACE
+   86 array_new: ID . LBRACK exp RBRACK OF exp
+   87          | ID . LBRACK exp RBRACK OF new
 
-    PLUS    shift, and go to state 82
-    MINUS   shift, and go to state 83
-    TIMES   shift, and go to state 84
-    DIVIDE  shift, and go to state 85
-    EQ      shift, and go to state 53
-    NEQ     shift, and go to state 54
-    LT      shift, and go to state 55
-    LE      shift, and go to state 56
-    GT      shift, and go to state 57
-    GE      shift, and go to state 58
-    AND     shift, and go to state 86
-    OR      shift, and go to state 87
+    LBRACK  shift, and go to state 151
+    LBRACE  shift, and go to state 152
+
+
+State 130
+
+   52 string: STRING .
+
+    $default  reduce using rule 52 (string)
+
+
+State 131
+
+   98 parentheses: LPAREN . exp RPAREN
+
+    ID      shift, and go to state 1
+    STRING  shift, and go to state 2
+    INT     shift, and go to state 3
+    LPAREN  shift, and go to state 4
+    LBRACK  shift, and go to state 56
+    LBRACE  shift, and go to state 6
+    MINUS   shift, and go to state 7
+    IF      shift, and go to state 9
+    WHILE   shift, and go to state 10
+    FOR     shift, and go to state 11
+    LET     shift, and go to state 12
+    BREAK   shift, and go to state 13
+    NIL     shift, and go to state 14
+
+    MINUS     [reduce using rule 99 (empty)]
+    $default  reduce using rule 99 (empty)
+
+    exp             转到状态 153
+    lvalue          转到状态 25
+    no_value_exp    转到状态 26
+    nil             转到状态 27
+    list            转到状态 28
+    int             转到状态 29
+    string          转到状态 30
+    function        转到状态 31
+    operation       转到状态 32
+    exp_operation   转到状态 33
+    bool_operation  转到状态 34
+    compare         转到状态 35
+    exp_compare     转到状态 36
+    string_compare  转到状态 37
+    assign          转到状态 38
+    if_then         转到状态 39
+    if_then_else    转到状态 40
+    while_do        转到状态 41
+    for_to_do       转到状态 42
+    break           转到状态 43
+    let_in_end      转到状态 44
+    parentheses     转到状态 45
+    empty           转到状态 46
+
+
+State 132
+
+   82 new: nil .
+
+    $default  reduce using rule 82 (new)
+
+
+State 133
+
+   79 new: int .
+
+    $default  reduce using rule 79 (new)
+
+
+State 134
+
+   80 new: string .
+
+    $default  reduce using rule 80 (new)
+
+
+State 135
+
+   18 vardec: VAR ID ASSIGN new .
 
     $default  reduce using rule 18 (vardec)
 
-    exp_op      转到状态 88
-    bool_op     转到状态 89
-    compare_op  转到状态 90
+
+State 136
+
+   77 new: type_new .
+
+    $default  reduce using rule 77 (new)
 
 
-State 142
+State 137
+
+   78 new: array_new .
+
+    $default  reduce using rule 78 (new)
+
+
+State 138
+
+   81 new: parentheses .
+
+    $default  reduce using rule 81 (new)
+
+
+State 139
 
    11 ty: ID .
 
     $default  reduce using rule 11 (ty)
 
 
-State 143
+State 140
 
    13 ty: LBRACE . tyfields RBRACE
 
-    ID  shift, and go to state 64
+    ID  shift, and go to state 59
 
-    $default  reduce using rule 95 (empty)
+    $default  reduce using rule 99 (empty)
 
-    tyfields  转到状态 157
-    tyfield   转到状态 67
-    empty     转到状态 68
+    tyfields  转到状态 154
+    tyfield   转到状态 62
+    empty     转到状态 63
 
 
-State 144
+State 141
 
    12 ty: ARRAY . OF ID
 
-    OF  shift, and go to state 158
+    OF  shift, and go to state 155
 
 
-State 145
+State 142
 
     8 tydec: TYPE ID EQ ty .
 
     $default  reduce using rule 8 (tydec)
 
 
+State 143
+
+   41 lvalue: lvalue LBRACK exp RBRACK .
+
+    $default  reduce using rule 41 (lvalue)
+
+
+State 144
+
+   55 function_exps: function_exps COMMA exp .
+   59 exp_operation: exp . exp_op exp
+   64 bool_operation: exp . bool_op exp
+   69 exp_compare: exp . compare_op exp
+
+    PLUS    shift, and go to state 77
+    MINUS   shift, and go to state 78
+    TIMES   shift, and go to state 79
+    DIVIDE  shift, and go to state 80
+    EQ      shift, and go to state 48
+    NEQ     shift, and go to state 49
+    LT      shift, and go to state 50
+    LE      shift, and go to state 51
+    GT      shift, and go to state 52
+    GE      shift, and go to state 53
+    AND     shift, and go to state 81
+    OR      shift, and go to state 82
+
+    $default  reduce using rule 55 (function_exps)
+
+    exp_op      转到状态 83
+    bool_op     转到状态 84
+    compare_op  转到状态 85
+
+
+State 145
+
+   90 if_then_else: IF exp THEN exp ELSE . exp
+
+    ID      shift, and go to state 1
+    STRING  shift, and go to state 2
+    INT     shift, and go to state 3
+    LPAREN  shift, and go to state 4
+    LBRACK  shift, and go to state 56
+    LBRACE  shift, and go to state 6
+    MINUS   shift, and go to state 7
+    IF      shift, and go to state 9
+    WHILE   shift, and go to state 10
+    FOR     shift, and go to state 11
+    LET     shift, and go to state 12
+    BREAK   shift, and go to state 13
+    NIL     shift, and go to state 14
+
+    LBRACK    [reduce using rule 99 (empty)]
+    MINUS     [reduce using rule 99 (empty)]
+    $default  reduce using rule 99 (empty)
+
+    exp             转到状态 156
+    lvalue          转到状态 25
+    no_value_exp    转到状态 26
+    nil             转到状态 27
+    list            转到状态 28
+    int             转到状态 29
+    string          转到状态 30
+    function        转到状态 31
+    operation       转到状态 32
+    exp_operation   转到状态 33
+    bool_operation  转到状态 34
+    compare         转到状态 35
+    exp_compare     转到状态 36
+    string_compare  转到状态 37
+    assign          转到状态 38
+    if_then         转到状态 39
+    if_then_else    转到状态 40
+    while_do        转到状态 41
+    for_to_do       转到状态 42
+    break           转到状态 43
+    let_in_end      转到状态 44
+    parentheses     转到状态 45
+    empty           转到状态 46
+
+
 State 146
 
-   42 lvalue: lvalue LBRACK exp RBRACK .
+   92 for_to_do: FOR ID ASSIGN exp TO . exp DO exp
 
-    $default  reduce using rule 42 (lvalue)
+    ID      shift, and go to state 1
+    STRING  shift, and go to state 2
+    INT     shift, and go to state 3
+    LPAREN  shift, and go to state 4
+    LBRACK  shift, and go to state 56
+    LBRACE  shift, and go to state 6
+    MINUS   shift, and go to state 7
+    IF      shift, and go to state 9
+    WHILE   shift, and go to state 10
+    FOR     shift, and go to state 11
+    LET     shift, and go to state 12
+    BREAK   shift, and go to state 13
+    NIL     shift, and go to state 14
+
+    MINUS     [reduce using rule 99 (empty)]
+    $default  reduce using rule 99 (empty)
+
+    exp             转到状态 157
+    lvalue          转到状态 25
+    no_value_exp    转到状态 26
+    nil             转到状态 27
+    list            转到状态 28
+    int             转到状态 29
+    string          转到状态 30
+    function        转到状态 31
+    operation       转到状态 32
+    exp_operation   转到状态 33
+    bool_operation  转到状态 34
+    compare         转到状态 35
+    exp_compare     转到状态 36
+    string_compare  转到状态 37
+    assign          转到状态 38
+    if_then         转到状态 39
+    if_then_else    转到状态 40
+    while_do        转到状态 41
+    for_to_do       转到状态 42
+    break           转到状态 43
+    let_in_end      转到状态 44
+    parentheses     转到状态 45
+    empty           转到状态 46
 
 
 State 147
 
-   56 function_exps: function_exps COMMA exp .
-   60 exp_operation: exp . exp_op exp
-   65 bool_operation: exp . bool_op exp
-   70 exp_compare: exp . compare_op exp
+   96 expseq: expseq SEMICOLON . exp
 
-    PLUS    shift, and go to state 82
-    MINUS   shift, and go to state 83
-    TIMES   shift, and go to state 84
-    DIVIDE  shift, and go to state 85
-    EQ      shift, and go to state 53
-    NEQ     shift, and go to state 54
-    LT      shift, and go to state 55
-    LE      shift, and go to state 56
-    GT      shift, and go to state 57
-    GE      shift, and go to state 58
-    AND     shift, and go to state 86
-    OR      shift, and go to state 87
+    ID      shift, and go to state 1
+    STRING  shift, and go to state 2
+    INT     shift, and go to state 3
+    LPAREN  shift, and go to state 4
+    LBRACK  shift, and go to state 56
+    LBRACE  shift, and go to state 6
+    MINUS   shift, and go to state 7
+    IF      shift, and go to state 9
+    WHILE   shift, and go to state 10
+    FOR     shift, and go to state 11
+    LET     shift, and go to state 12
+    BREAK   shift, and go to state 13
+    NIL     shift, and go to state 14
 
-    $default  reduce using rule 56 (function_exps)
+    MINUS     [reduce using rule 99 (empty)]
+    $default  reduce using rule 99 (empty)
 
-    exp_op      转到状态 88
-    bool_op     转到状态 89
-    compare_op  转到状态 90
+    exp             转到状态 158
+    lvalue          转到状态 25
+    no_value_exp    转到状态 26
+    nil             转到状态 27
+    list            转到状态 28
+    int             转到状态 29
+    string          转到状态 30
+    function        转到状态 31
+    operation       转到状态 32
+    exp_operation   转到状态 33
+    bool_operation  转到状态 34
+    compare         转到状态 35
+    exp_compare     转到状态 36
+    string_compare  转到状态 37
+    assign          转到状态 38
+    if_then         转到状态 39
+    if_then_else    转到状态 40
+    while_do        转到状态 41
+    for_to_do       转到状态 42
+    break           转到状态 43
+    let_in_end      转到状态 44
+    parentheses     转到状态 45
+    empty           转到状态 46
 
 
 State 148
 
-   83 array_new: ID LBRACK exp RBRACK OF . exp
+   94 let_in_end: LET decs IN expseq END .
 
-    ID      shift, and go to state 1
-    STRING  shift, and go to state 2
-    INT     shift, and go to state 3
-    LPAREN  shift, and go to state 4
-    LBRACK  shift, and go to state 61
-    LBRACE  shift, and go to state 6
-    MINUS   shift, and go to state 7
-    IF      shift, and go to state 9
-    WHILE   shift, and go to state 10
-    FOR     shift, and go to state 11
-    LET     shift, and go to state 12
-    BREAK   shift, and go to state 13
-    NIL     shift, and go to state 14
-
-    LBRACK    [reduce using rule 95 (empty)]
-    MINUS     [reduce using rule 95 (empty)]
-    $default  reduce using rule 95 (empty)
-
-    exp             转到状态 159
-    lvalue          转到状态 25
-    no_value_exp    转到状态 26
-    nil             转到状态 27
-    list            转到状态 28
-    int             转到状态 29
-    string          转到状态 30
-    function        转到状态 31
-    operation       转到状态 32
-    exp_operation   转到状态 33
-    bool_operation  转到状态 34
-    compare         转到状态 35
-    exp_compare     转到状态 36
-    string_compare  转到状态 37
-    new             转到状态 38
-    type_new        转到状态 39
-    array_new       转到状态 40
-    assign          转到状态 41
-    if_then         转到状态 42
-    if_then_else    转到状态 43
-    while_do        转到状态 44
-    for_to_do       转到状态 45
-    break           转到状态 46
-    let_in_end      转到状态 47
-    parentheses     转到状态 48
-    empty           转到状态 49
+    $default  reduce using rule 94 (let_in_end)
 
 
 State 149
 
-   60 exp_operation: exp . exp_op exp
-   65 bool_operation: exp . bool_op exp
-   70 exp_compare: exp . compare_op exp
-   82 type_new_exps: ID EQ exp .
+   20 fundec: FUNCTION ID LPAREN tyfields RPAREN . EQ exp
+   21       | FUNCTION ID LPAREN tyfields RPAREN . COLON ID EQ exp
 
-    PLUS    shift, and go to state 82
-    MINUS   shift, and go to state 83
-    TIMES   shift, and go to state 84
-    DIVIDE  shift, and go to state 85
-    EQ      shift, and go to state 53
-    NEQ     shift, and go to state 54
-    LT      shift, and go to state 55
-    LE      shift, and go to state 56
-    GT      shift, and go to state 57
-    GE      shift, and go to state 58
-    AND     shift, and go to state 86
-    OR      shift, and go to state 87
-
-    $default  reduce using rule 82 (type_new_exps)
-
-    exp_op      转到状态 88
-    bool_op     转到状态 89
-    compare_op  转到状态 90
+    COLON  shift, and go to state 159
+    EQ     shift, and go to state 160
 
 
 State 150
 
-   81 type_new_exps: type_new_exps COMMA ID . EQ exp
+   19 vardec: VAR ID COLON ID ASSIGN . new
 
-    EQ  shift, and go to state 160
+    ID      shift, and go to state 129
+    STRING  shift, and go to state 130
+    INT     shift, and go to state 3
+    LPAREN  shift, and go to state 131
+    MINUS   shift, and go to state 7
+    NIL     shift, and go to state 14
+
+    nil          转到状态 132
+    int          转到状态 133
+    string       转到状态 134
+    new          转到状态 161
+    type_new     转到状态 136
+    array_new    转到状态 137
+    parentheses  转到状态 138
 
 
 State 151
 
-   86 if_then_else: IF exp THEN exp ELSE . exp
+   86 array_new: ID LBRACK . exp RBRACK OF exp
+   87          | ID LBRACK . exp RBRACK OF new
 
     ID      shift, and go to state 1
     STRING  shift, and go to state 2
     INT     shift, and go to state 3
     LPAREN  shift, and go to state 4
-    LBRACK  shift, and go to state 61
+    LBRACK  shift, and go to state 56
     LBRACE  shift, and go to state 6
     MINUS   shift, and go to state 7
     IF      shift, and go to state 9
@@ -2976,59 +2821,8 @@ State 151
     BREAK   shift, and go to state 13
     NIL     shift, and go to state 14
 
-    LBRACK    [reduce using rule 95 (empty)]
-    MINUS     [reduce using rule 95 (empty)]
-    $default  reduce using rule 95 (empty)
-
-    exp             转到状态 161
-    lvalue          转到状态 25
-    no_value_exp    转到状态 26
-    nil             转到状态 27
-    list            转到状态 28
-    int             转到状态 29
-    string          转到状态 30
-    function        转到状态 31
-    operation       转到状态 32
-    exp_operation   转到状态 33
-    bool_operation  转到状态 34
-    compare         转到状态 35
-    exp_compare     转到状态 36
-    string_compare  转到状态 37
-    new             转到状态 38
-    type_new        转到状态 39
-    array_new       转到状态 40
-    assign          转到状态 41
-    if_then         转到状态 42
-    if_then_else    转到状态 43
-    while_do        转到状态 44
-    for_to_do       转到状态 45
-    break           转到状态 46
-    let_in_end      转到状态 47
-    parentheses     转到状态 48
-    empty           转到状态 49
-
-
-State 152
-
-   88 for_to_do: FOR exp TO exp DO . exp
-
-    ID      shift, and go to state 1
-    STRING  shift, and go to state 2
-    INT     shift, and go to state 3
-    LPAREN  shift, and go to state 4
-    LBRACK  shift, and go to state 61
-    LBRACE  shift, and go to state 6
-    MINUS   shift, and go to state 7
-    IF      shift, and go to state 9
-    WHILE   shift, and go to state 10
-    FOR     shift, and go to state 11
-    LET     shift, and go to state 12
-    BREAK   shift, and go to state 13
-    NIL     shift, and go to state 14
-
-    LBRACK    [reduce using rule 95 (empty)]
-    MINUS     [reduce using rule 95 (empty)]
-    $default  reduce using rule 95 (empty)
+    MINUS     [reduce using rule 99 (empty)]
+    $default  reduce using rule 99 (empty)
 
     exp             转到状态 162
     lvalue          转到状态 25
@@ -3044,199 +2838,176 @@ State 152
     compare         转到状态 35
     exp_compare     转到状态 36
     string_compare  转到状态 37
-    new             转到状态 38
-    type_new        转到状态 39
-    array_new       转到状态 40
-    assign          转到状态 41
-    if_then         转到状态 42
-    if_then_else    转到状态 43
-    while_do        转到状态 44
-    for_to_do       转到状态 45
-    break           转到状态 46
-    let_in_end      转到状态 47
-    parentheses     转到状态 48
-    empty           转到状态 49
+    assign          转到状态 38
+    if_then         转到状态 39
+    if_then_else    转到状态 40
+    while_do        转到状态 41
+    for_to_do       转到状态 42
+    break           转到状态 43
+    let_in_end      转到状态 44
+    parentheses     转到状态 45
+    empty           转到状态 46
+
+
+State 152
+
+   83 type_new: ID LBRACE . type_new_exps RBRACE
+
+    ID  shift, and go to state 163
+
+    type_new_exps  转到状态 164
 
 
 State 153
 
-   92 expseq: expseq SEMICOLON . exp
+   59 exp_operation: exp . exp_op exp
+   64 bool_operation: exp . bool_op exp
+   69 exp_compare: exp . compare_op exp
+   98 parentheses: LPAREN exp . RPAREN
 
-    ID      shift, and go to state 1
-    STRING  shift, and go to state 2
-    INT     shift, and go to state 3
-    LPAREN  shift, and go to state 4
-    LBRACK  shift, and go to state 61
-    LBRACE  shift, and go to state 6
-    MINUS   shift, and go to state 7
-    IF      shift, and go to state 9
-    WHILE   shift, and go to state 10
-    FOR     shift, and go to state 11
-    LET     shift, and go to state 12
-    BREAK   shift, and go to state 13
-    NIL     shift, and go to state 14
+    RPAREN  shift, and go to state 94
+    PLUS    shift, and go to state 77
+    MINUS   shift, and go to state 78
+    TIMES   shift, and go to state 79
+    DIVIDE  shift, and go to state 80
+    EQ      shift, and go to state 48
+    NEQ     shift, and go to state 49
+    LT      shift, and go to state 50
+    LE      shift, and go to state 51
+    GT      shift, and go to state 52
+    GE      shift, and go to state 53
+    AND     shift, and go to state 81
+    OR      shift, and go to state 82
 
-    MINUS     [reduce using rule 95 (empty)]
-    $default  reduce using rule 95 (empty)
-
-    exp             转到状态 163
-    lvalue          转到状态 25
-    no_value_exp    转到状态 26
-    nil             转到状态 27
-    list            转到状态 28
-    int             转到状态 29
-    string          转到状态 30
-    function        转到状态 31
-    operation       转到状态 32
-    exp_operation   转到状态 33
-    bool_operation  转到状态 34
-    compare         转到状态 35
-    exp_compare     转到状态 36
-    string_compare  转到状态 37
-    new             转到状态 38
-    type_new        转到状态 39
-    array_new       转到状态 40
-    assign          转到状态 41
-    if_then         转到状态 42
-    if_then_else    转到状态 43
-    while_do        转到状态 44
-    for_to_do       转到状态 45
-    break           转到状态 46
-    let_in_end      转到状态 47
-    parentheses     转到状态 48
-    empty           转到状态 49
+    exp_op      转到状态 83
+    bool_op     转到状态 84
+    compare_op  转到状态 85
 
 
 State 154
 
-   90 let_in_end: LET decs IN expseq END .
+   13 ty: LBRACE tyfields . RBRACE
+   14 tyfields: tyfields . COMMA tyfield
 
-    $default  reduce using rule 90 (let_in_end)
+    COMMA   shift, and go to state 98
+    RBRACE  shift, and go to state 165
 
 
 State 155
 
-   20 fundec: FUNCTION ID LPAREN tyfields RPAREN . EQ exp
-   21       | FUNCTION ID LPAREN tyfields RPAREN . COLON ID EQ exp
+   12 ty: ARRAY OF . ID
 
-    COLON  shift, and go to state 164
-    EQ     shift, and go to state 165
+    ID  shift, and go to state 166
 
 
 State 156
 
-   19 vardec: VAR ID COLON ID ASSIGN . exp
+   59 exp_operation: exp . exp_op exp
+   64 bool_operation: exp . bool_op exp
+   69 exp_compare: exp . compare_op exp
+   90 if_then_else: IF exp THEN exp ELSE exp .
 
-    ID      shift, and go to state 1
-    STRING  shift, and go to state 2
-    INT     shift, and go to state 3
-    LPAREN  shift, and go to state 4
-    LBRACK  shift, and go to state 61
-    LBRACE  shift, and go to state 6
-    MINUS   shift, and go to state 7
-    IF      shift, and go to state 9
-    WHILE   shift, and go to state 10
-    FOR     shift, and go to state 11
-    LET     shift, and go to state 12
-    BREAK   shift, and go to state 13
-    NIL     shift, and go to state 14
+    PLUS    shift, and go to state 77
+    MINUS   shift, and go to state 78
+    TIMES   shift, and go to state 79
+    DIVIDE  shift, and go to state 80
+    EQ      shift, and go to state 48
+    NEQ     shift, and go to state 49
+    LT      shift, and go to state 50
+    LE      shift, and go to state 51
+    GT      shift, and go to state 52
+    GE      shift, and go to state 53
+    AND     shift, and go to state 81
+    OR      shift, and go to state 82
 
-    LBRACK    [reduce using rule 95 (empty)]
-    MINUS     [reduce using rule 95 (empty)]
-    $default  reduce using rule 95 (empty)
+    PLUS      [reduce using rule 90 (if_then_else)]
+    MINUS     [reduce using rule 90 (if_then_else)]
+    TIMES     [reduce using rule 90 (if_then_else)]
+    DIVIDE    [reduce using rule 90 (if_then_else)]
+    EQ        [reduce using rule 90 (if_then_else)]
+    NEQ       [reduce using rule 90 (if_then_else)]
+    LT        [reduce using rule 90 (if_then_else)]
+    LE        [reduce using rule 90 (if_then_else)]
+    GT        [reduce using rule 90 (if_then_else)]
+    GE        [reduce using rule 90 (if_then_else)]
+    AND       [reduce using rule 90 (if_then_else)]
+    OR        [reduce using rule 90 (if_then_else)]
+    $default  reduce using rule 90 (if_then_else)
 
-    exp             转到状态 166
-    lvalue          转到状态 25
-    no_value_exp    转到状态 26
-    nil             转到状态 27
-    list            转到状态 28
-    int             转到状态 29
-    string          转到状态 30
-    function        转到状态 31
-    operation       转到状态 32
-    exp_operation   转到状态 33
-    bool_operation  转到状态 34
-    compare         转到状态 35
-    exp_compare     转到状态 36
-    string_compare  转到状态 37
-    new             转到状态 38
-    type_new        转到状态 39
-    array_new       转到状态 40
-    assign          转到状态 41
-    if_then         转到状态 42
-    if_then_else    转到状态 43
-    while_do        转到状态 44
-    for_to_do       转到状态 45
-    break           转到状态 46
-    let_in_end      转到状态 47
-    parentheses     转到状态 48
-    empty           转到状态 49
+    exp_op      转到状态 83
+    bool_op     转到状态 84
+    compare_op  转到状态 85
 
 
 State 157
 
-   13 ty: LBRACE tyfields . RBRACE
-   14 tyfields: tyfields . COMMA tyfield
+   59 exp_operation: exp . exp_op exp
+   64 bool_operation: exp . bool_op exp
+   69 exp_compare: exp . compare_op exp
+   92 for_to_do: FOR ID ASSIGN exp TO exp . DO exp
 
-    COMMA   shift, and go to state 106
-    RBRACE  shift, and go to state 167
+    PLUS    shift, and go to state 77
+    MINUS   shift, and go to state 78
+    TIMES   shift, and go to state 79
+    DIVIDE  shift, and go to state 80
+    EQ      shift, and go to state 48
+    NEQ     shift, and go to state 49
+    LT      shift, and go to state 50
+    LE      shift, and go to state 51
+    GT      shift, and go to state 52
+    GE      shift, and go to state 53
+    AND     shift, and go to state 81
+    OR      shift, and go to state 82
+    DO      shift, and go to state 167
+
+    exp_op      转到状态 83
+    bool_op     转到状态 84
+    compare_op  转到状态 85
 
 
 State 158
 
-   12 ty: ARRAY OF . ID
+   59 exp_operation: exp . exp_op exp
+   64 bool_operation: exp . bool_op exp
+   69 exp_compare: exp . compare_op exp
+   96 expseq: expseq SEMICOLON exp .
 
-    ID  shift, and go to state 168
+    PLUS    shift, and go to state 77
+    MINUS   shift, and go to state 78
+    TIMES   shift, and go to state 79
+    DIVIDE  shift, and go to state 80
+    EQ      shift, and go to state 48
+    NEQ     shift, and go to state 49
+    LT      shift, and go to state 50
+    LE      shift, and go to state 51
+    GT      shift, and go to state 52
+    GE      shift, and go to state 53
+    AND     shift, and go to state 81
+    OR      shift, and go to state 82
+
+    $default  reduce using rule 96 (expseq)
+
+    exp_op      转到状态 83
+    bool_op     转到状态 84
+    compare_op  转到状态 85
 
 
 State 159
 
-   60 exp_operation: exp . exp_op exp
-   65 bool_operation: exp . bool_op exp
-   70 exp_compare: exp . compare_op exp
-   83 array_new: ID LBRACK exp RBRACK OF exp .
+   21 fundec: FUNCTION ID LPAREN tyfields RPAREN COLON . ID EQ exp
 
-    PLUS    shift, and go to state 82
-    MINUS   shift, and go to state 83
-    TIMES   shift, and go to state 84
-    DIVIDE  shift, and go to state 85
-    EQ      shift, and go to state 53
-    NEQ     shift, and go to state 54
-    LT      shift, and go to state 55
-    LE      shift, and go to state 56
-    GT      shift, and go to state 57
-    GE      shift, and go to state 58
-    AND     shift, and go to state 86
-    OR      shift, and go to state 87
-
-    PLUS      [reduce using rule 83 (array_new)]
-    MINUS     [reduce using rule 83 (array_new)]
-    TIMES     [reduce using rule 83 (array_new)]
-    DIVIDE    [reduce using rule 83 (array_new)]
-    EQ        [reduce using rule 83 (array_new)]
-    NEQ       [reduce using rule 83 (array_new)]
-    LT        [reduce using rule 83 (array_new)]
-    LE        [reduce using rule 83 (array_new)]
-    GT        [reduce using rule 83 (array_new)]
-    GE        [reduce using rule 83 (array_new)]
-    AND       [reduce using rule 83 (array_new)]
-    OR        [reduce using rule 83 (array_new)]
-    $default  reduce using rule 83 (array_new)
-
-    exp_op      转到状态 88
-    bool_op     转到状态 89
-    compare_op  转到状态 90
+    ID  shift, and go to state 168
 
 
 State 160
 
-   81 type_new_exps: type_new_exps COMMA ID EQ . exp
+   20 fundec: FUNCTION ID LPAREN tyfields RPAREN EQ . exp
 
     ID      shift, and go to state 1
     STRING  shift, and go to state 2
     INT     shift, and go to state 3
     LPAREN  shift, and go to state 4
-    LBRACK  shift, and go to state 61
+    LBRACK  shift, and go to state 56
     LBRACE  shift, and go to state 6
     MINUS   shift, and go to state 7
     IF      shift, and go to state 9
@@ -3246,8 +3017,9 @@ State 160
     BREAK   shift, and go to state 13
     NIL     shift, and go to state 14
 
-    MINUS     [reduce using rule 95 (empty)]
-    $default  reduce using rule 95 (empty)
+    LBRACK    [reduce using rule 99 (empty)]
+    MINUS     [reduce using rule 99 (empty)]
+    $default  reduce using rule 99 (empty)
 
     exp             转到状态 169
     lvalue          转到状态 25
@@ -3263,141 +3035,90 @@ State 160
     compare         转到状态 35
     exp_compare     转到状态 36
     string_compare  转到状态 37
-    new             转到状态 38
-    type_new        转到状态 39
-    array_new       转到状态 40
-    assign          转到状态 41
-    if_then         转到状态 42
-    if_then_else    转到状态 43
-    while_do        转到状态 44
-    for_to_do       转到状态 45
-    break           转到状态 46
-    let_in_end      转到状态 47
-    parentheses     转到状态 48
-    empty           转到状态 49
+    assign          转到状态 38
+    if_then         转到状态 39
+    if_then_else    转到状态 40
+    while_do        转到状态 41
+    for_to_do       转到状态 42
+    break           转到状态 43
+    let_in_end      转到状态 44
+    parentheses     转到状态 45
+    empty           转到状态 46
 
 
 State 161
 
-   60 exp_operation: exp . exp_op exp
-   65 bool_operation: exp . bool_op exp
-   70 exp_compare: exp . compare_op exp
-   86 if_then_else: IF exp THEN exp ELSE exp .
+   19 vardec: VAR ID COLON ID ASSIGN new .
 
-    PLUS    shift, and go to state 82
-    MINUS   shift, and go to state 83
-    TIMES   shift, and go to state 84
-    DIVIDE  shift, and go to state 85
-    EQ      shift, and go to state 53
-    NEQ     shift, and go to state 54
-    LT      shift, and go to state 55
-    LE      shift, and go to state 56
-    GT      shift, and go to state 57
-    GE      shift, and go to state 58
-    AND     shift, and go to state 86
-    OR      shift, and go to state 87
-
-    PLUS      [reduce using rule 86 (if_then_else)]
-    MINUS     [reduce using rule 86 (if_then_else)]
-    TIMES     [reduce using rule 86 (if_then_else)]
-    DIVIDE    [reduce using rule 86 (if_then_else)]
-    EQ        [reduce using rule 86 (if_then_else)]
-    NEQ       [reduce using rule 86 (if_then_else)]
-    LT        [reduce using rule 86 (if_then_else)]
-    LE        [reduce using rule 86 (if_then_else)]
-    GT        [reduce using rule 86 (if_then_else)]
-    GE        [reduce using rule 86 (if_then_else)]
-    AND       [reduce using rule 86 (if_then_else)]
-    OR        [reduce using rule 86 (if_then_else)]
-    $default  reduce using rule 86 (if_then_else)
-
-    exp_op      转到状态 88
-    bool_op     转到状态 89
-    compare_op  转到状态 90
+    $default  reduce using rule 19 (vardec)
 
 
 State 162
 
-   60 exp_operation: exp . exp_op exp
-   65 bool_operation: exp . bool_op exp
-   70 exp_compare: exp . compare_op exp
-   88 for_to_do: FOR exp TO exp DO exp .
+   59 exp_operation: exp . exp_op exp
+   64 bool_operation: exp . bool_op exp
+   69 exp_compare: exp . compare_op exp
+   86 array_new: ID LBRACK exp . RBRACK OF exp
+   87          | ID LBRACK exp . RBRACK OF new
 
-    PLUS    shift, and go to state 82
-    MINUS   shift, and go to state 83
-    TIMES   shift, and go to state 84
-    DIVIDE  shift, and go to state 85
-    EQ      shift, and go to state 53
-    NEQ     shift, and go to state 54
-    LT      shift, and go to state 55
-    LE      shift, and go to state 56
-    GT      shift, and go to state 57
-    GE      shift, and go to state 58
-    AND     shift, and go to state 86
-    OR      shift, and go to state 87
+    RBRACK  shift, and go to state 170
+    PLUS    shift, and go to state 77
+    MINUS   shift, and go to state 78
+    TIMES   shift, and go to state 79
+    DIVIDE  shift, and go to state 80
+    EQ      shift, and go to state 48
+    NEQ     shift, and go to state 49
+    LT      shift, and go to state 50
+    LE      shift, and go to state 51
+    GT      shift, and go to state 52
+    GE      shift, and go to state 53
+    AND     shift, and go to state 81
+    OR      shift, and go to state 82
 
-    PLUS      [reduce using rule 88 (for_to_do)]
-    MINUS     [reduce using rule 88 (for_to_do)]
-    TIMES     [reduce using rule 88 (for_to_do)]
-    DIVIDE    [reduce using rule 88 (for_to_do)]
-    EQ        [reduce using rule 88 (for_to_do)]
-    NEQ       [reduce using rule 88 (for_to_do)]
-    LT        [reduce using rule 88 (for_to_do)]
-    LE        [reduce using rule 88 (for_to_do)]
-    GT        [reduce using rule 88 (for_to_do)]
-    GE        [reduce using rule 88 (for_to_do)]
-    AND       [reduce using rule 88 (for_to_do)]
-    OR        [reduce using rule 88 (for_to_do)]
-    $default  reduce using rule 88 (for_to_do)
-
-    exp_op      转到状态 88
-    bool_op     转到状态 89
-    compare_op  转到状态 90
+    exp_op      转到状态 83
+    bool_op     转到状态 84
+    compare_op  转到状态 85
 
 
 State 163
 
-   60 exp_operation: exp . exp_op exp
-   65 bool_operation: exp . bool_op exp
-   70 exp_compare: exp . compare_op exp
-   92 expseq: expseq SEMICOLON exp .
+   85 type_new_exps: ID . EQ exp
 
-    PLUS    shift, and go to state 82
-    MINUS   shift, and go to state 83
-    TIMES   shift, and go to state 84
-    DIVIDE  shift, and go to state 85
-    EQ      shift, and go to state 53
-    NEQ     shift, and go to state 54
-    LT      shift, and go to state 55
-    LE      shift, and go to state 56
-    GT      shift, and go to state 57
-    GE      shift, and go to state 58
-    AND     shift, and go to state 86
-    OR      shift, and go to state 87
-
-    $default  reduce using rule 92 (expseq)
-
-    exp_op      转到状态 88
-    bool_op     转到状态 89
-    compare_op  转到状态 90
+    EQ  shift, and go to state 171
 
 
 State 164
 
-   21 fundec: FUNCTION ID LPAREN tyfields RPAREN COLON . ID EQ exp
+   83 type_new: ID LBRACE type_new_exps . RBRACE
+   84 type_new_exps: type_new_exps . COMMA ID EQ exp
 
-    ID  shift, and go to state 170
+    COMMA   shift, and go to state 172
+    RBRACE  shift, and go to state 173
 
 
 State 165
 
-   20 fundec: FUNCTION ID LPAREN tyfields RPAREN EQ . exp
+   13 ty: LBRACE tyfields RBRACE .
+
+    $default  reduce using rule 13 (ty)
+
+
+State 166
+
+   12 ty: ARRAY OF ID .
+
+    $default  reduce using rule 12 (ty)
+
+
+State 167
+
+   92 for_to_do: FOR ID ASSIGN exp TO exp DO . exp
 
     ID      shift, and go to state 1
     STRING  shift, and go to state 2
     INT     shift, and go to state 3
     LPAREN  shift, and go to state 4
-    LBRACK  shift, and go to state 61
+    LBRACK  shift, and go to state 56
     LBRACE  shift, and go to state 6
     MINUS   shift, and go to state 7
     IF      shift, and go to state 9
@@ -3407,11 +3128,11 @@ State 165
     BREAK   shift, and go to state 13
     NIL     shift, and go to state 14
 
-    LBRACK    [reduce using rule 95 (empty)]
-    MINUS     [reduce using rule 95 (empty)]
-    $default  reduce using rule 95 (empty)
+    LBRACK    [reduce using rule 99 (empty)]
+    MINUS     [reduce using rule 99 (empty)]
+    $default  reduce using rule 99 (empty)
 
-    exp             转到状态 171
+    exp             转到状态 174
     lvalue          转到状态 25
     no_value_exp    转到状态 26
     nil             转到状态 27
@@ -3425,123 +3146,159 @@ State 165
     compare         转到状态 35
     exp_compare     转到状态 36
     string_compare  转到状态 37
-    new             转到状态 38
-    type_new        转到状态 39
-    array_new       转到状态 40
-    assign          转到状态 41
-    if_then         转到状态 42
-    if_then_else    转到状态 43
-    while_do        转到状态 44
-    for_to_do       转到状态 45
-    break           转到状态 46
-    let_in_end      转到状态 47
-    parentheses     转到状态 48
-    empty           转到状态 49
-
-
-State 166
-
-   19 vardec: VAR ID COLON ID ASSIGN exp .
-   60 exp_operation: exp . exp_op exp
-   65 bool_operation: exp . bool_op exp
-   70 exp_compare: exp . compare_op exp
-
-    PLUS    shift, and go to state 82
-    MINUS   shift, and go to state 83
-    TIMES   shift, and go to state 84
-    DIVIDE  shift, and go to state 85
-    EQ      shift, and go to state 53
-    NEQ     shift, and go to state 54
-    LT      shift, and go to state 55
-    LE      shift, and go to state 56
-    GT      shift, and go to state 57
-    GE      shift, and go to state 58
-    AND     shift, and go to state 86
-    OR      shift, and go to state 87
-
-    $default  reduce using rule 19 (vardec)
-
-    exp_op      转到状态 88
-    bool_op     转到状态 89
-    compare_op  转到状态 90
-
-
-State 167
-
-   13 ty: LBRACE tyfields RBRACE .
-
-    $default  reduce using rule 13 (ty)
+    assign          转到状态 38
+    if_then         转到状态 39
+    if_then_else    转到状态 40
+    while_do        转到状态 41
+    for_to_do       转到状态 42
+    break           转到状态 43
+    let_in_end      转到状态 44
+    parentheses     转到状态 45
+    empty           转到状态 46
 
 
 State 168
 
-   12 ty: ARRAY OF ID .
+   21 fundec: FUNCTION ID LPAREN tyfields RPAREN COLON ID . EQ exp
 
-    $default  reduce using rule 12 (ty)
+    EQ  shift, and go to state 175
 
 
 State 169
 
-   60 exp_operation: exp . exp_op exp
-   65 bool_operation: exp . bool_op exp
-   70 exp_compare: exp . compare_op exp
-   81 type_new_exps: type_new_exps COMMA ID EQ exp .
+   20 fundec: FUNCTION ID LPAREN tyfields RPAREN EQ exp .
+   59 exp_operation: exp . exp_op exp
+   64 bool_operation: exp . bool_op exp
+   69 exp_compare: exp . compare_op exp
 
-    PLUS    shift, and go to state 82
-    MINUS   shift, and go to state 83
-    TIMES   shift, and go to state 84
-    DIVIDE  shift, and go to state 85
-    EQ      shift, and go to state 53
-    NEQ     shift, and go to state 54
-    LT      shift, and go to state 55
-    LE      shift, and go to state 56
-    GT      shift, and go to state 57
-    GE      shift, and go to state 58
-    AND     shift, and go to state 86
-    OR      shift, and go to state 87
+    PLUS    shift, and go to state 77
+    MINUS   shift, and go to state 78
+    TIMES   shift, and go to state 79
+    DIVIDE  shift, and go to state 80
+    EQ      shift, and go to state 48
+    NEQ     shift, and go to state 49
+    LT      shift, and go to state 50
+    LE      shift, and go to state 51
+    GT      shift, and go to state 52
+    GE      shift, and go to state 53
+    AND     shift, and go to state 81
+    OR      shift, and go to state 82
 
-    $default  reduce using rule 81 (type_new_exps)
+    $default  reduce using rule 20 (fundec)
 
-    exp_op      转到状态 88
-    bool_op     转到状态 89
-    compare_op  转到状态 90
+    exp_op      转到状态 83
+    bool_op     转到状态 84
+    compare_op  转到状态 85
 
 
 State 170
 
-   21 fundec: FUNCTION ID LPAREN tyfields RPAREN COLON ID . EQ exp
+   86 array_new: ID LBRACK exp RBRACK . OF exp
+   87          | ID LBRACK exp RBRACK . OF new
 
-    EQ  shift, and go to state 172
+    OF  shift, and go to state 176
 
 
 State 171
 
-   20 fundec: FUNCTION ID LPAREN tyfields RPAREN EQ exp .
-   60 exp_operation: exp . exp_op exp
-   65 bool_operation: exp . bool_op exp
-   70 exp_compare: exp . compare_op exp
+   85 type_new_exps: ID EQ . exp
 
-    PLUS    shift, and go to state 82
-    MINUS   shift, and go to state 83
-    TIMES   shift, and go to state 84
-    DIVIDE  shift, and go to state 85
-    EQ      shift, and go to state 53
-    NEQ     shift, and go to state 54
-    LT      shift, and go to state 55
-    LE      shift, and go to state 56
-    GT      shift, and go to state 57
-    GE      shift, and go to state 58
-    AND     shift, and go to state 86
-    OR      shift, and go to state 87
+    ID      shift, and go to state 1
+    STRING  shift, and go to state 2
+    INT     shift, and go to state 3
+    LPAREN  shift, and go to state 4
+    LBRACK  shift, and go to state 56
+    LBRACE  shift, and go to state 6
+    MINUS   shift, and go to state 7
+    IF      shift, and go to state 9
+    WHILE   shift, and go to state 10
+    FOR     shift, and go to state 11
+    LET     shift, and go to state 12
+    BREAK   shift, and go to state 13
+    NIL     shift, and go to state 14
 
-    $default  reduce using rule 20 (fundec)
+    MINUS     [reduce using rule 99 (empty)]
+    $default  reduce using rule 99 (empty)
 
-    exp_op      转到状态 88
-    bool_op     转到状态 89
-    compare_op  转到状态 90
+    exp             转到状态 177
+    lvalue          转到状态 25
+    no_value_exp    转到状态 26
+    nil             转到状态 27
+    list            转到状态 28
+    int             转到状态 29
+    string          转到状态 30
+    function        转到状态 31
+    operation       转到状态 32
+    exp_operation   转到状态 33
+    bool_operation  转到状态 34
+    compare         转到状态 35
+    exp_compare     转到状态 36
+    string_compare  转到状态 37
+    assign          转到状态 38
+    if_then         转到状态 39
+    if_then_else    转到状态 40
+    while_do        转到状态 41
+    for_to_do       转到状态 42
+    break           转到状态 43
+    let_in_end      转到状态 44
+    parentheses     转到状态 45
+    empty           转到状态 46
 
 
 State 172
+
+   84 type_new_exps: type_new_exps COMMA . ID EQ exp
+
+    ID  shift, and go to state 178
+
+
+State 173
+
+   83 type_new: ID LBRACE type_new_exps RBRACE .
+
+    $default  reduce using rule 83 (type_new)
+
+
+State 174
+
+   59 exp_operation: exp . exp_op exp
+   64 bool_operation: exp . bool_op exp
+   69 exp_compare: exp . compare_op exp
+   92 for_to_do: FOR ID ASSIGN exp TO exp DO exp .
+
+    PLUS    shift, and go to state 77
+    MINUS   shift, and go to state 78
+    TIMES   shift, and go to state 79
+    DIVIDE  shift, and go to state 80
+    EQ      shift, and go to state 48
+    NEQ     shift, and go to state 49
+    LT      shift, and go to state 50
+    LE      shift, and go to state 51
+    GT      shift, and go to state 52
+    GE      shift, and go to state 53
+    AND     shift, and go to state 81
+    OR      shift, and go to state 82
+
+    PLUS      [reduce using rule 92 (for_to_do)]
+    MINUS     [reduce using rule 92 (for_to_do)]
+    TIMES     [reduce using rule 92 (for_to_do)]
+    DIVIDE    [reduce using rule 92 (for_to_do)]
+    EQ        [reduce using rule 92 (for_to_do)]
+    NEQ       [reduce using rule 92 (for_to_do)]
+    LT        [reduce using rule 92 (for_to_do)]
+    LE        [reduce using rule 92 (for_to_do)]
+    GT        [reduce using rule 92 (for_to_do)]
+    GE        [reduce using rule 92 (for_to_do)]
+    AND       [reduce using rule 92 (for_to_do)]
+    OR        [reduce using rule 92 (for_to_do)]
+    $default  reduce using rule 92 (for_to_do)
+
+    exp_op      转到状态 83
+    bool_op     转到状态 84
+    compare_op  转到状态 85
+
+
+State 175
 
    21 fundec: FUNCTION ID LPAREN tyfields RPAREN COLON ID EQ . exp
 
@@ -3549,7 +3306,7 @@ State 172
     STRING  shift, and go to state 2
     INT     shift, and go to state 3
     LPAREN  shift, and go to state 4
-    LBRACK  shift, and go to state 61
+    LBRACK  shift, and go to state 56
     LBRACE  shift, and go to state 6
     MINUS   shift, and go to state 7
     IF      shift, and go to state 9
@@ -3559,11 +3316,11 @@ State 172
     BREAK   shift, and go to state 13
     NIL     shift, and go to state 14
 
-    LBRACK    [reduce using rule 95 (empty)]
-    MINUS     [reduce using rule 95 (empty)]
-    $default  reduce using rule 95 (empty)
+    LBRACK    [reduce using rule 99 (empty)]
+    MINUS     [reduce using rule 99 (empty)]
+    $default  reduce using rule 99 (empty)
 
-    exp             转到状态 173
+    exp             转到状态 179
     lvalue          转到状态 25
     no_value_exp    转到状态 26
     nil             转到状态 27
@@ -3577,42 +3334,336 @@ State 172
     compare         转到状态 35
     exp_compare     转到状态 36
     string_compare  转到状态 37
-    new             转到状态 38
-    type_new        转到状态 39
-    array_new       转到状态 40
-    assign          转到状态 41
-    if_then         转到状态 42
-    if_then_else    转到状态 43
-    while_do        转到状态 44
-    for_to_do       转到状态 45
-    break           转到状态 46
-    let_in_end      转到状态 47
-    parentheses     转到状态 48
-    empty           转到状态 49
+    assign          转到状态 38
+    if_then         转到状态 39
+    if_then_else    转到状态 40
+    while_do        转到状态 41
+    for_to_do       转到状态 42
+    break           转到状态 43
+    let_in_end      转到状态 44
+    parentheses     转到状态 45
+    empty           转到状态 46
 
 
-State 173
+State 176
+
+   86 array_new: ID LBRACK exp RBRACK OF . exp
+   87          | ID LBRACK exp RBRACK OF . new
+
+    ID      shift, and go to state 180
+    STRING  shift, and go to state 2
+    INT     shift, and go to state 3
+    LPAREN  shift, and go to state 4
+    LBRACK  shift, and go to state 56
+    LBRACE  shift, and go to state 6
+    MINUS   shift, and go to state 7
+    IF      shift, and go to state 9
+    WHILE   shift, and go to state 10
+    FOR     shift, and go to state 11
+    LET     shift, and go to state 12
+    BREAK   shift, and go to state 13
+    NIL     shift, and go to state 14
+
+    LBRACK    [reduce using rule 99 (empty)]
+    MINUS     [reduce using rule 99 (empty)]
+    $default  reduce using rule 99 (empty)
+
+    exp             转到状态 181
+    lvalue          转到状态 25
+    no_value_exp    转到状态 26
+    nil             转到状态 182
+    list            转到状态 28
+    int             转到状态 183
+    string          转到状态 184
+    function        转到状态 31
+    operation       转到状态 32
+    exp_operation   转到状态 33
+    bool_operation  转到状态 34
+    compare         转到状态 35
+    exp_compare     转到状态 36
+    string_compare  转到状态 37
+    new             转到状态 185
+    type_new        转到状态 136
+    array_new       转到状态 137
+    assign          转到状态 38
+    if_then         转到状态 39
+    if_then_else    转到状态 40
+    while_do        转到状态 41
+    for_to_do       转到状态 42
+    break           转到状态 43
+    let_in_end      转到状态 44
+    parentheses     转到状态 186
+    empty           转到状态 46
+
+
+State 177
+
+   59 exp_operation: exp . exp_op exp
+   64 bool_operation: exp . bool_op exp
+   69 exp_compare: exp . compare_op exp
+   85 type_new_exps: ID EQ exp .
+
+    PLUS    shift, and go to state 77
+    MINUS   shift, and go to state 78
+    TIMES   shift, and go to state 79
+    DIVIDE  shift, and go to state 80
+    EQ      shift, and go to state 48
+    NEQ     shift, and go to state 49
+    LT      shift, and go to state 50
+    LE      shift, and go to state 51
+    GT      shift, and go to state 52
+    GE      shift, and go to state 53
+    AND     shift, and go to state 81
+    OR      shift, and go to state 82
+
+    $default  reduce using rule 85 (type_new_exps)
+
+    exp_op      转到状态 83
+    bool_op     转到状态 84
+    compare_op  转到状态 85
+
+
+State 178
+
+   84 type_new_exps: type_new_exps COMMA ID . EQ exp
+
+    EQ  shift, and go to state 187
+
+
+State 179
 
    21 fundec: FUNCTION ID LPAREN tyfields RPAREN COLON ID EQ exp .
-   60 exp_operation: exp . exp_op exp
-   65 bool_operation: exp . bool_op exp
-   70 exp_compare: exp . compare_op exp
+   59 exp_operation: exp . exp_op exp
+   64 bool_operation: exp . bool_op exp
+   69 exp_compare: exp . compare_op exp
 
-    PLUS    shift, and go to state 82
-    MINUS   shift, and go to state 83
-    TIMES   shift, and go to state 84
-    DIVIDE  shift, and go to state 85
-    EQ      shift, and go to state 53
-    NEQ     shift, and go to state 54
-    LT      shift, and go to state 55
-    LE      shift, and go to state 56
-    GT      shift, and go to state 57
-    GE      shift, and go to state 58
-    AND     shift, and go to state 86
-    OR      shift, and go to state 87
+    PLUS    shift, and go to state 77
+    MINUS   shift, and go to state 78
+    TIMES   shift, and go to state 79
+    DIVIDE  shift, and go to state 80
+    EQ      shift, and go to state 48
+    NEQ     shift, and go to state 49
+    LT      shift, and go to state 50
+    LE      shift, and go to state 51
+    GT      shift, and go to state 52
+    GE      shift, and go to state 53
+    AND     shift, and go to state 81
+    OR      shift, and go to state 82
 
     $default  reduce using rule 21 (fundec)
 
-    exp_op      转到状态 88
-    bool_op     转到状态 89
-    compare_op  转到状态 90
+    exp_op      转到状态 83
+    bool_op     转到状态 84
+    compare_op  转到状态 85
+
+
+State 180
+
+   39 lvalue: ID .
+   53 function: ID . LPAREN RPAREN
+   54         | ID . LPAREN function_exps RPAREN
+   83 type_new: ID . LBRACE type_new_exps RBRACE
+   86 array_new: ID . LBRACK exp RBRACK OF exp
+   87          | ID . LBRACK exp RBRACK OF new
+
+    LPAREN  shift, and go to state 47
+    LBRACK  shift, and go to state 151
+    LBRACE  shift, and go to state 152
+
+    LBRACK    [reduce using rule 39 (lvalue)]
+    $default  reduce using rule 39 (lvalue)
+
+
+State 181
+
+   59 exp_operation: exp . exp_op exp
+   64 bool_operation: exp . bool_op exp
+   69 exp_compare: exp . compare_op exp
+   86 array_new: ID LBRACK exp RBRACK OF exp .
+
+    PLUS    shift, and go to state 77
+    MINUS   shift, and go to state 78
+    TIMES   shift, and go to state 79
+    DIVIDE  shift, and go to state 80
+    EQ      shift, and go to state 48
+    NEQ     shift, and go to state 49
+    LT      shift, and go to state 50
+    LE      shift, and go to state 51
+    GT      shift, and go to state 52
+    GE      shift, and go to state 53
+    AND     shift, and go to state 81
+    OR      shift, and go to state 82
+
+    $default  reduce using rule 86 (array_new)
+
+    exp_op      转到状态 83
+    bool_op     转到状态 84
+    compare_op  转到状态 85
+
+
+State 182
+
+   24 exp: nil .
+   82 new: nil .
+
+    $end      reduce using rule 24 (exp)
+    $end      [reduce using rule 82 (new)]
+    LBRACK    reduce using rule 24 (exp)
+    LBRACK    [reduce using rule 82 (new)]
+    ARRAY     reduce using rule 24 (exp)
+    ARRAY     [reduce using rule 82 (new)]
+    IN        reduce using rule 24 (exp)
+    IN        [reduce using rule 82 (new)]
+    FUNCTION  reduce using rule 24 (exp)
+    FUNCTION  [reduce using rule 82 (new)]
+    VAR       reduce using rule 24 (exp)
+    VAR       [reduce using rule 82 (new)]
+    TYPE      reduce using rule 24 (exp)
+    TYPE      [reduce using rule 82 (new)]
+    $default  reduce using rule 24 (exp)
+
+
+State 183
+
+   26 exp: int .
+   79 new: int .
+
+    $end      reduce using rule 26 (exp)
+    $end      [reduce using rule 79 (new)]
+    LBRACK    reduce using rule 26 (exp)
+    LBRACK    [reduce using rule 79 (new)]
+    ARRAY     reduce using rule 26 (exp)
+    ARRAY     [reduce using rule 79 (new)]
+    IN        reduce using rule 26 (exp)
+    IN        [reduce using rule 79 (new)]
+    FUNCTION  reduce using rule 26 (exp)
+    FUNCTION  [reduce using rule 79 (new)]
+    VAR       reduce using rule 26 (exp)
+    VAR       [reduce using rule 79 (new)]
+    TYPE      reduce using rule 26 (exp)
+    TYPE      [reduce using rule 79 (new)]
+    $default  reduce using rule 26 (exp)
+
+
+State 184
+
+   27 exp: string .
+   80 new: string .
+
+    $end      reduce using rule 27 (exp)
+    $end      [reduce using rule 80 (new)]
+    LBRACK    reduce using rule 27 (exp)
+    LBRACK    [reduce using rule 80 (new)]
+    ARRAY     reduce using rule 27 (exp)
+    ARRAY     [reduce using rule 80 (new)]
+    IN        reduce using rule 27 (exp)
+    IN        [reduce using rule 80 (new)]
+    FUNCTION  reduce using rule 27 (exp)
+    FUNCTION  [reduce using rule 80 (new)]
+    VAR       reduce using rule 27 (exp)
+    VAR       [reduce using rule 80 (new)]
+    TYPE      reduce using rule 27 (exp)
+    TYPE      [reduce using rule 80 (new)]
+    $default  reduce using rule 27 (exp)
+
+
+State 185
+
+   87 array_new: ID LBRACK exp RBRACK OF new .
+
+    $default  reduce using rule 87 (array_new)
+
+
+State 186
+
+   38 exp: parentheses .
+   81 new: parentheses .
+
+    $end      reduce using rule 38 (exp)
+    $end      [reduce using rule 81 (new)]
+    LBRACK    reduce using rule 38 (exp)
+    LBRACK    [reduce using rule 81 (new)]
+    ARRAY     reduce using rule 38 (exp)
+    ARRAY     [reduce using rule 81 (new)]
+    IN        reduce using rule 38 (exp)
+    IN        [reduce using rule 81 (new)]
+    FUNCTION  reduce using rule 38 (exp)
+    FUNCTION  [reduce using rule 81 (new)]
+    VAR       reduce using rule 38 (exp)
+    VAR       [reduce using rule 81 (new)]
+    TYPE      reduce using rule 38 (exp)
+    TYPE      [reduce using rule 81 (new)]
+    $default  reduce using rule 38 (exp)
+
+
+State 187
+
+   84 type_new_exps: type_new_exps COMMA ID EQ . exp
+
+    ID      shift, and go to state 1
+    STRING  shift, and go to state 2
+    INT     shift, and go to state 3
+    LPAREN  shift, and go to state 4
+    LBRACK  shift, and go to state 56
+    LBRACE  shift, and go to state 6
+    MINUS   shift, and go to state 7
+    IF      shift, and go to state 9
+    WHILE   shift, and go to state 10
+    FOR     shift, and go to state 11
+    LET     shift, and go to state 12
+    BREAK   shift, and go to state 13
+    NIL     shift, and go to state 14
+
+    MINUS     [reduce using rule 99 (empty)]
+    $default  reduce using rule 99 (empty)
+
+    exp             转到状态 188
+    lvalue          转到状态 25
+    no_value_exp    转到状态 26
+    nil             转到状态 27
+    list            转到状态 28
+    int             转到状态 29
+    string          转到状态 30
+    function        转到状态 31
+    operation       转到状态 32
+    exp_operation   转到状态 33
+    bool_operation  转到状态 34
+    compare         转到状态 35
+    exp_compare     转到状态 36
+    string_compare  转到状态 37
+    assign          转到状态 38
+    if_then         转到状态 39
+    if_then_else    转到状态 40
+    while_do        转到状态 41
+    for_to_do       转到状态 42
+    break           转到状态 43
+    let_in_end      转到状态 44
+    parentheses     转到状态 45
+    empty           转到状态 46
+
+
+State 188
+
+   59 exp_operation: exp . exp_op exp
+   64 bool_operation: exp . bool_op exp
+   69 exp_compare: exp . compare_op exp
+   84 type_new_exps: type_new_exps COMMA ID EQ exp .
+
+    PLUS    shift, and go to state 77
+    MINUS   shift, and go to state 78
+    TIMES   shift, and go to state 79
+    DIVIDE  shift, and go to state 80
+    EQ      shift, and go to state 48
+    NEQ     shift, and go to state 49
+    LT      shift, and go to state 50
+    LE      shift, and go to state 51
+    GT      shift, and go to state 52
+    GE      shift, and go to state 53
+    AND     shift, and go to state 81
+    OR      shift, and go to state 82
+
+    $default  reduce using rule 84 (type_new_exps)
+
+    exp_op      转到状态 83
+    bool_op     转到状态 84
+    compare_op  转到状态 85

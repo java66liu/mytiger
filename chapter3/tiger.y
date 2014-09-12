@@ -29,6 +29,9 @@ void yyerror(char *s)
   BREAK NIL
   FUNCTION VAR TYPE 
 
+%nonassoc IFX
+%nonassoc ELSE
+
 %start program
 %%
 
@@ -65,8 +68,8 @@ decs
 				| empty
 
 		vardec
-		: VAR ID ASSIGN exp
-		| VAR ID COLON ID ASSIGN exp
+		: VAR ID ASSIGN new
+		| VAR ID COLON ID ASSIGN new 
 
 		fundec
 		: FUNCTION ID LPAREN tyfields RPAREN EQ exp
@@ -84,7 +87,6 @@ exp
 | function
 | operation
 | compare
-| new
 | assign
 | if_then
 | if_then_else
@@ -160,7 +162,11 @@ exp
 	new
 	: type_new
 	| array_new
-	
+	| int
+	| string
+	| parentheses
+	| nil
+
 		type_new
 		: ID LBRACE type_new_exps RBRACE
 		
@@ -170,12 +176,13 @@ exp
 			
 		array_new
 		: ID LBRACK exp RBRACK OF exp
+		| ID LBRACK exp RBRACK OF new
 
 	assign
 	: lvalue ASSIGN exp
 
 	if_then
-	: IF exp THEN exp
+	: IF exp THEN exp %prec IFX
 
 	if_then_else
 	: IF exp THEN exp ELSE exp
@@ -184,7 +191,7 @@ exp
 	: WHILE exp DO exp
 
 	for_to_do
-	: FOR exp TO exp DO exp
+	: FOR ID ASSIGN exp TO exp DO exp
 
 	break
 	: BREAK;
@@ -203,21 +210,5 @@ exp
 //---- ----
 empty
 :
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
