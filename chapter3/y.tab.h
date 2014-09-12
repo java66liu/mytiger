@@ -87,8 +87,7 @@ extern int yydebug;
     NIL = 297,
     FUNCTION = 298,
     VAR = 299,
-    TYPE = 300,
-    IFX = 301
+    TYPE = 300
   };
 #endif
 /* Tokens.  */
@@ -135,7 +134,6 @@ extern int yydebug;
 #define FUNCTION 298
 #define VAR 299
 #define TYPE 300
-#define IFX 301
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
@@ -148,7 +146,7 @@ union YYSTYPE
 	int ival;
 	string sval;
 
-#line 152 "y.tab.h" /* yacc.c:1909  */
+#line 150 "y.tab.h" /* yacc.c:1909  */
 };
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1

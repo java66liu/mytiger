@@ -4,80 +4,107 @@
 #include "tokens.h"
 #include "errormsg.h"
 
-int charPos=1;
+int charPos = 1;
+int commentCount;
+string str;
+char ddd_c;
+int ddd_i;
 
 int yywrap(void)
 {
- charPos=1;
- return 1;
+	charPos=1;
+	return 1;
 }
 
 
 void adjust(void)
 {
- EM_tokPos=charPos;
- charPos+=yyleng;
+	EM_tokPos=charPos;
+	charPos+=yyleng;
 }
 
 %}
 
-%Start COMMENT ISSTRING
+LineTerminator	\r|\n|\r\n
+WhiteSpace	LineTerminator|[ \t\f]
+Identifier	[_a-zA-Z]([_a-zA-Z]|[0-9])*
+DecInteger	[0-9][0-9]*
+
+%state COMMENT
+%state INSTRING
+
 %%
 
+<INITIAL>
+{
+	\"	{BEGIN INSTRING; str = String("");}
+	"/*"	{commentCount=1; BEGIN COMMENT;}
 
-<INITIAL>while	{adjust(); return WHILE;}
-<INITIAL>for	{adjust(); return FOR;}
-<INITIAL>to	{adjust(); return TO;}
-<INITIAL>break	{adjust(); return BREAK;}
-<INITIAL>let	{adjust(); return LET;}
-<INITIAL>in	{adjust(); return IN;}
-<INITIAL>end	{adjust(); return END;}
-<INITIAL>function	{adjust(); return FUNCTION;}
-<INITIAL>var	{adjust(); return VAR;}
-<INITIAL>type	{adjust(); return TYPE;}
-<INITIAL>array	{adjust(); return ARRAY;}
-<INITIAL>if	{adjust(); return IF;}
-<INITIAL>then	{adjust(); return THEN;}
-<INITIAL>else	{adjust(); return ELSE;}
-<INITIAL>do	{adjust(); return DO;}
-<INITIAL>of	{adjust(); return OF;}
-<INITIAL>nil	{adjust(); return NIL;}
+	"while"	{adjust(); return WHILE;}
+	"for"	{adjust(); return FOR;}
+	"to"	{adjust(); return TO;}
+	"break"	{adjust(); return BREAK;}
+	"let"	{adjust(); return LET;}
+	"in"	{adjust(); return IN;}
+	"end"	{adjust(); return END;}
+	"function"	{adjust(); return FUNCTION;}
+	"var"	{adjust(); return VAR;}
+	"type"	{adjust(); return TYPE;}
+	"array"	{adjust(); return ARRAY;}
+	"if"	{adjust(); return IF;}
+	"then"	{adjust(); return THEN;}
+	"else"	{adjust(); return ELSE;}
+	"do"	{adjust(); return DO;}
+	"of"	{adjust(); return OF;}
+	"nil"	{adjust(); return NIL;}
 
-<INITIAL>","	{adjust(); return COMMA;}
-<INITIAL>":"	{adjust(); return COLON;}
-<INITIAL>";"	{adjust(); return SEMICOLON;}
-<INITIAL>"("	{adjust(); return LPAREN;}
-<INITIAL>")"	{adjust(); return RPAREN;}
-<INITIAL>"["	{adjust(); return LBRACK;}
-<INITIAL>"]"	{adjust(); return RBRACK;}
-<INITIAL>"{"	{adjust(); return LBRACE;}
-<INITIAL>"}"	{adjust(); return RBRACE;}
-<INITIAL>"."	{adjust(); return DOT;}
-<INITIAL>"+"	{adjust(); return PLUS;}
-<INITIAL>"-"	{adjust(); return MINUS;}
-<INITIAL>"*"	{adjust(); return TIMES;}
-<INITIAL>"/"	{adjust(); return DIVIDE;}
-<INITIAL>"="	{adjust(); return EQ;}
-<INITIAL>"<>"	{adjust(); return NEQ;}
-<INITIAL>"<"	{adjust(); return LT;}
-<INITIAL>"<="	{adjust(); return LE;}
-<INITIAL>">"	{adjust(); return GT;}
-<INITIAL>">="	{adjust(); return GE;}
-<INITIAL>"&"	{adjust(); return AND;}
-<INITIAL>"|"	{adjust(); return OR;}
-<INITIAL>":="	{adjust(); return ASSIGN;}
+	","	{adjust(); return COMMA;}
+	":"	{adjust(); return COLON;}
+	";"	{adjust(); return SEMICOLON;}
+	"("	{adjust(); return LPAREN;}
+	")"	{adjust(); return RPAREN;}
+	"["	{adjust(); return LBRACK;}
+	"]"	{adjust(); return RBRACK;}
+	"{"	{adjust(); return LBRACE;}
+	"}"	{adjust(); return RBRACE;}
+	"."	{adjust(); return DOT;}
+	"+"	{adjust(); return PLUS;}
+	"-"	{adjust(); return MINUS;}
+	"*"	{adjust(); return TIMES;}
+	"/"	{adjust(); return DIVIDE;}
+	"="	{adjust(); return EQ;}
+	"<>"	{adjust(); return NEQ;}
+	"<"	{adjust(); return LT;}
+	"<="	{adjust(); return LE;}
+	">"	{adjust(); return GT;}
+	">="	{adjust(); return GE;}
+	"&"	{adjust(); return AND;}
+	"|"	{adjust(); return OR;}
+	":="	{adjust(); return ASSIGN;}
 
+	{Identifier}	{adjust(); yylval.sval=yytext; return ID;}
+	{WhiteSpace}	{}
+	{DecInteger}	{adjust(); yylval.ival=atoi(yytext); return INT;}
 
-<INITIAL>"/*"	{adjust(); BEGIN COMMENT;}
-<INITIAL>" "	{adjust(); continue;}
-<INITIAL>\t	{adjust(); continue;}
-<INITIAL>[\n\r]	{adjust(); EM_newline(); continue;}
-<INITIAL>[0-9]+	{adjust(); yylval.ival=atoi(yytext); return INT;}
-<INITIAL>[a-zA-Z][a-zA-Z0-9_]*	{adjust(); yylval.sval=yytext; return ID;}
+	.	{EM_error(charPos, "Illegal character < ", yytext, " >");}
+}
 
-<INITIAL>\"(\\.|[^\\"])*\" {adjust(); yylval.sval=yytext; return STRING;}
+<INSTRING>
+{
+	\"	{BEGIN INITIAL; yylval.sval = str; return STRING;}
+	{LineTerminator}	{EM_error(charPos, "Unterminated string at end of line");}
+	\\n	{adjust(); str = strcpy(str + 1 , "\n");}
+	\\t	{adjust(); str = strcpy(str + 1 , "\t");}
+	\\\"	{adjust(); str = strcpy(str + 1 , "\"");}
+	\\\\	{adjust(); str = strcpy(str + 1 , "\\");}
+        \\[0-9][0-9][0-9]       {adjust(); ddd_i = atoi(yytext + 1); if (ddd_i>255) {EM_error(charPos, "Illegal string with \\ddd");} else {ddd_c = (char) ddd_i; str = strcpy(str + 1, &ddd_c);}}
+        (\\.|[^\\"])*   {adjust(); str = strcpy(str + yyleng, yytext); adjust();}
+	\\WhiteSpace+\\	{}
+}
 
-<INITIAL>.	{adjust(); EM_error(EM_tokPos,"illegal token");}
+<COMMENT>
+{
+	"/*"	{commentCount++;}
+	"*/"	{commentCount--; if(commentCount==0){BEGIN INITIAL;}}
+}
 
-<COMMENT>"*/"	{adjust(); BEGIN INITIAL;}
-<COMMENT>.	{adjust();}

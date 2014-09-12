@@ -1,1 +1,2 @@
-if 1 then 2 else 3
+if 1 then 2
+if 4 then if 3 then 5 else 6
