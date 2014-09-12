@@ -1721,16 +1721,3 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 224 "tiger.y" /* yacc.c:1906  */
-
-int main(void) 
-{ 
-	yyparse(); 
-	return 0; 
-}
-
-
-
-
-
-
