@@ -83,6 +83,7 @@ DecInteger	[0-9][0-9]*
 	":="	{adjust(); return ASSIGN;}
 
 	{Identifier}	{adjust(); yylval.sval=yytext; return ID;}
+	{LineTerminator}	{EM_newline();}
 	{WhiteSpace}	{}
 	{DecInteger}	{adjust(); yylval.ival=atoi(yytext); return INT;}
 
@@ -100,11 +101,13 @@ DecInteger	[0-9][0-9]*
         \\[0-9][0-9][0-9]       {adjust(); ddd_i = atoi(yytext + 1); if (ddd_i>255) {EM_error(charPos, "Illegal string with \\ddd");} else {ddd_c = (char) ddd_i; str = strcpy(str + 1, &ddd_c);}}
         (\\.|[^\\"])*   {adjust(); str = strcpy(str + yyleng, yytext); adjust();}
 	\\WhiteSpace+\\	{}
+	.	{}
 }
 
 <COMMENT>
 {
 	"/*"	{commentCount++;}
 	"*/"	{commentCount--; if(commentCount==0){BEGIN INITIAL;}}
+	.	{}
 }
 
