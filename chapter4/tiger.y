@@ -11,10 +11,9 @@ A_exp absyn_root;
 
 void yyerror(char *s)
 {
- EM_error(EM_tokPos, "%s", s);
+	EM_error(EM_tokPos, "%s", s);
 }
 %}
-
 
 %union {
 	int pos;
@@ -22,8 +21,7 @@ void yyerror(char *s)
 	string sval;
 	A_var var;
 	A_exp exp;
-	/* et cetera */
-	}
+}
 
 %token <sval> ID STRING
 %token <ival> INT
