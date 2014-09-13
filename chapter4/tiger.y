@@ -13,6 +13,7 @@ void yyerror(char *s)
 {
 	EM_error(EM_tokPos, "%s", s);
 }
+
 %}
 
 %union {

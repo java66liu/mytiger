@@ -3,6 +3,7 @@
 #include "util.h"
 #include "y.tab.c"
 #include "errormsg.h"
+#include "symbol.h"
 
 
 int charPos = 1;

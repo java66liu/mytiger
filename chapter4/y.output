@@ -1,4 +1,4 @@
-Terminals which are not used
+Terminals unused in grammar
 
    STRING
    INT
@@ -44,7 +44,7 @@ Terminals which are not used
    TYPE
 
 
-Grammar
+语法
 
     0 $accept: program $end
 
@@ -112,39 +112,39 @@ exp (48)
     on left: 2, on right: 1
 
 
-state 0
+State 0
 
     0 $accept: . program $end
 
     ID  shift, and go to state 1
 
-    program  go to state 2
-    exp      go to state 3
+    program  转到状态 2
+    exp      转到状态 3
 
 
-state 1
+State 1
 
     2 exp: ID .
 
     $default  reduce using rule 2 (exp)
 
 
-state 2
+State 2
 
     0 $accept: program . $end
 
     $end  shift, and go to state 4
 
 
-state 3
+State 3
 
     1 program: exp .
 
     $default  reduce using rule 1 (program)
 
 
-state 4
+State 4
 
     0 $accept: program $end .
 
-    $default  accept
+    $default  接受

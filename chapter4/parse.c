@@ -20,3 +20,9 @@ A_exp parse(string fname)
    return absyn_root;
  else return NULL;
 }
+
+int main(int argc, char **argv) {
+ if (argc!=2) {fprintf(stderr,"usage: a.out filename\n"); exit(1);}
+ parse(argv[1]);
+ return 0;
+}
