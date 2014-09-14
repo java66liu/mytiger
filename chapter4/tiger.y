@@ -144,7 +144,7 @@ exprList
 				}
 
 field
-:	ID EQ expr      { $$ = A_Efield(A_SimpleVar(EM_tokPos, S_Symbol($1)), $3); }
+:	ID EQ expr      { $$ = A_Efield(S_Symbol($1), $3); }
 
 fieldList
 :	field	{ $$ = A_EfieldList($1, NULL); }
