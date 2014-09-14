@@ -116,13 +116,9 @@ declList
 |	decl declList
 
 decl
-:	typeDeclList
-|	varDecl
-|	funcDeclLiet
-
-typeDeclList
 :	typeDecl
-|	typeDecl typeDeclList
+|	varDecl
+|	funcDecl
 
 typeDecl
 :	TYPE ID EQ type
@@ -140,10 +136,6 @@ typeFields
 varDecl
 :	VAR ID ASSIGN expr
 |	VAR ID COLON ID ASSIGN expr
-
-funcDeclLiet
-:	funcDecl
-|	funcDecl funcDeclLiet
 
 funcDecl
 :	FUNCTION ID LPAREN typeFields RPAREN EQ expr
