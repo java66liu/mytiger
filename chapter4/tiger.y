@@ -51,6 +51,7 @@ void yyerror(char *s)
 %type <var> lvalue
 %type <expList> exprSeq exprList
 %type <efieldList> fieldList
+%type <efield> field
 %type <decList> declList
 %type <dec> decl varDecl
 %type <ty> type
@@ -124,30 +125,36 @@ expr
 
 exprSeq
 :	expr	{ $$ = A_ExpList($1, NULL); }
-|	exprSeq SEMICOLON expr	{ A_expList ptr;
-                                ptr = $1;
-                                while(ptr->tail != NULL) { ptr = ptr->tail; }
-                                ptr->tail = A_ExpList($3, NULL);
-                                $$ = $1;
-                               }
+|	exprSeq SEMICOLON expr	{
+					A_expList ptr;
+					ptr = $1;
+					while (ptr->tail != NULL) { ptr = ptr->tail; }
+					ptr->tail = A_ExpList($3, NULL);
+					$$ = $1;
+				}
 
 exprList
 :	expr	{ $$ = A_ExpList($1, NULL); }
-|	exprList COMMA expr	{ A_expList ptr;
-                              ptr = $1;
-                              while(ptr->tail != NULL) { ptr = ptr->tail; }
-                              ptr->tail = A_ExpList($3, NULL); 
-                              $$ = $1;
-                             }
+|	exprList COMMA expr	{
+					A_expList ptr;
+					ptr = $1;
+					while (ptr->tail != NULL) { ptr = ptr->tail; }
+					ptr->tail = A_ExpList($3, NULL); 
+					$$ = $1;
+				}
+
+field
+:	ID EQ expr      { $$ = A_Efield(A_SimpleVar(EM_tokPos, S_Symbol($1)), $3); }
 
 fieldList
-:	ID EQ expr	{ $$ = A_EfieldList(A_Efield(S_Symbol($1), $3), NULL); }
-|	fieldList COMMA ID EQ expr	{ A_efieldList ptr;
-                                          ptr = $1; 
-                                          while(ptr->tail != NULL) { ptr = ptr->tail; }
-                                          ptr->tail = A_EfieldList(A_Efield(S_Symbol($3), $5), NULL); 
-                                          $$ = $1;
-                                         }
+:	field	{ $$ = A_EfieldList($1, NULL); }
+|	fieldList COMMA field	{
+					A_efieldList ptr;
+					ptr = $1; 
+					while (ptr->tail != NULL) { ptr = ptr->tail; }
+					ptr->tail = A_EfieldList($3, NULL); 
+					$$ = $1;
+				}
 
 lvalue
 :	ID	{ $$ = A_SimpleVar(EM_tokPos, S_Symbol($1)); }
@@ -157,29 +164,30 @@ lvalue
 
 declList
 :	decl	{ $$ = A_DecList($1, NULL); }
-|	declList decl	{ A_decList ptr;
-                  ptr = $1; 
-                  while(ptr->tail != NULL) { ptr = ptr->tail; }
-                  if($2->kind == A_varDec || ptr->head->kind == A_varDec) {
-                    ptr->tail = A_DecList($2, NULL);
-                  }
-                  else if($2->kind != ptr->head->kind) {
-                    ptr->tail = A_DecList($2, NULL); 
-                  }
-                  else if($2->kind == A_functionDec) {
-                    A_fundecList ptr2;
-                    ptr2 = ptr->head->u.function;
-                    while(ptr2->tail != NULL) { ptr2 = ptr2->tail; }
-                    ptr2->tail = A_FundecList($2->u.function->head, NULL);
-                  }
-                  else {
-                    A_nametyList ptr2;
-                    ptr2 = ptr->head->u.type;
-                    while(ptr2->tail != NULL) { ptr2 = ptr2->tail; }
-                    ptr2->tail = A_NametyList($2->u.type->head, NULL);
-                  }
-                  $$ = $1;
-                }
+|	declList decl	{
+				A_decList ptr;
+				ptr = $1; 
+				while (ptr->tail != NULL) { ptr = ptr->tail; }
+				if ($2->kind == A_varDec || ptr->head->kind == A_varDec) {
+					ptr->tail = A_DecList($2, NULL);
+				}
+				else if ($2->kind != ptr->head->kind) {
+					ptr->tail = A_DecList($2, NULL); 
+				}
+				else if ($2->kind == A_functionDec) {
+					A_fundecList ptr2;
+					ptr2 = ptr->head->u.function;
+					while (ptr2->tail != NULL) { ptr2 = ptr2->tail; }
+					ptr2->tail = A_FundecList($2->u.function->head, NULL);
+				}
+				else {
+					A_nametyList ptr2;
+					ptr2 = ptr->head->u.type;
+					while (ptr2->tail != NULL) { ptr2 = ptr2->tail; }
+					ptr2->tail = A_NametyList($2->u.type->head, NULL);
+				}
+				$$ = $1;
+			}
 
 decl
 :	typeDecl	{ $$ = A_TypeDec($1->ty->pos, A_NametyList($1, NULL)); }
@@ -197,13 +205,13 @@ type
 
 typeFields
 :	ID COLON ID	{ $$ = A_FieldList(A_Field(EM_tokPos, S_Symbol($1), S_Symbol($3)), NULL); }
-|	typeFields COMMA ID COLON ID	{ A_fieldList ptr;
-                                        ptr = $1;
-                                        while(ptr->tail != NULL) { ptr = ptr->tail; }
-                                        ptr->tail = A_FieldList(A_Field(EM_tokPos, 
-                                                                 S_Symbol($3), S_Symbol($5)), NULL);
-                                        $$ = $1;
-                                       }
+|	typeFields COMMA ID COLON ID	{
+						A_fieldList ptr;
+						ptr = $1;
+						while (ptr->tail != NULL) { ptr = ptr->tail; }
+						ptr->tail = A_FieldList(A_Field(EM_tokPos, S_Symbol($3), S_Symbol($5)), NULL);
+						$$ = $1;
+					}
 
 varDecl
 :	VAR ID ASSIGN expr	{ $$ = A_VarDec($4->pos, S_Symbol($2), NULL, $4); }
