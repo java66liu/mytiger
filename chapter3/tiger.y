@@ -7,7 +7,7 @@ int yylex(void); /* function prototype */
 
 void yyerror(char *s)
 {
- EM_error(EM_tokPos, "%s", s);
+	EM_error(EM_tokPos, "%s", s);
 }
 %}
 
@@ -95,15 +95,18 @@ expr
 
 exprSeq
 :	expr
-|	expr SEMICOLON exprSeq
+|	exprSeq SEMICOLON expr
 
 exprList
 :	expr
-|	expr COMMA exprList
+|	exprList COMMA expr
+
+field
+:	ID EQ expr
 
 fieldList
-:	ID EQ expr
-|	ID EQ expr COMMA fieldList
+:	field
+|	fieldList COMMA field
 
 lvalue
 :	ID
@@ -113,7 +116,7 @@ lvalue
 
 declList
 :	decl
-|	decl declList
+|	declList decl
 
 decl
 :	typeDecl
@@ -131,7 +134,7 @@ type
 
 typeFields
 :	ID COLON ID
-|	ID COLON ID COMMA typeFields
+|	typeFields COMMA ID COLON ID
 
 varDecl
 :	VAR ID ASSIGN expr
