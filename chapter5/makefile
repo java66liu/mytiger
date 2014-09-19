@@ -1,5 +1,5 @@
-a.out: parse.o lex.yy.o errormsg.o util.o absyn.o symbol.o table.o
-	cc -g parse.o lex.yy.o errormsg.o util.o absyn.o symbol.o table.o
+a.out: parse.o lex.yy.o errormsg.o util.o absyn.o symbol.o table.o types.o semant.o
+	cc -g parse.o lex.yy.o errormsg.o util.o absyn.o symbol.o table.o types.o semant.o
 
 parse.o: parse.c errormsg.h util.h
 	cc -g -c parse.c
@@ -31,5 +31,10 @@ lex.yy.c: tiger.lex
 util.o: util.c util.h
 	cc -g -c util.c
 
+types.o: types.c types.h
+	cc -g -c types.c
+
+semant.o: semant.c semant.h
+	cc -g -c semant.c
 clean: 
-	rm -f a.out util.o parse.o lex.yy.o lex.yy.c errormsg.o y.tab.c y.tab.h y.tab.o absyn.o symbol.o table.o y.output
+	rm -f a.out util.o parse.o lex.yy.o lex.yy.c errormsg.o y.tab.c y.tab.h y.tab.o absyn.o symbol.o table.o y.output types.o semant.o
