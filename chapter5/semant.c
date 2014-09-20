@@ -4,6 +4,14 @@
 #include <assert.h>
 #include "env.h"
 
+static Ty_ty actual_ty(Ty_ty ty) {
+	if(ty->kind != Ty_name) {
+		return ty;
+	} else {
+		return actual_ty(ty->u.name.ty);
+	}
+}
+
 struct expty transExp(S_table venv, S_table tenv, A_exp a) {
 	switch(a->kind) {
 		case A_opExp: {
@@ -34,4 +42,5 @@ struct expty transVer(S_table venv, S_table tenv, A_var v) {
 			}
 		}
 	}
+	assert(0);
 }
