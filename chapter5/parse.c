@@ -26,8 +26,7 @@ A_exp parse(string fname)
 
 int main(int argc, char **argv) {
  if (argc!=2) {fprintf(stderr,"usage: a.out filename\n"); exit(1);}
-	S_table tenv = E_base_tenv();
-	S_table venv = E_base_venv();
- transExp(venv, tenv, parse(argv[1]));
+ parse(argv[1]);
+ SEM_transProg(absyn_root);
  return 0;
 }

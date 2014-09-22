@@ -4,6 +4,8 @@
 #include "types.h"
 #include "absyn.h"
 
+void SEM_transProg(A_exp exp);
+
 struct expty transVar(S_table venv, S_table tenv, A_var v);
 struct expty transExp(S_table venv, S_table tenv, A_exp a);
 void transDec(S_table venv, S_table, A_dec d);

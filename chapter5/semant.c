@@ -6,6 +6,12 @@
 
 #define MAX_TYPE_RECUSIVE 4000
 
+void SEM_transProg(A_exp exp) {
+	S_table tenv = E_base_tenv();
+	S_table venv = E_base_venv();
+	struct expty main = transExp(venv, tenv, exp);
+}
+
 static int check_ty(Ty_ty ty) {
 	int i;
 	Ty_ty ty2 = ty;
@@ -315,13 +321,7 @@ struct expty transExp(S_table venv, S_table tenv, A_exp e) {
 				return expTy(NULL, Ty_Void());
 			}
 			else {
-				if (body.ty->kind != Ty_void) {
-					//EM_error(e->pos, "while clause must produce no value");
-					return expTy(NULL, Ty_Void());
-				}
-				else {
-					return expTy(NULL, Ty_Void());
-				}
+				return expTy(NULL, Ty_Void());
 			}
 		}
 		case A_forExp: {
@@ -335,32 +335,21 @@ struct expty transExp(S_table venv, S_table tenv, A_exp e) {
 				struct expty body = transExp(venv, tenv, e->u.forr.body);
 				if (body.ty->kind != Ty_void) {
 					EM_error(e->pos, "for clause body no-value required");
-					return expTy(NULL, Ty_Void());
 				}
-				else {
-					return expTy(NULL, Ty_Void());
-				}
+				return expTy(NULL, Ty_Void());
 			}
 		}
 		case A_breakExp: {
 			return expTy(NULL, Ty_Void());
 		}
 		case A_letExp: {
-			//S_beginScope(venv);
-			//S_beginScope(tenv);
 			struct expty exp = transExp(venv, tenv, e->u.let.body);
-			//S_endScope(tenv);
-			//S_endScope(venv);
 			return expTy(NULL, exp.ty);
 		}
 		case A_arrayExp: {
 			struct expty size = transExp(venv, tenv, e->u.array.size);
 			struct expty init = transExp(venv, tenv, e->u.array.init);
 			Ty_ty ty = actual_ty(S_look(tenv, e->u.array.typ));
-			if (ty == NULL || ty->kind != Ty_array) {
-				//EM_error(e->pos, "undefined array type %s", S_name(e->u.array.typ));
-				return expTy(NULL, Ty_Void());
-			}
 			Ty_ty ty2 = actual_ty(ty->u.array);
 			if (size.ty->kind != Ty_int) {
 				EM_error(e->pos, "size int value required");
@@ -368,29 +357,22 @@ struct expty transExp(S_table venv, S_table tenv, A_exp e) {
 			}
 			else if (ty2->kind == Ty_record) {
 				if ((init.ty->kind == Ty_nil) || (init.ty->kind == Ty_record && ty2 == init.ty)) {
-					return expTy(NULL, ty);
 				}
 				else {
 					EM_error(e->pos, "array init fail:type not match");
-					return expTy(NULL, ty);
 				}
 			}
 			else if(ty2->kind == Ty_array) {
 				if (init.ty->kind == Ty_array && ty2 == init.ty) {
-					return expTy(NULL, ty);
 				}
 				else {
 					EM_error(e->pos, "array init fail:type not match");
-					return expTy(NULL, ty);
 				}
-			}
-			else if (ty2->kind == init.ty->kind) {
-				return expTy(NULL, ty);
 			}
 			else {
 				EM_error(e->pos, "array init fail:type not match");
-				return expTy(NULL, ty);
 			}
+			return expTy(NULL, ty);
 		}
 		default: {
 			assert(0);
@@ -405,7 +387,6 @@ struct expty transVar(S_table venv, S_table tenv, A_var v) {
 			if (x && x->kind == E_varEntry)
 				return expTy(NULL, actual_ty(x->u.var.ty));
 			else {
-				//EM_error(v->pos, "undefined variable %s", S_name(v->u.simple));
 				return expTy(NULL, Ty_Int());
 			}
 		}
@@ -422,13 +403,8 @@ struct expty transVar(S_table venv, S_table tenv, A_var v) {
 						fieldList = fieldList->tail;
 					}
 				}
-				//EM_error(v->pos, "undefined field %s", S_name(v->u.field.sym));
-				return expTy(NULL, Ty_Int());
 			}
-			else {
-				//EM_error(v->pos, "undefined field %s", S_name(v->u.field.sym));
-				return expTy(NULL, Ty_Int());
-			}
+			return expTy(NULL, Ty_Int());
 		}
 		case A_subscriptVar: {
 			struct expty res = transVar(venv, tenv, v->u.subscript.var);
@@ -457,7 +433,6 @@ Ty_ty transTy(S_table tenv, A_ty a) {
 			return ty;
 		}
 		else {
-			//EM_error(a->pos, "undefined type %s", S_name(a->u.name));
 			return Ty_Int();
 		}
 	}
@@ -489,7 +464,6 @@ Ty_ty transTy(S_table tenv, A_ty a) {
 					}
 				}
 				else {
-					//EM_error(a->pos, "undefined field type");
 					return Ty_Int();
 				}
 				afields = afields->tail;
@@ -505,7 +479,6 @@ Ty_ty transTy(S_table tenv, A_ty a) {
 			return Ty_Array(ty);
 		}
 		else {
-			//EM_error(a->pos, "undefined type %s", S_name(a->u.array));
 			return Ty_Int();
 		}
 					}
