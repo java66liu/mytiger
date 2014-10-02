@@ -12,24 +12,6 @@ void SEM_transProg(A_exp exp) {
 	struct expty main = transExp(venv, tenv, exp);
 }
 
-static int check_ty(Ty_ty ty) {
-	int i;
-	Ty_ty ty2 = ty;
-	assert(ty != NULL);
-	for(i = 0; i < MAX_TYPE_RECUSIVE; i++) {
-		if(ty2 == NULL) {
-			return 0;
-		}
-		else if(ty2->kind == Ty_name) {
-			ty2 = ty2->u.name.ty;
-		}
-		else {
-			return 1;
-		}
-	}
-	return 0;
-}
-
 static Ty_ty actual_ty(Ty_ty ty) {
 	if (ty->kind != Ty_name) {
 		return ty;
@@ -37,6 +19,24 @@ static Ty_ty actual_ty(Ty_ty ty) {
 	else {
 		return actual_ty(ty->u.name.ty);
 	}
+}
+
+static int check_ty(Ty_ty ty) {
+	int i;
+	Ty_ty ty2 = ty;
+	assert(ty != NULL);
+	for (i = 0; i < MAX_TYPE_RECUSIVE; i++) {
+		if (ty2 == NULL) {
+			return 0;
+		}
+		else if (ty2->kind == Ty_name) {
+			ty2 = ty2->u.name.ty;
+		}
+		else {
+			return 1;
+		}
+	}
+	return 0;
 }
 
 struct expty expTy(Tr_exp exp, Ty_ty ty)
@@ -48,30 +48,30 @@ struct expty expTy(Tr_exp exp, Ty_ty ty)
 };
 
 Ty_tyList makeFormalTyList(S_table tenv, A_fieldList params) {
-	A_fieldList ptr = params;
-	Ty_tyList ret, ptr2;
+	A_fieldList pFL = params;
+	Ty_tyList pTL = NULL;
+	Ty_tyList resultTy = NULL;
 	Ty_ty ty;
 
-	ret = NULL; ptr2 = NULL;
-	while(ptr != NULL) {
-		ty = S_look(tenv, ptr->head->typ);
-		if(ty != NULL) {
-			if(ret == NULL) {
-				ret = Ty_TyList(ty, NULL);
-				ptr2 = ret;
+	while (pFL != NULL) {
+		ty = S_look(tenv, pFL->head->typ);
+		if (ty != NULL) {
+			if (resultTy == NULL) {
+				resultTy = Ty_TyList(ty, NULL);
+				pTL = resultTy;
 			}
 			else {
-				ptr2->tail = Ty_TyList(ty, NULL);
-				ptr2 = ptr2->tail;
+				pTL->tail = Ty_TyList(ty, NULL);
+				pTL = pTL->tail;
 			}
 		}
 		else {
-			EM_error(ptr->head->pos, "undefined type %s", S_name(ptr->head->typ));
+			EM_error(pFL->head->pos, "undefined type %s", S_name(pFL->head->typ));
 			exit(1);
 		}
-		ptr = ptr->tail;
+		pFL = pFL->tail;
 	}
-	return ret;
+	return resultTy;
 }
 
 struct expty transExp(S_table venv, S_table tenv, A_exp e) {
@@ -426,65 +426,62 @@ struct expty transVar(S_table venv, S_table tenv, A_var v) {
 
 Ty_ty transTy(S_table tenv, A_ty a) {
 	assert(a != NULL);
-	switch(a->kind) {
-	case A_nameTy: {
-		Ty_ty ty = S_look(tenv, a->u.name);
-		if(ty != NULL) {
-			return ty;
-		}
-		else {
-			return Ty_Int();
-		}
-	}
-	case A_recordTy: {
-		Ty_ty ty,ty2;
-		Ty_fieldList fields,tailptr;
-		A_fieldList afields;
-		if(a->u.record == NULL) {
-			fields = NULL;
-			ty = Ty_Record(fields);
-			return ty;
-		}
-		else {
-			fields = tailptr = NULL;
-			afields = a->u.record;
-			while(afields != NULL) {
-				ty2 = S_look(tenv, afields->head->typ);
-				if(ty2 != NULL)
-				{
-					if(fields == NULL)
-					{
-						fields = Ty_FieldList(Ty_Field(afields->head->name, ty2), NULL);
-						tailptr = fields;
-					}
-					else 
-					{
-						tailptr->tail = Ty_FieldList(Ty_Field(afields->head->name, ty2), NULL);
-						tailptr = tailptr->tail;
-					}
-				}
-				else {
-					return Ty_Int();
-				}
-				afields = afields->tail;
+	switch (a->kind) {
+		case A_nameTy: {
+			Ty_ty ty = S_look(tenv, a->u.name);
+			if (ty != NULL) {
+				return ty;
 			}
-			ty = Ty_Record(fields);
-			return ty;
+			else {
+				return Ty_Int();
+			}
 		}
-					 }
-	case A_arrayTy: {
-		Ty_ty ty;
-		ty = S_look(tenv, a->u.array);
-		if(ty != NULL) {
-			return Ty_Array(ty);
-		}
-		else {
-			return Ty_Int();
-		}
+		case A_recordTy: {
+			Ty_ty ty,ty2;
+			Ty_fieldList fields,tailptr;
+			A_fieldList afields;
+			if (a->u.record == NULL) {
+				fields = NULL;
+				ty = Ty_Record(fields);
+				return ty;
+			}
+			else {
+				fields = tailptr = NULL;
+				afields = a->u.record;
+				while (afields != NULL) {
+					ty2 = S_look(tenv, afields->head->typ);
+					if (ty2 != NULL) {
+						if (fields == NULL) {
+							fields = Ty_FieldList(Ty_Field(afields->head->name, ty2), NULL);
+							tailptr = fields;
+						}
+						else {
+							tailptr->tail = Ty_FieldList(Ty_Field(afields->head->name, ty2), NULL);
+							tailptr = tailptr->tail;
+						}
 					}
-	default: {
-		assert(0);
-			 }
+					else {
+						return Ty_Int();
+					}
+					afields = afields->tail;
+				}
+				ty = Ty_Record(fields);
+				return ty;
+			}
+		}
+		case A_arrayTy: {
+			Ty_ty ty;
+			ty = S_look(tenv, a->u.array);
+			if (ty != NULL) {
+				return Ty_Array(ty);
+			}
+			else {
+				return Ty_Int();
+			}
+		}
+		default: {
+			assert(0);
+		}
 	}
 }
 
@@ -493,34 +490,70 @@ void transDec(S_table venv, S_table tenv, A_dec d) {
 		return;
 	}
 	switch(d->kind) {
-	case A_varDec: {
-		struct expty e = transExp(venv, tenv, d->u.var.init);
-		S_enter(venv, d->u.var.var, E_VarEntry(e.ty));
-		break;
-	}
-	case A_typeDec: {
-		S_enter(venv, d->u.type->head->name, transTy(tenv, d->u.type->head->ty));
-		break;
-	}
-	case A_functionDec: {
-		A_fundec f = d->u.function->head;
-		Ty_ty resultTy = S_look(tenv, f->result);
-		Ty_tyList formalTys = makeFormalTyList(tenv, f->params);
-		S_enter(venv,  f->name, E_FunEntry(formalTys, resultTy));
-		S_beginScope(venv);
-		{
-			A_fieldList l;
-			Ty_tyList t;
-			for (l = f->params, t = formalTys; l; l = l->tail, t = t->tail) {
-				S_enter(venv, l->head->name, E_VarEntry(t->head));
-			}
+		case A_varDec: {
+			struct expty e = transExp(venv, tenv, d->u.var.init);
+			S_enter(venv, d->u.var.var, E_VarEntry(e.ty));
+			break;
 		}
-		transExp(venv, tenv, d->u.function->head->body);
-		S_endScope(venv);
-		break;
-	}
-	default: {
-		assert(0);
-			 }
+		case A_typeDec: {
+			A_nametyList nametyList;
+			Ty_ty ty, ty2;
+			S_table tmpTable = S_empty();
+	
+			nametyList = d->u.type;
+			while (nametyList != NULL) {
+				if (S_look(tmpTable, nametyList->head->name) != NULL) {
+					EM_error(d->pos, "illegal type redecalration");
+					exit(1);
+				}
+				else {
+					S_enter(tmpTable, nametyList->head->name, "dummy");
+				}
+				S_enter(tenv, nametyList->head->name, Ty_Name(nametyList->head->name, NULL));
+				nametyList = nametyList->tail;
+			}
+	
+			nametyList = d->u.type;
+			while (nametyList != NULL) {
+				ty = transTy(tenv, nametyList->head->ty);
+				ty2 = S_look(tenv, nametyList->head->name);
+				assert(ty2 != NULL && ty2->kind == Ty_name);
+				ty2->u.name.ty = ty;
+				nametyList = nametyList->tail;
+			}
+	
+			nametyList = d->u.type;
+			while (nametyList != NULL){
+				ty = S_look(tenv, nametyList->head->name);
+				if (check_ty(ty) == 0) {
+					EM_error(d->pos, "illegal mutually type declaration");
+					exit(1);
+				}
+				else {
+					nametyList = nametyList->tail;
+				}
+			}
+			return;
+		}
+		case A_functionDec: {
+			A_fundec f = d->u.function->head;
+			Ty_ty resultTy = S_look(tenv, f->result);
+			Ty_tyList formalTys = makeFormalTyList(tenv, f->params);
+			S_enter(venv,  f->name, E_FunEntry(formalTys, resultTy));
+			S_beginScope(venv);
+			{
+				A_fieldList l;
+				Ty_tyList t;
+				for (l = f->params, t = formalTys; l; l = l->tail, t = t->tail) {
+					S_enter(venv, l->head->name, E_VarEntry(t->head));
+				}
+			}
+			transExp(venv, tenv, d->u.function->head->body);
+			S_endScope(venv);
+			break;
+		}
+		default: {
+			assert(0);
+		}
 	}
 }
