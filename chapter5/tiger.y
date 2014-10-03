@@ -59,16 +59,14 @@ void yyerror(char *s)
 %type <fieldList> typeFields
 %type <fundec> funcDecl
 
-%right FUNCTION TYPE
-%right OF
-%right DO ELSE THEN
-%nonassoc ASSIGN
-%left OR AND
-%nonassoc EQ NEQ LT LE GT GE
+%nonassoc THEN DO TYPE FUNCTION ID
+%nonassoc ASSIGN LBRACK ELSE OF
+%left OR
+%left AND
+%nonassoc EQ NEQ LE LT GT GE
 %left PLUS MINUS
 %left TIMES DIVIDE
 %left UMINUS
-%left LPAREN
 
 %start program
 %%
@@ -190,9 +188,9 @@ declList
 			}
 
 decl
-:	typeDecl	{ $$ = A_TypeDec($1->ty->pos, A_NametyList($1, NULL)); }
+:	typeDecl { $$ = A_TypeDec($1->ty->pos, A_NametyList($1, NULL)); }
 |	varDecl	{ $$ = $1; }
-|	funcDecl	{ $$ = A_FunctionDec($1->pos, A_FundecList($1, NULL)); }
+|	funcDecl { $$ = A_FunctionDec($1->pos, A_FundecList($1, NULL)); }
 
 typeDecl
 :	TYPE ID EQ type	{ $$ = A_Namety(S_Symbol($2), $4); }

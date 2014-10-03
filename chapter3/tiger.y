@@ -29,16 +29,14 @@ void yyerror(char *s)
   BREAK NIL
   FUNCTION VAR TYPE 
 
-%right FUNCTION TYPE
-%right OF
-%right DO ELSE THEN
-%nonassoc ASSIGN
-%left OR AND
-%nonassoc EQ NEQ LT LE GT GE
+%nonassoc THEN DO TYPE FUNCTION ID
+%nonassoc ASSIGN LBRACK ELSE OF
+%left OR
+%left AND
+%nonassoc EQ NEQ LE LT GT GE
 %left PLUS MINUS
 %left TIMES DIVIDE
 %left UMINUS
-%left LPAREN
 
 %start program
 %%

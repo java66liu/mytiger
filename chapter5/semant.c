@@ -4,8 +4,6 @@
 #include <assert.h>
 #include "env.h"
 
-#define MAX_TYPE_RECUSIVE 4000
-
 void SEM_transProg(A_exp exp) {
 	S_table tenv = E_base_tenv();
 	S_table venv = E_base_venv();
@@ -19,24 +17,6 @@ static Ty_ty actual_ty(Ty_ty ty) {
 	else {
 		return actual_ty(ty->u.name.ty);
 	}
-}
-
-static int check_ty(Ty_ty ty) {
-	int i;
-	Ty_ty ty2 = ty;
-	assert(ty != NULL);
-	for (i = 0; i < MAX_TYPE_RECUSIVE; i++) {
-		if (ty2 == NULL) {
-			return 0;
-		}
-		else if (ty2->kind == Ty_name) {
-			ty2 = ty2->u.name.ty;
-		}
-		else {
-			return 1;
-		}
-	}
-	return 0;
 }
 
 struct expty expTy(Tr_exp exp, Ty_ty ty)
@@ -94,7 +74,7 @@ struct expty transExp(S_table venv, S_table tenv, A_exp e) {
 		case A_callExp: {
 			E_enventry fun = S_look(venv, e->u.call.func);
 			if (fun == NULL || fun->kind == E_varEntry) {
-				//EM_error(e->pos, "undefined function %s", S_name(e->u.call.func));
+				EM_error(e->pos, "undefined function %s", S_name(e->u.call.func));
 				return expTy(NULL, Ty_Int());
 			}
 			else {
@@ -165,6 +145,9 @@ struct expty transExp(S_table venv, S_table tenv, A_exp e) {
 				if (left.ty->kind == Ty_int && right.ty->kind == Ty_int) {
 					return expTy(NULL, Ty_Int());
 				}
+				else if (left.ty->kind == Ty_string && right.ty->kind == Ty_string) {
+					return expTy(NULL, Ty_Int());
+				}
 				else {
 					EM_error(e->pos, "type not match");
 					return expTy(NULL, Ty_Int());
@@ -190,20 +173,14 @@ struct expty transExp(S_table venv, S_table tenv, A_exp e) {
 					}
 					struct expty res = transExp(venv, tenv, efieldList->head->exp);
 					Ty_ty fieldty = actual_ty(fieldList->head->ty);
-					if (fieldty->kind == Ty_record && res.ty->kind == Ty_nil) {
-					}
-					else if (fieldty->kind == Ty_record && res.ty->kind == Ty_record) {
-						if (fieldty == res.ty) {
-						}
-						else {
+					if (fieldty->kind == Ty_record && res.ty->kind == Ty_record) {
+						if (fieldty != res.ty) {
 							EM_error(e->pos, "record field not match");
 							return expTy(NULL, Ty_Nil());
 						}
 					}
 					else if (fieldty->kind == Ty_array && res.ty->kind == Ty_array) {
-						if (fieldty == res.ty) {
-						}
-						else {
+						if (fieldty != res.ty) {
 							EM_error(e->pos, "record field not match");
 							return expTy(NULL, Ty_Nil());
 						}
@@ -217,7 +194,7 @@ struct expty transExp(S_table venv, S_table tenv, A_exp e) {
 					fieldList = fieldList->tail;
 					efieldList = efieldList->tail;
 				}
-				if (fieldList != NULL && efieldList != NULL) {
+				if (fieldList != NULL || efieldList != NULL) {
 					EM_error(e->pos, "record field not match");
 					return expTy(NULL, Ty_Nil());
 				}
@@ -343,8 +320,16 @@ struct expty transExp(S_table venv, S_table tenv, A_exp e) {
 			return expTy(NULL, Ty_Void());
 		}
 		case A_letExp: {
+			A_decList d;
+			S_beginScope(venv);
+			S_beginScope(tenv);
+			for (d = e->u.let.decs; d; d = d->tail) {
+				transDec(venv, tenv, d->head);
+			}
 			struct expty exp = transExp(venv, tenv, e->u.let.body);
-			return expTy(NULL, exp.ty);
+			S_endScope(venv);
+			S_endScope(tenv);
+			return exp;
 		}
 		case A_arrayExp: {
 			struct expty size = transExp(venv, tenv, e->u.array.size);
@@ -486,55 +471,18 @@ Ty_ty transTy(S_table tenv, A_ty a) {
 }
 
 void transDec(S_table venv, S_table tenv, A_dec d) {
-	if(d == NULL) {
+	if (d == NULL) {
 		return;
 	}
-	switch(d->kind) {
+	switch (d->kind) {
 		case A_varDec: {
 			struct expty e = transExp(venv, tenv, d->u.var.init);
 			S_enter(venv, d->u.var.var, E_VarEntry(e.ty));
-			break;
 		}
 		case A_typeDec: {
-			A_nametyList nametyList;
-			Ty_ty ty, ty2;
-			S_table tmpTable = S_empty();
-	
-			nametyList = d->u.type;
-			while (nametyList != NULL) {
-				if (S_look(tmpTable, nametyList->head->name) != NULL) {
-					EM_error(d->pos, "illegal type redecalration");
-					exit(1);
-				}
-				else {
-					S_enter(tmpTable, nametyList->head->name, "dummy");
-				}
-				S_enter(tenv, nametyList->head->name, Ty_Name(nametyList->head->name, NULL));
-				nametyList = nametyList->tail;
-			}
-	
-			nametyList = d->u.type;
-			while (nametyList != NULL) {
-				ty = transTy(tenv, nametyList->head->ty);
-				ty2 = S_look(tenv, nametyList->head->name);
-				assert(ty2 != NULL && ty2->kind == Ty_name);
-				ty2->u.name.ty = ty;
-				nametyList = nametyList->tail;
-			}
-	
-			nametyList = d->u.type;
-			while (nametyList != NULL){
-				ty = S_look(tenv, nametyList->head->name);
-				if (check_ty(ty) == 0) {
-					EM_error(d->pos, "illegal mutually type declaration");
-					exit(1);
-				}
-				else {
-					nametyList = nametyList->tail;
-				}
-			}
-			return;
+			S_enter(tenv, d->u.type->head->name, transTy(tenv, d->u.type->head->ty));
 		}
+		/*
 		case A_functionDec: {
 			A_fundec f = d->u.function->head;
 			Ty_ty resultTy = S_look(tenv, f->result);
@@ -555,5 +503,6 @@ void transDec(S_table venv, S_table tenv, A_dec d) {
 		default: {
 			assert(0);
 		}
+		*/
 	}
 }
