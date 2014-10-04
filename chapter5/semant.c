@@ -74,7 +74,7 @@ struct expty transExp(S_table venv, S_table tenv, A_exp e) {
 		case A_callExp: {
 			E_enventry fun = S_look(venv, e->u.call.func);
 			if (fun == NULL || fun->kind == E_varEntry) {
-				EM_error(e->pos, "undefined function %s", S_name(e->u.call.func));
+				//EM_error(e->pos, "undefined function %s", S_name(e->u.call.func));
 				return expTy(NULL, Ty_Int());
 			}
 			else {
@@ -482,7 +482,6 @@ void transDec(S_table venv, S_table tenv, A_dec d) {
 		case A_typeDec: {
 			S_enter(tenv, d->u.type->head->name, transTy(tenv, d->u.type->head->ty));
 		}
-		/*
 		case A_functionDec: {
 			A_fundec f = d->u.function->head;
 			Ty_ty resultTy = S_look(tenv, f->result);
@@ -503,6 +502,5 @@ void transDec(S_table venv, S_table tenv, A_dec d) {
 		default: {
 			assert(0);
 		}
-		*/
 	}
 }
