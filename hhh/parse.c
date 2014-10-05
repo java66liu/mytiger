@@ -120,8 +120,8 @@ int main(int argc, char **argv) {
 		fprintf(stderr,"usage: a.out filename\n");
 		exit(1);
 	}
-    //parseExp(parse(argv[1]));
+    parse(argv[1]);
     //printf("%s\n", S_name(parse(argv[1])->u.let.decs->tail->head->u.var.var));
-    printf("|%s\n", S_name(parse(argv[1])->u.let.decs->tail->head->u.var.typ));
+    //printf("|%s\n", S_name(parse(argv[1])->u.let.decs->tail->head->u.var.typ));
 	return 0;
 }
