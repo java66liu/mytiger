@@ -30,8 +30,8 @@ void parseVar(A_var v) {
 void parseDec(A_dec d) {
     switch (d->kind) {
         case A_varDec:
-            printf(S_name(d->u.var.var), "%s\t");
-            printf(S_name(d->u.var.typ), "%s\t");
+            printf("%s\t", S_name(d->u.var.var));
+            printf("%s\t", S_name(d->u.var.typ));
             parseExp(d->u.var.init);
             break;
         case A_functionDec:
@@ -52,7 +52,7 @@ void parseExp(A_exp e) {
             parseExp(e->u.iff.elsee);
             break;
         case A_arrayExp:
-            printf(S_name(e->u.array.typ),"%s\t");
+            printf("%s\t", S_name(e->u.array.typ));
             parseExp(e->u.array.size);
             parseExp(e->u.array.init);
             break;
@@ -65,7 +65,7 @@ void parseExp(A_exp e) {
             printf("break\t");
             break;
         case A_callExp:
-            printf(S_name(e->u.call.func), "%s\t");
+            printf("%s\t", S_name(e->u.call.func));
             A_expList el = e->u.call.args;
             while (el) {
                 parseExp(el->head);
@@ -73,7 +73,7 @@ void parseExp(A_exp e) {
             }
             break;
         case A_forExp:
-            printf(S_name(e->u.forr.var), "for %s\t");
+            printf("for %s\t", S_name(e->u.forr.var));
             parseExp(e->u.forr.body);
             parseExp(e->u.forr.hi);
             parseExp(e->u.forr.lo);

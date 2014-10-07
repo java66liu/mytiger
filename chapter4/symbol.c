@@ -10,7 +10,7 @@ struct S_symbol_ {
 };
 
 static S_symbol mksymbol(string name, S_symbol next) {
-    S_symbol s = checked_malloc(sizeof(*s));
+    S_symbol s = (S_symbol) checked_malloc(sizeof(*s));
     s->name = name;
     s->next = next;
     return s;
@@ -33,7 +33,6 @@ static int streq(string a, string b) {
 }
 
 S_symbol S_Symbol(string name) {
-    printf(">%s<\n" ,name);
     int index = hash(name) % SIZE;
     S_symbol syms = hashtable[index];
     S_symbol sym;
