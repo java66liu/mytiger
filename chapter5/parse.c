@@ -30,7 +30,6 @@ int main(int argc, char **argv) {
 		fprintf(stderr,"usage: a.out filename\n");
 		exit(1);
 	}
-	parse(argv[1]);
 	SEM_transProg(parse(argv[1]));
 	return 0;
 }

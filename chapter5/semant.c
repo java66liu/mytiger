@@ -354,9 +354,6 @@ struct expty transExp(S_table venv, S_table tenv, A_exp e) {
 					EM_error(e->pos, "array init fail:type not match");
 				}
 			}
-			else {
-				EM_error(e->pos, "array init fail:type not match");
-			}
 			return expTy(NULL, ty);
 		}
 		default: {
@@ -478,9 +475,11 @@ void transDec(S_table venv, S_table tenv, A_dec d) {
 		case A_varDec: {
 			struct expty e = transExp(venv, tenv, d->u.var.init);
 			S_enter(venv, d->u.var.var, E_VarEntry(e.ty));
+			break;
 		}
 		case A_typeDec: {
 			S_enter(tenv, d->u.type->head->name, transTy(tenv, d->u.type->head->ty));
+			break;
 		}
 		case A_functionDec: {
 			A_fundec f = d->u.function->head;
