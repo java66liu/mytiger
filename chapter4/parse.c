@@ -282,6 +282,5 @@ int main(int argc, char **argv) {
 		exit(1);
 	}
     parseExp(parse(argv[1]));
-	//parse(argv[1]);
 	return 0;
 }
