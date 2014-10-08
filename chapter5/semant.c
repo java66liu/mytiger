@@ -320,11 +320,12 @@ struct expty transExp(S_table venv, S_table tenv, A_exp e) {
 			return expTy(NULL, Ty_Void());
 		}
 		case A_letExp: {
-			A_decList d;
+			A_decList d = e->u.let.decs;
 			S_beginScope(venv);
 			S_beginScope(tenv);
-			for (d = e->u.let.decs; d; d = d->tail) {
+			while (d) {
 				transDec(venv, tenv, d->head);
+				d = d->tail;
 			}
 			struct expty exp = transExp(venv, tenv, e->u.let.body);
 			S_endScope(venv);
@@ -478,7 +479,9 @@ void transDec(S_table venv, S_table tenv, A_dec d) {
 			break;
 		}
 		case A_typeDec: {
-			S_enter(tenv, d->u.type->head->name, transTy(tenv, d->u.type->head->ty));
+			for (A_nametyList ntl = d->u.type; ntl; ntl = ntl->tail) {
+				S_enter(tenv, d->u.type->head->name, transTy(tenv, d->u.type->head->ty));
+			}
 			break;
 		}
 		case A_functionDec: {
