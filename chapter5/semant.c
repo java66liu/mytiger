@@ -20,6 +20,24 @@ static Ty_ty actual_ty(Ty_ty ty) {
 	}
 }
 
+int check_ty(Ty_ty ty) {
+	int i;
+	Ty_ty ty2 = ty;
+	assert(ty != NULL);
+	for(i = 0; i < 4000; i++) {
+		if(ty2 == NULL) {
+			return 0;
+		}
+		else if(ty2->kind == Ty_name) {
+			ty2 = ty2->u.name.ty;
+		}
+		else {
+			return 1;
+		}
+	}
+	return 0;
+}
+
 struct expty expTy(Tr_exp exp, Ty_ty ty)
 {
 	struct expty e;
@@ -243,10 +261,6 @@ struct expty transExp(S_table venv, S_table tenv, A_exp e) {
 						if (then.ty == elsee.ty) {
 							return expTy(NULL, then.ty);
 						}
-						else {
-							EM_error(e->pos, "then and else type not match");
-							return expTy(NULL, Ty_Void());
-						}
 					}
 					if (then.ty->kind == elsee.ty->kind) {
 						return expTy(NULL, then.ty);
@@ -286,12 +300,11 @@ struct expty transExp(S_table venv, S_table tenv, A_exp e) {
 			return expTy(NULL, Ty_Void());
 		}
 		case A_letExp: {
-			A_decList d = e->u.let.decs;
+			A_decList d;
 			S_beginScope(venv);
 			S_beginScope(tenv);
-			while (d) {
+			for (d = e->u.let.decs; d; d = d->tail) {
 				transDec(venv, tenv, d->head);
-				d = d->tail;
 			}
 			struct expty exp = transExp(venv, tenv, e->u.let.body);
 			S_endScope(venv);
@@ -302,6 +315,10 @@ struct expty transExp(S_table venv, S_table tenv, A_exp e) {
 			struct expty size = transExp(venv, tenv, e->u.array.size);
 			struct expty init = transExp(venv, tenv, e->u.array.init);
 			Ty_ty ty = actual_ty(S_look(tenv, e->u.array.typ));
+			if (!ty || ty->kind != Ty_array) {
+				EM_error(e->pos, "undefined array type %s", S_name(e->u.array.typ));
+				return expTy(NULL, Ty_Void());
+			}
 			Ty_ty ty2 = actual_ty(ty->u.array);
 			if (size.ty->kind != Ty_int) {
 				EM_error(e->pos, "size int value required");
@@ -336,6 +353,7 @@ struct expty transVar(S_table venv, S_table tenv, A_var v) {
 			if (x && x->kind == E_varEntry)
 				return expTy(NULL, actual_ty(x->u.var.ty));
 			else {
+				EM_error(v->pos, (string)"undefined variable %s", S_name(v->u.simple));
 				return expTy(NULL, Ty_Int());
 			}
 		}
@@ -343,16 +361,14 @@ struct expty transVar(S_table venv, S_table tenv, A_var v) {
 			struct expty res = transVar(venv, tenv, v->u.field.var);
 			Ty_ty ty = res.ty;
 			if (ty->kind == Ty_record) {
-				Ty_fieldList fieldList = ty->u.record;
-				while (fieldList != NULL) {
+				Ty_fieldList fieldList;
+				for (fieldList = ty->u.record; fieldList; fieldList = fieldList->tail) {
 					if (fieldList->head->name == v->u.field.sym) {
 						return expTy(NULL, actual_ty(fieldList->head->ty));
 					}
-					else {
-						fieldList = fieldList->tail;
-					}
 				}
 			}
+			EM_error(v->pos, (string)"expected record type variable");
 			return expTy(NULL, Ty_Int());
 		}
 		case A_subscriptVar: {
@@ -435,21 +451,59 @@ Ty_ty transTy(S_table tenv, A_ty a) {
 }
 
 void transDec(S_table venv, S_table tenv, A_dec d) {
-	if (d == NULL) {
+	if (!d) {
 		return;
 	}
 	switch (d->kind) {
 		case A_varDec: {
 			struct expty e = transExp(venv, tenv, d->u.var.init);
+			if (d->u.var.typ) {
+				Ty_ty ty = S_look(tenv, d->u.var.typ);
+				if (!ty) {
+					EM_error(d->pos, "undefined type %s", S_name(d->u.var.typ));
+					return;
+				}
+				ty = actual_ty(ty);
+				if ((ty != e.ty) && !(ty->kind == Ty_record && e.ty->kind == Ty_nil)) {
+					EM_error(d->pos, "type not match");
+					return;
+				}
+				S_enter(venv, d->u.var.var, E_VarEntry(ty));
+				return;
+			}
 			S_enter(venv, d->u.var.var, E_VarEntry(e.ty));
-			break;
+			return;
 		}
 		case A_typeDec: {
-			A_nametyList ntl;
-			for (ntl = d->u.type; ntl; ntl = ntl->tail) {
-				S_enter(tenv, d->u.type->head->name, transTy(tenv, d->u.type->head->ty));
+			A_nametyList ntl_p, ntl_q;
+			
+			for (ntl_p = d->u.type; ntl_p && ntl_p->tail; ntl_p = ntl_p->tail) {
+				for (ntl_q = ntl_p->tail; ntl_q; ntl_q = ntl_q->tail) {
+					if (ntl_p->head->name == ntl_q->head->name) {
+						EM_error(d->pos, "type '%s' redefined", S_name(ntl_q->head->name));
+						return;
+					}
+				}
 			}
-			break;
+
+			for (ntl_p = d->u.type; ntl_p; ntl_p = ntl_p->tail) {
+				S_enter(tenv, ntl_p->head->name, transTy(tenv, ntl_p->head->ty));
+			}
+/*
+			for (ntl_p = d->u.type; ntl_p; ntl_p = ntl_p->tail) {
+				Ty_ty ty = S_look(tenv, ntl_p->head->name);
+				ty->u.name.ty = transTy(tenv, ntl_p->head->ty);
+			}
+
+			for (ntl_p = d->u.type; ntl_p; ntl_p = ntl_p->tail) {
+				Ty_ty ty = S_look(tenv, ntl_p->head->name);
+				if (actual_ty(ty) == ty) {
+					EM_error(d->pos, "infinite recursive type '%s'", S_name(ntl_p->head->name));
+					return;
+				}
+			}
+*/
+			return;
 		}
 		case A_functionDec: {
 			A_fundec f = d->u.function->head;

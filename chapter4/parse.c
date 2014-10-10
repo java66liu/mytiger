@@ -44,18 +44,18 @@ void parseVar(A_var v) {
 }
 
 void parseDec(A_dec d) {
-    switch (d->kind) {
-        case A_varDec:
+	switch (d->kind) {
+		case A_varDec:
 			if (d->u.var.typ == NULL) {
 				printf("var %s := ", S_name(d->u.var.var));
 			}
 			else {
-            	printf("var %s:%s := ", S_name(d->u.var.var), S_name(d->u.var.typ));
+				printf("var %s:%s := ", S_name(d->u.var.var), S_name(d->u.var.typ));
 			}
-            parseExp(d->u.var.init);
+			parseExp(d->u.var.init);
 			printf("\n");
-            break;
-        case A_functionDec: {
+			break;
+		case A_functionDec: {
 			A_fundecList fdl = d->u.function;
 			A_fieldList fl;
 			while (fdl) {
@@ -85,9 +85,9 @@ void parseDec(A_dec d) {
 				printf("\n");
 				fdl = fdl->tail;
 			}
-            break;
+			break;
 		}
-        case A_typeDec: {
+		case A_typeDec: {
 			A_nametyList ntl = d->u.type;
 			while (ntl) {
 				printf("type %s = ", S_name(ntl->head->name));
@@ -97,79 +97,79 @@ void parseDec(A_dec d) {
 			}
 			break;
 		}
-        default:
-            assert(0);
-    }
+		default:
+			assert(0);
+	}
 }
 
 void parseExp(A_exp e) {
-    switch (e->kind) {
-        case A_ifExp:
-            printf("if ");
-            parseExp(e->u.iff.test);
+	switch (e->kind) {
+		case A_ifExp:
+			printf("if ");
+			parseExp(e->u.iff.test);
 			printf(" then\n");
-            parseExp(e->u.iff.then);
+			parseExp(e->u.iff.then);
 			if (e->u.iff.elsee) {
 				printf("\nelse\n");
 				parseExp(e->u.iff.elsee);
 			}
-            break;
-        case A_arrayExp:
-            printf("%s [", S_name(e->u.array.typ));
-            parseExp(e->u.array.size);
+			break;
+		case A_arrayExp:
+			printf("%s [", S_name(e->u.array.typ));
+			parseExp(e->u.array.size);
 			printf("] of ");
-            parseExp(e->u.array.init);
-            break;
-        case A_assignExp:
-            parseVar(e->u.assign.var);
+			parseExp(e->u.array.init);
+			break;
+		case A_assignExp:
+			parseVar(e->u.assign.var);
 			printf(" := ");
-            parseExp(e->u.assign.exp);
-            break;
-        case A_breakExp:
-            printf("break\t");
-            break;
-        case A_callExp: {
-            printf("%s(", S_name(e->u.call.func));
-            A_expList el = e->u.call.args;
-            while (el) {
-                parseExp(el->head);
+			parseExp(e->u.assign.exp);
+			break;
+		case A_breakExp:
+			printf("break\t");
+			break;
+		case A_callExp: {
+			printf("%s(", S_name(e->u.call.func));
+			A_expList el = e->u.call.args;
+			while (el) {
+				parseExp(el->head);
 				if (el->tail) {
 					printf(", ");
 				}
-                el = el->tail;
-            }
+				el = el->tail;
+			}
 			printf(")");
-            break;
+			break;
 		}
-        case A_forExp:
-            printf("for %s := ", S_name(e->u.forr.var));
-            parseExp(e->u.forr.lo);
+		case A_forExp:
+			printf("for %s := ", S_name(e->u.forr.var));
+			parseExp(e->u.forr.lo);
 			printf(" to ");
 			parseExp(e->u.forr.hi);
 			printf(" do\n");
 			printf("(\n");
-            parseExp(e->u.forr.body);
+			parseExp(e->u.forr.body);
 			printf(")");
-            break;
-        case A_intExp:
-            printf("%d", e->u.intt);
-            break;
-        case A_letExp: {
-            printf("let\n");
-            A_decList dl = e->u.let.decs;
-            while (dl) {
-                parseDec(dl->head);
-                dl = dl->tail;
-            }
+			break;
+		case A_intExp:
+			printf("%d", e->u.intt);
+			break;
+		case A_letExp: {
+			printf("let\n");
+			A_decList dl = e->u.let.decs;
+			while (dl) {
+				parseDec(dl->head);
+				dl = dl->tail;
+			}
 			printf("in\n");
 			parseExp(e->u.let.body);
 			printf("\nend\n");
 			break;
 		}
-        case A_nilExp:
-            printf("nil");
-            break;
-        case A_opExp:
+		case A_nilExp:
+			printf("nil");
+			break;
+		case A_opExp:
 			parseExp(e->u.op.left);
 			switch (e->u.op.oper) {
 				case A_plusOp:
@@ -206,8 +206,8 @@ void parseExp(A_exp e) {
 					assert(0);
 			}
 			parseExp(e->u.op.right);
-            break;
-        case A_recordExp:
+			break;
+		case A_recordExp:
 			printf("%s ", S_name(e->u.record.typ));
 			A_efieldList efl = e->u.record.fields;
 			printf("{ ");
@@ -220,34 +220,34 @@ void parseExp(A_exp e) {
 				efl = efl->tail;
 			}
 			printf(" }");
-            break;
-        case A_seqExp: {
+			break;
+		case A_seqExp: {
 			A_expList el = e->u.seq;
-            while (el) {
+			while (el) {
 				parseExp(el->head);
 				if (el->tail) {
 					printf(";\n");
 				}
 				el = el->tail;
 			}
-            break;
+			break;
 		}
-        case A_stringExp:
-            printf("\"%s\"", e->u.stringg);
-            break;
-        case A_varExp:
-            parseVar(e->u.var);
-            break;
-        case A_whileExp:
-            printf("while (");
+		case A_stringExp:
+			printf("\"%s\"", e->u.stringg);
+			break;
+		case A_varExp:
+			parseVar(e->u.var);
+			break;
+		case A_whileExp:
+			printf("while (");
 			parseExp(e->u.whilee.test);
 			printf(") do (\n");
 			parseExp(e->u.whilee.body);
 			printf(")");
-            break;
-        default:
-            assert(0);
-    }
+			break;
+		default:
+			assert(0);
+	}
 }
 
 void parseTy(A_ty t) {
@@ -281,6 +281,6 @@ int main(int argc, char **argv) {
 		fprintf(stderr,"usage: a.out filename\n");
 		exit(1);
 	}
-    parseExp(parse(argv[1]));
+	parseExp(parse(argv[1]));
 	return 0;
 }
