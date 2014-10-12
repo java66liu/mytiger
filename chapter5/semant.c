@@ -135,33 +135,6 @@ struct expty transExp(S_table venv, S_table tenv, A_exp e) {
 				}
 				EM_error(e->pos, (string)"same type required");
 				return expTy(NULL, Ty_Int());
-/*
-				if (left.ty->kind == right.ty->kind) {
-					if (left.ty->kind == Ty_record && right.ty->kind == Ty_record) {
-						if (left.ty != right.ty) {
-							EM_error(e->pos, (string)"same record type required");
-							return expTy(NULL, Ty_Int());
-						}
-					}
-					if (left.ty->kind == Ty_array && right.ty->kind == Ty_array) {
-						if (left.ty != right.ty) {
-							EM_error(e->pos, (string)"same array type required");
-							return expTy(NULL, Ty_Int());
-						}
-					}
-					return expTy(NULL, Ty_Int());
-				}
-				else {
-					if (left.ty->kind == Ty_record && right.ty->kind == Ty_nil) {
-						return expTy(NULL, Ty_Int());
-					}
-					if (left.ty->kind == Ty_nil && right.ty->kind == Ty_record) {
-						return expTy(NULL, Ty_Int());
-					}
-					EM_error(e->pos, "compare record with array");
-					return expTy(NULL, Ty_Int());
-				}
-*/
 			}
 			if (oper == A_ltOp || oper == A_leOp || oper == A_gtOp || oper == A_geOp) {
 				if (left.ty->kind == Ty_int && right.ty->kind == Ty_int) {
@@ -207,26 +180,6 @@ struct expty transExp(S_table venv, S_table tenv, A_exp e) {
 						EM_error(e->pos, (string)"record field mismatch");
 						return expTy(NULL, Ty_Nil());
 					}
-/*
-						if (fieldty->kind == Ty_record && res.ty->kind == Ty_record) {
-							if (fieldty != res.ty) {
-								EM_error(e->pos, "record field not match");
-								return expTy(NULL, Ty_Nil());
-							}
-							return expTy(NULL, Ty_Nil());
-						}
-						if (fieldty->kind == Ty_array && res.ty->kind == Ty_array) {
-							if (fieldty != res.ty) {
-								EM_error(e->pos, "record field not match");
-								return expTy(NULL, Ty_Nil());
-							}
-							//return expTy(NULL, Ty_Nil());
-						}
-						if (fieldty->kind != res.ty->kind) {
-							EM_error(e->pos, "record field not match");
-							return expTy(NULL, Ty_Nil());
-						}
-*/
 				}
 			}
 			return expTy(NULL, ty);
@@ -248,24 +201,6 @@ struct expty transExp(S_table venv, S_table tenv, A_exp e) {
 			if (isSameTy(left.ty, right.ty)) {
 				return expTy(NULL, Ty_Void());
 			}
-/*
-			if (left.ty->kind == Ty_record) {
-				if (right.ty->kind == Ty_nil) {
-					return expTy(NULL, Ty_Void());
-				}
-				if (right.ty->kind == Ty_record && left.ty == right.ty) {
-					return expTy(NULL, Ty_Void());
-				}
-			}
-			if (left.ty->kind == Ty_array) {
-				if (right.ty->kind == Ty_array && left.ty == right.ty) {
-					return expTy(NULL, Ty_Void());
-				}
-			}
-			if (left.ty->kind == right.ty->kind) {
-				return expTy(NULL, Ty_Void());
-			}
-*/
 			EM_error(e->pos, "type mismatch");
 			return expTy(NULL, Ty_Void());
 		}
@@ -287,27 +222,6 @@ struct expty transExp(S_table venv, S_table tenv, A_exp e) {
 			if (isSameTy(then.ty, elsee.ty)) {
 				return expTy(NULL, then.ty);
 			}
-/*
-			if (then.ty->kind == Ty_record) {
-				if (elsee.ty->kind == Ty_record && then.ty == elsee.ty) {
-					return expTy(NULL, then.ty);
-				}
-				if (elsee.ty->kind == Ty_nil) {
-					return expTy(NULL, then.ty);
-				}
-			}
-			if (then.ty->kind == Ty_nil && elsee.ty->kind == Ty_record) {
-				return expTy(NULL, elsee.ty);
-			}
-			if (then.ty->kind == Ty_array && elsee.ty->kind == Ty_array) {
-				if (then.ty == elsee.ty) {
-					return expTy(NULL, then.ty);
-				}
-			}
-			if (then.ty->kind == elsee.ty->kind) {
-				return expTy(NULL, then.ty);
-			}
-*/
 			EM_error(e->pos, "types of then - else differ");
 			return expTy(NULL, Ty_Void());
 		}
@@ -380,28 +294,6 @@ struct expty transExp(S_table venv, S_table tenv, A_exp e) {
 				EM_error(e->pos, "initializing exp and array type differ");
 				return expTy(NULL, Ty_Void());
 			}
-/*
-			if (ty2->kind == Ty_record) {
-				if ((init.ty->kind == Ty_nil) || (init.ty->kind == Ty_record && ty2 == init.ty)) {
-				}
-				else {
-					EM_error(e->pos, "array init fail:type not match");
-					return expTy(NULL, Ty_Void());
-				}
-			}
-			else if (ty2->kind == Ty_array) {
-				if (init.ty->kind == Ty_array && ty2 == init.ty) {
-					if (ty2->kind != init.ty->kind) {
-						 EM_error(e->pos, "initializing exp and array type differ");
-						 return expTy(NULL, Ty_Void());
-					}
-				}
-				else {
-					EM_error(e->pos, "array init fail:type not match");
-					return expTy(NULL, Ty_Void());
-				}
-			}
-*/
 			return expTy(NULL, ty);
 		}
 		default: {
@@ -425,16 +317,6 @@ struct expty transVar(S_table venv, S_table tenv, A_var v) {
 			Ty_ty ty = res.ty;
 			if (ty->kind == Ty_record) {
 				Ty_fieldList tfl = ty->u.record;
-/*
-				while (tfl) {
-					if (tfl->head->name == v->u.field.sym) {
-						return expTy(NULL, actual_ty(tfl->head->ty));
-					}
-					else {
-						tfl = tfl->tail;
-					}
-				}
-*/
 				for (tfl = ty->u.record; tfl; tfl = tfl->tail) {
 					if (tfl->head->name == v->u.field.sym) {
 						return expTy(NULL, actual_ty(tfl->head->ty));
@@ -536,20 +418,6 @@ void transDec(S_table venv, S_table tenv, A_dec d) {
 					EM_error(d->pos, (string)"type mismatch");
 					return;
 				}
-/*
-				if (ty->kind != e.ty->kind) {
-					if (e.ty->kind != Ty_nil) {
-						EM_error(d->pos, "type constraint and init value differ");
-						return;
-					}
-				}
-				if (ty != e.ty) {
-					if (ty->kind != Ty_record && e.ty->kind == Ty_nil) {
-						EM_error(d->pos, "initializing nil expressions not constrained by record type");
-						return;
-					}
-				}
-*/
 				S_enter(venv, d->u.var.var, E_VarEntry(ty));
 				return;
 			}
