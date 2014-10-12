@@ -15,25 +15,24 @@ static Ty_ty actual_ty(Ty_ty ty) {
 	if (ty->kind != Ty_name) {
 		return ty;
 	}
-	else {
-		return actual_ty(ty->u.name.ty);
-	}
+	return actual_ty(ty->u.name.ty);
 }
 
-int check_ty(Ty_ty ty) {
-	int i;
-	Ty_ty ty2 = ty;
-	assert(ty != NULL);
-	for(i = 0; i < 4000; i++) {
-		if(ty2 == NULL) {
+int isSameTy(Ty_ty ty1, Ty_ty ty2) {
+	if (ty1->kind == ty2->kind) {
+		if (ty1->kind == Ty_array || ty1->kind == Ty_record) {
+			if (ty1 == ty2) {
+				return 1;
+			}
 			return 0;
 		}
-		else if(ty2->kind == Ty_name) {
-			ty2 = ty2->u.name.ty;
-		}
-		else {
-			return 1;
-		}
+		return 1;
+	}
+	if (ty1->kind == Ty_nil && ty2->kind == Ty_record) {
+		return 1;
+	}
+	if (ty1->kind == Ty_record && ty2->kind == Ty_nil) {
+		return 1;
 	}
 	return 0;
 }
@@ -114,12 +113,9 @@ struct expty transExp(S_table venv, S_table tenv, A_exp e) {
 					return expTy(NULL, Ty_Int());
 				}
 			}
-			/*
 			if (!fun->u.fun.result) {
-				EM_error(e->pos, (string)"procedure returns value");
-				return expTy(NULL, Ty_Int());
+				return expTy(NULL, Ty_Void());
 			}
-			*/
 			return expTy(NULL, actual_ty(fun->u.fun.result));
 		}
 		case A_opExp: {
@@ -127,17 +123,19 @@ struct expty transExp(S_table venv, S_table tenv, A_exp e) {
 			struct expty left = transExp(venv, tenv, e->u.op.left);
 			struct expty right = transExp(venv, tenv, e->u.op.right);
 			if (oper == A_plusOp || oper == A_minusOp || oper == A_timesOp || oper == A_divideOp) {
-				if (left.ty->kind != Ty_int) {
+				if (left.ty->kind != Ty_int || right.ty->kind != Ty_int) {
 					EM_error(e->u.op.left->pos, (string)"integer required");
-					return expTy(NULL, Ty_Int());
-				}
-				if (right.ty->kind != Ty_int) {
-					EM_error(e->u.op.right->pos, (string)"integer required");
 					return expTy(NULL, Ty_Int());
 				}
 				return expTy(NULL, Ty_Int());
 			}
 			if (oper == A_eqOp || oper == A_neqOp) {
+				if (isSameTy(left.ty, right.ty)) {
+					return expTy(NULL, Ty_Int());
+				}
+				EM_error(e->pos, (string)"same type required");
+				return expTy(NULL, Ty_Int());
+/*
 				if (left.ty->kind == right.ty->kind) {
 					if (left.ty->kind == Ty_record && right.ty->kind == Ty_record) {
 						if (left.ty != right.ty) {
@@ -163,6 +161,7 @@ struct expty transExp(S_table venv, S_table tenv, A_exp e) {
 					EM_error(e->pos, "compare record with array");
 					return expTy(NULL, Ty_Int());
 				}
+*/
 			}
 			if (oper == A_ltOp || oper == A_leOp || oper == A_gtOp || oper == A_geOp) {
 				if (left.ty->kind == Ty_int && right.ty->kind == Ty_int) {
@@ -205,6 +204,11 @@ struct expty transExp(S_table venv, S_table tenv, A_exp e) {
 					else {
 						struct expty res = transExp(venv, tenv, efl->head->exp);
 						Ty_ty fieldty = actual_ty(tfl->head->ty);
+						if (!isSameTy(fieldty, res.ty)) {
+							EM_error(e->pos, (string)"record field mismatch");
+							return expTy(NULL, Ty_Nil());
+						}
+/*
 						if (fieldty->kind == Ty_record && res.ty->kind == Ty_record) {
 							if (fieldty != res.ty) {
 								EM_error(e->pos, "record field not match");
@@ -223,7 +227,8 @@ struct expty transExp(S_table venv, S_table tenv, A_exp e) {
 							EM_error(e->pos, "record field not match");
 							return expTy(NULL, Ty_Nil());
 						}
-					}
+*/
+						}
 				}
 			}
 			return expTy(NULL, ty);
@@ -232,13 +237,15 @@ struct expty transExp(S_table venv, S_table tenv, A_exp e) {
 			if (e->u.seq) {
 				return expTy(NULL, transExp(venv, tenv, e->u.seq->head).ty);
 			}
-			else {
-				return expTy(NULL, Ty_Void());
-			}
+			return expTy(NULL, Ty_Void());
 		}
 		case A_assignExp: {
 			struct expty left = transVar(venv, tenv, e->u.assign.var);
 			struct expty right = transExp(venv, tenv, e->u.assign.exp);
+			if (isSameTy(left.ty, right.ty)) {
+				return expTy(NULL, Ty_Void());
+			}
+/*
 			if (left.ty->kind == Ty_record) {
 				if (right.ty->kind == Ty_nil) {
 					return expTy(NULL, Ty_Void());
@@ -255,6 +262,7 @@ struct expty transExp(S_table venv, S_table tenv, A_exp e) {
 			if (left.ty->kind == right.ty->kind) {
 				return expTy(NULL, Ty_Void());
 			}
+*/
 			EM_error(e->pos, "type not match");
 			return expTy(NULL, Ty_Void());
 		}
@@ -264,40 +272,41 @@ struct expty transExp(S_table venv, S_table tenv, A_exp e) {
 				EM_error(e->pos, "if-else clause integer test required");
 				return expTy(NULL, Ty_Void());
 			}
-			else {
-				struct expty then = transExp(venv, tenv, e->u.iff.then);
-				if (e->u.iff.elsee == NULL) {
-					if (then.ty->kind != Ty_void) {
-						EM_error(e->pos, "if-then returns non unit");
-						return expTy(NULL, Ty_Void());
-					}
+			struct expty then = transExp(venv, tenv, e->u.iff.then);
+			if (e->u.iff.elsee == NULL) {
+				if (then.ty->kind != Ty_void) {
+					EM_error(e->pos, "if-then returns non unit");
 					return expTy(NULL, Ty_Void());
 				}
-				else {
-					struct expty elsee = transExp(venv, tenv, e->u.iff.elsee);
-					if (then.ty->kind == Ty_record) {
-						if (elsee.ty->kind == Ty_record && then.ty == elsee.ty) {
-							return expTy(NULL, then.ty);
-						}
-						if (elsee.ty->kind == Ty_nil) {
-							return expTy(NULL, then.ty);
-						}
-					}
-					if (then.ty->kind == Ty_nil && elsee.ty->kind == Ty_record) {
-						return expTy(NULL, elsee.ty);
-					}
-					if (then.ty->kind == Ty_array && elsee.ty->kind == Ty_array) {
-						if (then.ty == elsee.ty) {
-							return expTy(NULL, then.ty);
-						}
-					}
-					if (then.ty->kind == elsee.ty->kind) {
-						return expTy(NULL, then.ty);
-					}
-					EM_error(e->pos, "types of then - else differ");
-					return expTy(NULL, Ty_Void());
+				return expTy(NULL, Ty_Void());
+			}
+			struct expty elsee = transExp(venv, tenv, e->u.iff.elsee);
+			if (isSameTy(then.ty, elsee.ty)) {
+				return expTy(NULL, then.ty);
+			}
+/*
+			if (then.ty->kind == Ty_record) {
+				if (elsee.ty->kind == Ty_record && then.ty == elsee.ty) {
+					return expTy(NULL, then.ty);
+				}
+				if (elsee.ty->kind == Ty_nil) {
+					return expTy(NULL, then.ty);
 				}
 			}
+			if (then.ty->kind == Ty_nil && elsee.ty->kind == Ty_record) {
+				return expTy(NULL, elsee.ty);
+			}
+			if (then.ty->kind == Ty_array && elsee.ty->kind == Ty_array) {
+				if (then.ty == elsee.ty) {
+					return expTy(NULL, then.ty);
+				}
+			}
+			if (then.ty->kind == elsee.ty->kind) {
+				return expTy(NULL, then.ty);
+			}
+*/
+			EM_error(e->pos, "types of then - else differ");
+			return expTy(NULL, Ty_Void());
 		}
 		case A_whileExp: {
 			struct expty test = transExp(venv, tenv, e->u.whilee.test);
@@ -307,7 +316,7 @@ struct expty transExp(S_table venv, S_table tenv, A_exp e) {
 				return expTy(NULL, Ty_Void());
 			}
 			if (body.ty->kind != Ty_void) {
-				EM_error(e->pos, "body of while not unit");
+				EM_error(e->pos, "body of while not void");
 				return expTy(NULL, Ty_Void());
 			}
 			return expTy(NULL, Ty_Void());
@@ -319,13 +328,17 @@ struct expty transExp(S_table venv, S_table tenv, A_exp e) {
 				EM_error(e->pos, "for clause lo and hi integer required");
 				return expTy(NULL, Ty_Void());
 			}
-			else {
-				struct expty body = transExp(venv, tenv, e->u.forr.body);
-				if (body.ty->kind != Ty_void) {
-					EM_error(e->pos, "for clause body no-value required");
-				}
+			S_beginScope(venv);
+			if (!S_look(venv, e->u.forr.var)) {
+				S_enter(venv, e->u.forr.var, E_VarEntry(Ty_Int()));
+			}
+			struct expty body = transExp(venv, tenv, e->u.forr.body);
+			S_endScope(venv);
+			if (body.ty->kind != Ty_void) {
+				EM_error(e->pos, "for clause body no-value required");
 				return expTy(NULL, Ty_Void());
 			}
+			return expTy(NULL, Ty_Void());
 		}
 		case A_breakExp: {
 			return expTy(NULL, Ty_Void());
@@ -345,9 +358,14 @@ struct expty transExp(S_table venv, S_table tenv, A_exp e) {
 		case A_arrayExp: {
 			struct expty size = transExp(venv, tenv, e->u.array.size);
 			struct expty init = transExp(venv, tenv, e->u.array.init);
-			Ty_ty ty = actual_ty(S_look(tenv, e->u.array.typ));
-			if (!ty || ty->kind != Ty_array) {
+			Ty_ty ty = (Ty_ty)S_look(tenv, e->u.array.typ);
+			if (!ty) {
 				EM_error(e->pos, "undefined array type %s", S_name(e->u.array.typ));
+				return expTy(NULL, Ty_Void());
+			}
+			ty = actual_ty(ty);
+			if (ty->kind != Ty_array) {
+				EM_error(e->pos, "%s is not a array", S_name(e->u.array.typ));
 				return expTy(NULL, Ty_Void());
 			}
 			if (ty->u.array->kind!= init.ty->kind) {
