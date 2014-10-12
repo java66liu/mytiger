@@ -108,7 +108,7 @@ struct expty transExp(S_table venv, S_table tenv, A_exp e) {
 					return expTy(NULL, Ty_Int());
 				}
 				struct expty arg = transExp(venv, tenv, el->head);
-				if (ttl->head->kind != arg.ty->kind) {
+				if (actual_ty(ttl->head)->kind != actual_ty(arg.ty)->kind) {
 					EM_error(e->pos, (string)"formals and actuals have different types");
 					return expTy(NULL, Ty_Int());
 				}
@@ -232,8 +232,13 @@ struct expty transExp(S_table venv, S_table tenv, A_exp e) {
 			return expTy(NULL, ty);
 		}
 		case A_seqExp: {
-			if (e->u.seq) {
-				return expTy(NULL, transExp(venv, tenv, e->u.seq->head).ty);
+			A_expList el = e->u.seq;
+			if (el) {
+				while (el->tail) {
+					transExp(venv, tenv, el->head);
+					el = el->tail;
+				}
+				return expTy(NULL, transExp(venv, tenv, el->head).ty);
 			}
 			return expTy(NULL, Ty_Void());
 		}
@@ -366,17 +371,13 @@ struct expty transExp(S_table venv, S_table tenv, A_exp e) {
 				EM_error(e->pos, "'%s' is not a array", S_name(e->u.array.typ));
 				return expTy(NULL, Ty_Void());
 			}
-			if (ty->u.array->kind != init.ty->kind) {
-				EM_error(e->pos, "initializing exp and array type differ");
-				return expTy(NULL, Ty_Void());
-			}
 			if (size.ty->kind != Ty_int) {
 				EM_error(e->pos, "size int value required");
 				return expTy(NULL, actual_ty(ty));
 			}
 			Ty_ty ty2 = actual_ty(ty->u.array);
 			if (!isSameTy(ty2, init.ty)) {
-				EM_error(e->pos, "array init fail : type mismatch");
+				EM_error(e->pos, "initializing exp and array type differ");
 				return expTy(NULL, Ty_Void());
 			}
 /*
@@ -478,37 +479,28 @@ Ty_ty transTy(S_table tenv, A_ty a) {
 			}
 		}
 		case A_recordTy: {
-			Ty_ty ty,ty2;
-			Ty_fieldList fields,tailptr;
-			A_fieldList afields;
-			if (a->u.record == NULL) {
-				fields = NULL;
-				ty = Ty_Record(fields);
-				return ty;
+			if (!a->u.record) {
+				return Ty_Record(NULL);
 			}
-			else {
-				fields = tailptr = NULL;
-				afields = a->u.record;
-				while (afields != NULL) {
-					ty2 = S_look(tenv, afields->head->typ);
-					if (ty2 != NULL) {
-						if (fields == NULL) {
-							fields = Ty_FieldList(Ty_Field(afields->head->name, ty2), NULL);
-							tailptr = fields;
-						}
-						else {
-							tailptr->tail = Ty_FieldList(Ty_Field(afields->head->name, ty2), NULL);
-							tailptr = tailptr->tail;
-						}
-					}
-					else {
-						return Ty_Int();
-					}
-					afields = afields->tail;
+			Ty_fieldList tfl, tfl_p;
+			tfl = tfl_p = NULL;
+			A_fieldList fl;
+			for (fl = a->u.record; fl; fl = fl->tail) {
+				Ty_ty ty = S_look(tenv, fl->head->typ);
+				if (!ty) {
+					EM_error(a->pos, "undefined field type");
+					return Ty_Int();
 				}
-				ty = Ty_Record(fields);
-				return ty;
+				if (tfl) {
+					tfl_p->tail = Ty_FieldList(Ty_Field(fl->head->name, ty), NULL);
+					tfl_p = tfl_p->tail;
+				}
+				else {
+					tfl = Ty_FieldList(Ty_Field(fl->head->name, ty), NULL);
+					tfl_p = tfl;
+				}
 			}
+			return Ty_Record(tfl);
 		}
 		case A_arrayTy: {
 			Ty_ty ty;
@@ -569,65 +561,60 @@ void transDec(S_table venv, S_table tenv, A_dec d) {
 			return;
 		}
 		case A_typeDec: {
-			A_nametyList ntl_p, ntl_q;
-			for (ntl_p = d->u.type; ntl_p && ntl_p->tail; ntl_p = ntl_p->tail) {
-				for (ntl_q = ntl_p->tail; ntl_q; ntl_q = ntl_q->tail) {
-					if (ntl_p->head->name == ntl_q->head->name) {
-						EM_error(d->pos, "type '%s' redefined", S_name(ntl_q->head->name));
-						return;
-					}
-				}
-			}
+			S_table tmp = S_empty();
 			A_nametyList ntl;
 			for (ntl = d->u.type; ntl; ntl = ntl->tail) {
-				S_enter(tenv, ntl->head->name, transTy(tenv, ntl->head->ty));
+				if (S_look(tmp, ntl->head->name)) {
+					EM_error(d->pos, "type '%s' redefined", S_name(ntl->head->name));
+					return;
+				}
+				S_enter(tmp, ntl->head->name, "-tmp-");
+				S_enter(tenv, ntl->head->name, Ty_Name(ntl->head->name, NULL));
 			}
-/*
-			for (ntl_p = d->u.type; ntl_p; ntl_p = ntl_p->tail) {
-				Ty_ty ty = S_look(tenv, ntl_p->head->name);
-				ty->u.name.ty = transTy(tenv, ntl_p->head->ty);
+			for (ntl = d->u.type; ntl; ntl = ntl->tail) {
+				Ty_ty ty = (Ty_ty)S_look(tenv, ntl->head->name);
+				ty->u.name.ty = transTy(tenv, ntl->head->ty);
 			}
-
-			for (ntl_p = d->u.type; ntl_p; ntl_p = ntl_p->tail) {
-				Ty_ty ty = S_look(tenv, ntl_p->head->name);
-				if (actual_ty(ty) == ty) {
-					EM_error(d->pos, "infinite recursive type '%s'", S_name(ntl_p->head->name));
+			for (ntl = d->u.type; ntl; ntl = ntl->tail) {
+				Ty_ty ty = (Ty_ty)S_look(tenv, ntl->head->name);
+				if (ty->u.name.ty->kind != Ty_name) {
 					return;
 				}
 			}
-*/
+			EM_error(d->pos, "infinite recursive");
 			return;
 		}
 		case A_functionDec: {
-			A_fundecList fdl_p, fdl_q;
-			for (fdl_p = d->u.function; fdl_p && fdl_p->tail; fdl_p = fdl_p->tail) {
-				for (fdl_q = fdl_p->tail; fdl_q; fdl_q = fdl_q = fdl_q->tail) {
-					if (fdl_p->head->name == fdl_q->head->name) {
-						EM_error(d->pos, "function '%s' redefined", S_name(fdl_q->head->name));
-						return;
-					}
-				}
-			}
+			S_table tmp = S_empty();
 			A_fundecList fdl;
 			for (fdl = d->u.function; fdl; fdl = fdl->tail) {
-				A_fundec fd = fdl->head;
-				Ty_tyList formalTys = makeFormalTyList(tenv, fd->params);
-				if (fd->result) {
-					Ty_ty resultTy = S_look(tenv, fd->result);
-					S_enter(venv,  fd->name, E_FunEntry(formalTys, resultTy));
+				if (S_look(tmp, fdl->head->name)) {
+					EM_error(d->pos, "function '%s' redefined", S_name(fdl->head->name));
+					return;
+				}
+				S_enter(tmp, fdl->head->name, "-tmp-");
+			}
+			for (fdl = d->u.function; fdl; fdl = fdl->tail) {
+				Ty_tyList formalTys = makeFormalTyList(tenv, fdl->head->params);
+				if (fdl->head->result) {
+					Ty_ty resultTy = S_look(tenv, fdl->head->result);
+					S_enter(venv, fdl->head->name, E_FunEntry(formalTys, resultTy));
 				}
 				else {
-					S_enter(venv,  fd->name, E_FunEntry(formalTys, NULL));
+					S_enter(venv, fdl->head->name, E_FunEntry(formalTys, NULL));
 				}
+			}
+			for (fdl = d->u.function; fdl; fdl = fdl->tail) {
+				Ty_tyList formalTys = makeFormalTyList(tenv, fdl->head->params);
 				S_beginScope(venv);
 				{
 					A_fieldList l;
 					Ty_tyList t;
-					for (l = fd->params, t = formalTys; l; l = l->tail, t = t->tail) {
+					for (l = fdl->head->params, t = formalTys; l; l = l->tail, t = t->tail) {
 						S_enter(venv, l->head->name, E_VarEntry(t->head));
 					}
 				}
-				transExp(venv, tenv, d->u.function->head->body);
+				transExp(venv, tenv, fdl->head->body);
 				S_endScope(venv);
 			}
 			break;
